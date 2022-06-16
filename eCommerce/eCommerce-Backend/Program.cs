@@ -2,9 +2,10 @@ using eCommerce_Backend.Data.EF;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SharedViewModels.Utilities.Constants;
+using eCommerce_SharedViewModels.Utilities.Constants;
 using System.Text;
-
+using eCommerce_Backend.Application.IServices;
+using eCommerce_Backend.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<eCommerceDbContext>(options =>
-                options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString(SystemConstatns.MainConnectionString)));
+                options.UseSqlServer(builder.Configuration.GetConnectionString(SystemConstants.MainConnectionString)));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
 {
     var key = builder.Configuration.GetSection("AppSettings:Token").Value;
@@ -33,6 +34,8 @@ builder.Services.AddCors(options => options.AddPolicy("Default", builder => {
     builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
 })
 );
+builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 

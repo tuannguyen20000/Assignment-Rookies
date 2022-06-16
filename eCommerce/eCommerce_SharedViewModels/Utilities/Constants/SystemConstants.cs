@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharedViewModels.Utilities.Constants
+namespace eCommerce_SharedViewModels.Utilities.Constants
 {
-    public class SystemConstatns
+    public class SystemConstants
     {
         public const string MainConnectionString = "eCommerceDb";
         public class AppSettings
