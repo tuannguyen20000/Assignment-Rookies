@@ -7,5 +7,6 @@ namespace eCommerce_Backend.Application.IServices
     {
         Task<ApiResult<bool>> Create(ProductsCreateDto request);
         Task<PagedResult<ProductReadDto>> GetPagingProduct (ProductPagingDto request);
+        Task<List<ProductReadDto>> GetListProduct();
     }
 }

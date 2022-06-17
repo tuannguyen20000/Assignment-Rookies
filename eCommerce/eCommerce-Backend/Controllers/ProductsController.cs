@@ -37,5 +37,14 @@ namespace eCommerce_Backend.Controllers
             var result = await _productService.GetPagingProduct(request);
             return Ok(result);
         }
+
+        [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
+        [Route("get-list-product")]
+        public async Task<IActionResult> GetListProduct()
+        {
+            var result = await _productService.GetListProduct();
+            return Ok(result);
+        }
     }
 }

@@ -36,6 +36,20 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
+        public async Task<List<ProductReadDto>> GetListProduct()
+        {
+            var data = await _dbContext.Products.Select(x => new ProductReadDto()
+            {
+                CreatedDate = x.CreatedDate,
+                Description = x.Description,
+                ImagessURL = x.ImagessURL,
+                Price = x.Price,
+                ProductName = x.ProductName,
+                UpdatedDate = x.UpdatedDate
+            }).ToListAsync();
+            return data;
+        }
+
         public async Task<PagedResult<ProductReadDto>> GetPagingProduct(ProductPagingDto request)
         {
             var query = _dbContext.Products.AsQueryable();

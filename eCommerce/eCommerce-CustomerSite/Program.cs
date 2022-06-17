@@ -13,7 +13,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
+/*app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
 });
@@ -21,7 +21,7 @@ app.Use(async (context, next) =>
 {
     context.Request.Scheme = "https";
     await next();
-});
+});*/
 
 if (!app.Environment.IsDevelopment())
 {
