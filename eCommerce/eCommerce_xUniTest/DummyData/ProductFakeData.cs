@@ -1,4 +1,4 @@
-﻿using eCommerce_SharedViewModels.EntitiesDto.ProductDto;
+﻿using eCommerce_SharedViewModels.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +33,20 @@ namespace eCommerce_xUniTest.DummyData
                     UpdatedDate = DateTime.Now,
                 },
              };
+        }
+
+        public static ProductsCreateDto itemProduct()
+        {
+            return new ProductsCreateDto()
+            {
+                CategoryId = 1,               
+                CreatedDate = DateTime.Now,
+                UpdatedDate = DateTime.Now,
+                Description = "test Description",
+                ImagessURL = "test Images",
+                Price = "100000",
+                ProductName = "Giay test2"
+            };
         }
     }
 }

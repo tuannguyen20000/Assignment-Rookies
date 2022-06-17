@@ -40,7 +40,7 @@ namespace eCommerce_Backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("eCommerce_Backend.Data.Entities.Products", b =>
@@ -80,7 +80,7 @@ namespace eCommerce_Backend.Migrations
 
                     b.HasIndex("CategoiesId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

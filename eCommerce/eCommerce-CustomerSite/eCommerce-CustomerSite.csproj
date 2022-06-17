@@ -14,4 +14,8 @@
     <ProjectReference Include="..\eCommerce_SharedViewModels\eCommerce_SharedViewModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\fonts\Home\fonts\" />
+  </ItemGroup>
+
 </Project>

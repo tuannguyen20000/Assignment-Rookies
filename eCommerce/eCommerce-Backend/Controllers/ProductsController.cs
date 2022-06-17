@@ -17,10 +17,15 @@ namespace eCommerce_Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin)]
         [Route("create-product")]
         public async Task<IActionResult> Create([FromForm] ProductsCreateDto request)
         {
             var result = await _productService.Create(request);
+            if(result == null)
+            {
+                return BadRequest(result.errorMessage);
+            }
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);
