@@ -1,5 +1,7 @@
 ﻿using eCommerce_Backend.Application.IServices;
+using eCommerce_SharedViewModels.Common;
 using eCommerce_SharedViewModels.EntitiesDto.ProductDto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce_Backend.Controllers
@@ -15,6 +17,7 @@ namespace eCommerce_Backend.Controllers
         }
 
         [HttpPost]
+        [Route("create-product")]
         public async Task<IActionResult> Create([FromForm] ProductsCreateDto request)
         {
             var result = await _productService.Create(request);
@@ -27,6 +30,8 @@ namespace eCommerce_Backend.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles =UserRoles.Admin)]
+        [Route("get-paging-product")]
         public async Task<IActionResult> GetPagingProduct([FromQuery] ProductPagingDto request)
         {
             var result = await _productService.GetPagingProduct(request);

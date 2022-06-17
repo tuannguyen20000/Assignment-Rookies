@@ -1,4 +1,5 @@
 ﻿using eCommerce_SharedViewModels.Utilities.Constants;
+using Microsoft.AspNetCore.Authentication;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
@@ -20,10 +21,9 @@ namespace eCommerce_CustomerSite.ApiComsumes.Common
         }
         protected async Task<TResponse> GetAsync<TResponse>(string url)
         {
-            var sessions = _httpContextAccessor
+            var sessions = await _httpContextAccessor
                 .HttpContext
-                .Session
-                .GetString(SystemConstants.AppSettings.Token);
+                .GetTokenAsync(SystemConstants.AppSettings.Token);
 
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
@@ -42,10 +42,9 @@ namespace eCommerce_CustomerSite.ApiComsumes.Common
 
         public async Task<List<T>> GetListAsync<T>(string url)
         {
-            var sessions = _httpContextAccessor
+            var sessions = await _httpContextAccessor
                .HttpContext
-               .Session
-               .GetString(SystemConstants.AppSettings.Token);
+               .GetTokenAsync(SystemConstants.AppSettings.Token);
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
@@ -62,10 +61,9 @@ namespace eCommerce_CustomerSite.ApiComsumes.Common
 
         public async Task<TResponse> PostAsync<TResponse>(string url, StringContent httpContent)
         {
-            var sessions = _httpContextAccessor
+            var sessions = await _httpContextAccessor
                .HttpContext
-               .Session
-               .GetString(SystemConstants.AppSettings.Token);
+               .GetTokenAsync(SystemConstants.AppSettings.Token);
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration[SystemConstants.AppSettings.BaseAddress]);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);

@@ -16,6 +16,7 @@ namespace eCommerce_Backend.Controllers
         }
 
         [HttpPost]
+        [Route("create-category")]
         public async Task<IActionResult> Create([FromForm] CategoriesCreateDto request)
         {
             var result = await _categoryService.Create(request);

@@ -4,6 +4,6 @@ namespace eCommerce_SharedViewModels.EntitiesDto.ProductDto
 {
     public class ProductPagingDto : PagingRequestBase
     {
-        public string? Keyword { get; set; }
+        public string Keyword { get; set; }
     }
 }

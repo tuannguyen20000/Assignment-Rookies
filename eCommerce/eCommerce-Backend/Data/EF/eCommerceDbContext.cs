@@ -1,10 +1,11 @@
 ﻿using eCommerce_Backend.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace eCommerce_Backend.Data.EF
 {
-    public class eCommerceDbContext : IdentityDbContext
+    public class eCommerceDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
     {
         public eCommerceDbContext(DbContextOptions<eCommerceDbContext> options)
             : base(options)
@@ -18,5 +19,9 @@ namespace eCommerce_Backend.Data.EF
         {
             base.OnModelCreating(modelBuilder);
         }
+    }
+
+    public class AppUser : IdentityUser
+    {
     }
 }
