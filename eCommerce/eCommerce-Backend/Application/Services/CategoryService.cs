@@ -3,6 +3,9 @@ using eCommerce_Backend.Data.EF;
 using eCommerce_Backend.Data.Entities;
 using eCommerce_SharedViewModels.EntitiesDto.Categories;
 using eCommerce_SharedViewModels.Common;
+using static eCommerce_SharedViewModels.Utilities.Constants.SystemConstants;
+using eCommerce_SharedViewModels.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace eCommerce_Backend.Application.Services
 {
@@ -29,29 +32,95 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public Task<ApiResult<CategoryReadDto>> GetById(int Id)
+        public async Task<ApiResult<CategoryReadDto>> GetById(int Id)
         {
-            throw new NotImplementedException();
+            var data = await _dbContext.Categories.FindAsync(Id);
+            if (data == null)
+                return new ApiErrorResult<CategoryReadDto>(ErrorMessage.CategoryNotFound);
+            var result = new CategoryReadDto()
+            {
+                CategoryName = data.CategoryName,
+                Description = data.Description,
+                Status = data.Status
+                
+            };
+            return new ApiSuccessResult<CategoryReadDto>(result);
         }
 
-        public Task<List<CategoryReadDto>> GetListProduct()
+        public async Task<List<CategoryReadDto>> GetList()
         {
-            throw new NotImplementedException();
+            using (_dbContext)
+            {
+                var data = await _dbContext.Categories.Where(x => x.Status == Status.Available).Select(x => new CategoryReadDto()
+                {
+                    CategoryName = x.CategoryName,
+                    Description = x.Description,
+                }).ToListAsync();
+                return data;
+            }
         }
 
-        public Task<PagedResult<CategoryReadDto>> GetPaging(CategoryPagingDto request)
+        public async Task<PagedResult<CategoryReadDto>> GetPaging(CategoryPagingDto request)
         {
-            throw new NotImplementedException();
+            using (_dbContext)
+            {
+                var query = _dbContext.Categories.Where(x => x.Status == Status.Available).AsQueryable();
+                if (!string.IsNullOrEmpty(request.Keyword))
+                {
+                    query = query.Where(x => x.CategoryName.Contains(request.Keyword));
+                }
+                int totalRow = await query.CountAsync();
+
+                var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                    .Take(request.PageSize)
+                    .Select(x => new CategoryReadDto()
+                    {
+                        CategoryName = x.CategoryName,
+                        Description = x.Description,
+                    }).ToListAsync();
+                var pagedResult = new PagedResult<CategoryReadDto>()
+                {
+                    TotalRecords = totalRow,
+                    PageIndex = request.PageIndex,
+                    PageSize = request.PageSize,
+                    Items = data
+                };
+                return pagedResult;
+            }
         }
 
-        public Task<ApiResult<bool>> SoftDelete(int Id)
+        public async Task<ApiResult<bool>> SoftDelete(int Id)
         {
-            throw new NotImplementedException();
+            using (_dbContext)
+            {
+                var data = await _dbContext.Categories.FindAsync(Id);
+                if (data == null)
+                {
+                    return new ApiErrorResult<bool>(ErrorMessage.CategoryNotFound);
+                }
+                data.Status = Status.Disable;
+                _dbContext.Entry(data).State = EntityState.Modified;
+                await _dbContext.SaveChangesAsync();
+                return new ApiSuccessResult<bool>();
+            }
         }
 
-        public Task<ApiResult<bool>> Update(int Id, CategoryUpdateDto request)
+        public async Task<ApiResult<bool>> Update(int Id, CategoryUpdateDto request)
         {
-            throw new NotImplementedException();
+            using (_dbContext)
+            {
+                var data = await _dbContext.Categories.FindAsync(Id);
+                if (data == null)
+                    return new ApiErrorResult<bool>(ErrorMessage.ProductNotFound);
+                if (await _dbContext.Categories.AnyAsync(x => x.CategoryName == request.CategoryName && x.Id != Id))
+                {
+                    return new ApiErrorResult<bool>(ErrorMessage.ProductNameExists);
+                }
+                data.CategoryName = request.CategoryName;
+                data.Description = request.Description;
+                await _dbContext.SaveChangesAsync();
+                return new ApiSuccessResult<bool>();
+            }
         }
     }
 }

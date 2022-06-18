@@ -14,7 +14,7 @@ namespace eCommerce_xUniTest.Controller
         {
             /// Arrange
             var shopService = new Mock<IProductService>();
-            shopService.Setup(x => x.GetListProduct()).ReturnsAsync(ProductFakeData.GetProduct());
+            shopService.Setup(x => x.GetList()).ReturnsAsync(ProductFakeData.GetProduct());
             var controller = new ProductsController(shopService.Object);
             /// Act
             var result = await controller.GetListProduct() as OkObjectResult;

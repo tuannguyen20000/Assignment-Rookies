@@ -1,11 +1,4 @@
-﻿using eCommerce_SharedViewModels.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace eCommerce_xUniTest.DummyData
+﻿namespace eCommerce_xUniTest.DummyData
 {
     public class ProductFakeData
     {

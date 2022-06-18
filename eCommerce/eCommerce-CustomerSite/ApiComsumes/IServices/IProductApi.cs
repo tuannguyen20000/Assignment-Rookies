@@ -1,5 +1,5 @@
 ﻿using eCommerce_SharedViewModels.Common;
-using eCommerce_SharedViewModels.EntitiesDto.ProductDto;
+using eCommerce_SharedViewModels.EntitiesDto.Product;
 
 namespace eCommerce_CustomerSite.ApiComsumes.IServices
 {

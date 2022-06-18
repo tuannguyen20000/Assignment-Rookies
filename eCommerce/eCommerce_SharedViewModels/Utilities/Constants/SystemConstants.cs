@@ -19,8 +19,15 @@ namespace eCommerce_SharedViewModels.Utilities.Constants
         public class ErrorMessage
         {
             public const string LoginFail = "Login fail";
+            //Product
             public const string ProductNotFound = "Product does not exists";
             public const string ProductNameExists = "Product name already exists";
+
+            //Category
+            public const string CategoryNotFound = "Category does not exists";
+            public const string CategoryNameExists = "Category name already exists";
+
+            //User
             public const string WrongPasswordConfirm = "Your password and confirmation password do not match!";
             public const string UserNameExists = "Username already exists!";
             public const string UserCreateFail = "User creation failed! Please check user details and try again.";

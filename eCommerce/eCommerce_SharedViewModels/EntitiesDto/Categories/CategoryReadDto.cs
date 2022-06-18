@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eCommerce_SharedViewModels.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,8 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Categories
 {
     public class CategoryReadDto
     {
+        public string CategoryName { get; set; }
+        public string Description { get; set; }
+        public Status Status { get; set; }
     }
 }

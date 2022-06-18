@@ -56,7 +56,7 @@ namespace eCommerce_Backend.Application.Services
             return new ApiSuccessResult<ProductReadDto>(result);
         }
 
-        public async Task<List<ProductReadDto>> GetListProduct()
+        public async Task<List<ProductReadDto>> GetList()
         {
             using (_dbContext)
             {

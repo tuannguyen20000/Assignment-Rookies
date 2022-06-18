@@ -29,7 +29,7 @@ namespace eCommerce_Backend.Controllers
         [Route("get-list-product")]
         public async Task<IActionResult> GetListProduct()
         {
-            var result = await _productService.GetListProduct();
+            var result = await _productService.GetList();
             return Ok(result);
         }
 
@@ -72,7 +72,7 @@ namespace eCommerce_Backend.Controllers
             return Ok(result);
         }
 
-        [HttpPost("SoftDelete/{Id}")]
+        [HttpPost("soft-delete/{Id}")]
 
         public async Task<IActionResult> SoftDelete(int Id)
         {

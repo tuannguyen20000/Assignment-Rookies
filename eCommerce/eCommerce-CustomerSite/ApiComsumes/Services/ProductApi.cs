@@ -1,10 +1,8 @@
 ﻿using eCommerce_CustomerSite.ApiComsumes.Common;
 using eCommerce_CustomerSite.ApiComsumes.IServices;
 using eCommerce_SharedViewModels.Common;
-using eCommerce_SharedViewModels.EntitiesDto.ProductDto;
-using eCommerce_SharedViewModels.Utilities.Constants;
+using eCommerce_SharedViewModels.EntitiesDto.Product;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
 using System.Text;
 
 namespace eCommerce_CustomerSite.ApiComsumes.Services
