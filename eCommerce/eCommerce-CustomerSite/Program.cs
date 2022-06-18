@@ -1,3 +1,5 @@
+using eCommerce_CustomerSite.Api.IServices;
+using eCommerce_CustomerSite.Api.Services;
 using eCommerce_CustomerSite.ApiComsumes.IServices;
 using eCommerce_CustomerSite.ApiComsumes.Services;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -8,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient<IProductApi, ProductApi>();
+builder.Services.AddTransient<IUserApi, UserApi>();
 
 var app = builder.Build();
 
