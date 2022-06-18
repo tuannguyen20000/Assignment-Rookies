@@ -1,14 +1,19 @@
-﻿namespace eCommerce_SharedViewModels.EntitiesDto.ProductDto
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace eCommerce_SharedViewModels.EntitiesDto.Product
 {
-    public class ProductsCreateDto
+    public class ProductUpdateDto
     {
-        public int CategoryId { get; set; }
+        public int CategoiesId { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }
         public string Price { get; set; }
         public string ImagessURL { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
-
     }
 }

@@ -5,7 +5,7 @@ namespace eCommerce_CustomerSite.ApiComsumes.IServices
 {
     public interface IProductApi
     {
-        Task<ApiResult<bool>> Create(ProductsCreateDto request);
+        Task<ApiResult<bool>> Create(ProductCreateDto request);
         Task<PagedResult<ProductReadDto>> GetPagingProduct(ProductPagingDto request);
     }
 }

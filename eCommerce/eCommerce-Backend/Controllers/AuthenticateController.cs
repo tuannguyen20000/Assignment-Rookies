@@ -1,14 +1,8 @@
-﻿using eCommerce_Backend.Data.EF;
-using eCommerce_SharedViewModels.Common;
+﻿using eCommerce_Backend.Application.IServices;
 using eCommerce_SharedViewModels.EntitiesDto.Login;
 using eCommerce_SharedViewModels.EntitiesDto.Register;
-using eCommerce_SharedViewModels.Utilities.Constants;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace eCommerce_Backend.Controllers
 {
@@ -16,129 +10,50 @@ namespace eCommerce_Backend.Controllers
     [ApiController]
     public class AuthenticateController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IConfiguration _configuration;
-
+        private readonly IUserService _userService;
+     
         public AuthenticateController(
-            UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            IConfiguration configuration)
+            IUserService userService)
         {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _configuration = configuration;
+            _userService = userService;
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto model)
+        public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
-            var user = await _userManager.FindByNameAsync(model.Username);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+            var result = await _userService.Authenticate(request);
+
+            if (string.IsNullOrEmpty(result.ResultObj))
             {
-                var userRoles = await _userManager.GetRolesAsync(user);
-
-                var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-                }
-
-                var token = GetToken(authClaims);
-
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
+                return BadRequest(result);
             }
-            return Unauthorized();
+            return Ok(result);
         }
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto model)
+        public async Task<IActionResult> Register([FromBody] RegisterDto request)
         {
-            if(model.Password != model.ConfirmPassword)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Your password and confirmation password do not match!" });
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Username already exists!" });
-
-            IdentityUser user = new()
+            var result = await _userService.Register(request);
+            if (!result.IsSuccessed)
             {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-            else
-            {
-                if (await _roleManager.RoleExistsAsync(UserRoles.User))
-                {
-                    await _userManager.AddToRoleAsync(user, UserRoles.User);
-                }
-                return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+                return BadRequest(result);
             }
+            return Ok(result);
         }
 
         [HttpPost]
         [Route("register-admin")]
-        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDto model)
+        public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDto request)
         {
-            if (model.Password != model.ConfirmPassword)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Your password and confirmation password do not match!" });
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Username already exists!" });
-
-            IdentityUser user = new()
+            var result = await _userService.Register(request);
+            if (!result.IsSuccessed)
             {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-
-/*            if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-            if (!await _roleManager.RoleExistsAsync(UserRoles.User))
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));*/
-
-            else
-            {
-                if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
-                {
-                    await _userManager.AddToRoleAsync(user, UserRoles.Admin);
-                }
-                return Ok(new Response { Status = "Success", Message = "User created successfully!" });
-            } 
-        }
-
-        private JwtSecurityToken GetToken(List<Claim> authClaims)
-        {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT:Secret").Value));
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-
-            return token;
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using eCommerce_Backend.Application.IServices;
-using eCommerce_SharedViewModels.EntitiesDto.CategoriesDto;
-using Microsoft.AspNetCore.Http;
+using eCommerce_SharedViewModels.EntitiesDto.Categories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce_Backend.Controllers
@@ -17,7 +16,7 @@ namespace eCommerce_Backend.Controllers
 
         [HttpPost]
         [Route("create-category")]
-        public async Task<IActionResult> Create([FromForm] CategoriesCreateDto request)
+        public async Task<IActionResult> Create([FromForm] CategoryCreateDto request)
         {
             var result = await _categoryService.Create(request);
             if (!result.IsSuccessed)

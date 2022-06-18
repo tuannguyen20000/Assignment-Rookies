@@ -35,9 +35,9 @@ namespace eCommerce_xUniTest.DummyData
              };
         }
 
-        public static ProductsCreateDto itemProduct()
+        public static ProductCreateDto itemProduct()
         {
-            return new ProductsCreateDto()
+            return new ProductCreateDto()
             {
                 CategoryId = 1,               
                 CreatedDate = DateTime.Now,

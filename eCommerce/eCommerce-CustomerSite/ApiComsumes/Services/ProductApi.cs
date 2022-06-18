@@ -26,7 +26,7 @@ namespace eCommerce_CustomerSite.ApiComsumes.Services
             _httpClientFactory = httpClientFactory;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<ApiResult<bool>> Create(ProductsCreateDto request)
+        public async Task<ApiResult<bool>> Create(ProductCreateDto request)
         {
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");

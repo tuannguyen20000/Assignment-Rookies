@@ -1,12 +1,15 @@
-﻿using eCommerce_SharedViewModels.EntitiesDto.ProductDto;
+﻿using eCommerce_SharedViewModels.EntitiesDto.Product;
 using eCommerce_SharedViewModels.Common;
 
 namespace eCommerce_Backend.Application.IServices
 {
     public interface IProductService
     {
-        Task<ApiResult<bool>> Create(ProductsCreateDto request);
-        Task<PagedResult<ProductReadDto>> GetPagingProduct (ProductPagingDto request);
+        Task<PagedResult<ProductReadDto>> GetPaging (ProductPagingDto request);
         Task<List<ProductReadDto>> GetListProduct();
+        Task<ApiResult<bool>> Create(ProductCreateDto request);
+        Task<ApiResult<bool>> Update(int Id,ProductUpdateDto request);
+        Task<ApiResult<ProductReadDto>> GetById(int Id);
+        Task<ApiResult<bool>> SoftDelete(int Id);
     }
 }

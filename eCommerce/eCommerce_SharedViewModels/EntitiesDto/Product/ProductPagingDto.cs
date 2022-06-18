@@ -1,6 +1,6 @@
 ﻿using eCommerce_SharedViewModels.Common;
 
-namespace eCommerce_SharedViewModels.EntitiesDto.ProductDto
+namespace eCommerce_SharedViewModels.EntitiesDto.Product
 {
     public class ProductPagingDto : PagingRequestBase
     {

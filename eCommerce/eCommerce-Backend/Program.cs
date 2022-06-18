@@ -71,6 +71,7 @@ builder.Services.AddAuthentication(options => {
 
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 var app = builder.Build();
 
@@ -82,9 +83,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseRouting();
+app.UseStaticFiles();
 
+app.UseCors(configurePolicy =>
+{
+    configurePolicy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+});
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
