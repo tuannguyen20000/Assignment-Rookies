@@ -1,8 +1,5 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-
-
-<!-- molla/index-2.html  22 Nov 2019 09:55:32 GMT -->
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,8 +24,13 @@
     <link rel="stylesheet" href="~/assets/Home/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/assets/Home/assets/css/plugins/owl-carousel/owl.carousel.css">
     <link rel="stylesheet" href="~/assets/Home/assets/css/plugins/magnific-popup/magnific-popup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Main CSS File -->
     <link rel="stylesheet" href="~/assets/Home/assets/css/style.css">
+     <!-- Plugins JS File -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </head>
 
 <body>
@@ -67,8 +69,21 @@
                                     <li><a href="tel:#"><i class="icon-phone"></i>Call: +0123 456 789</a></li>
                                     <li><a href="wishlist.html"><i class="icon-heart-o"></i>My Wishlist <span>(3)</span></a></li>
                                     <li><a href="about.html">About Us</a></li>
-                                    <li><a href="contact.html">Contact Us</a></li>
-                                    <li><a href="#signin-modal" data-toggle="modal"><i class="icon-user"></i>Login</a></li>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <li><a>@User.Identity.Name</a></li>
+                                        <li>
+                                            <form id="logout-user" asp-controller="Login" asp-action="Logout" method="post">
+                                                <a href="javascript:$('#logout-user').submit()"><i class="fa fa-sign-out"></i>Logout</a>
+                                            </form>                                          
+                                        </li>
+
+                                    }
+                                    else
+                                    {
+                                        <li><a href="#signin-modal" data-toggle="modal"><i class="icon-user"></i>Login</a></li>
+                                        <li><a href="#signin-modal" data-toggle="modal"><i class="fa fa-pencil-square-o"></i>Register</a></li>
+                                    }
                                 </ul>
                             </li>
                         </ul><!-- End .top-menu -->
@@ -852,13 +867,16 @@
                                 <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
                                     <form action="#">
                                         <div class="form-group">
-                                            <label for="register-email">Your email address *</label>
-                                            <input type="email" class="form-control" id="register-email" name="register-email" required>
+                                            <label>User name *</label>
+                                            <input type="email" class="form-control" required>
                                         </div><!-- End .form-group -->
-
                                         <div class="form-group">
-                                            <label for="register-password">Password *</label>
-                                            <input type="password" class="form-control" id="register-password" name="register-password" required>
+                                            <label>Password *</label>
+                                            <input type="password" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Confirm Password *</label>
+                                            <input type="password" class="form-control" required>
                                         </div><!-- End .form-group -->
 
                                         <div class="form-footer">
@@ -873,23 +891,6 @@
                                             </div><!-- End .custom-checkbox -->
                                         </div><!-- End .form-footer -->
                                     </form>
-                                    <div class="form-choice">
-                                        <p class="text-center">or sign in with</p>
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login btn-g">
-                                                    <i class="icon-google"></i>
-                                                    Login With Google
-                                                </a>
-                                            </div><!-- End .col-6 -->
-                                            <div class="col-sm-6">
-                                                <a href="#" class="btn btn-login  btn-f">
-                                                    <i class="icon-facebook-f"></i>
-                                                    Login With Facebook
-                                                </a>
-                                            </div><!-- End .col-6 -->
-                                        </div><!-- End .row -->
-                                    </div><!-- End .form-choice -->
                                 </div><!-- .End .tab-pane -->
                             </div><!-- End .tab-content -->
                         </div><!-- End .form-tab -->
@@ -898,36 +899,6 @@
             </div><!-- End .modal-content -->
         </div><!-- End .modal-dialog -->
     </div><!-- End .modal -->
-    <div class="container newsletter-popup-container mfp-hide" id="newsletter-popup-form">
-        <div class="row justify-content-center">
-            <div class="col-10">
-                <div class="row no-gutters bg-white newsletter-popup-content">
-                    <div class="col-xl-3-5col col-lg-7 banner-content-wrap">
-                        <div class="banner-content text-center">
-                            <img src="~/assets/Home/assets/images/popup/newsletter/logo.png" class="logo" alt="logo" width="60" height="15">
-                            <h2 class="banner-title">get <span>25<light>%</light></span> off</h2>
-                            <p>Subscribe to the Molla eCommerce newsletter to receive timely updates from your favorite products.</p>
-                            <form action="#">
-                                <div class="input-group input-group-round">
-                                    <input type="email" class="form-control form-control-white" placeholder="Your Email Address" aria-label="Email Adress" required>
-                                    <div class="input-group-append">
-                                        <button class="btn" type="submit"><span>go</span></button>
-                                    </div><!-- .End .input-group-append -->
-                                </div><!-- .End .input-group -->
-                            </form>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="register-policy-2" required>
-                                <label class="custom-control-label" for="register-policy-2">Do not show this popup again</label>
-                            </div><!-- End .custom-checkbox -->
-                        </div>
-                    </div>
-                    <div class="col-xl-2-5col col-lg-5 ">
-                        <img src="~/assets/Home/assets/images/popup/newsletter/img-1.jpg" class="newsletter-img" alt="newsletter">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- Plugins JS File -->
     <script src="~/assets/Home/assets/js/jquery.min.js"></script>
     <script src="~/assets/Home/assets/js/bootstrap.bundle.min.js"></script>
@@ -937,7 +908,7 @@
     <script src="~/assets/Home/assets/js/owl.carousel.min.js"></script>
     <script src="~/assets/Home/assets/js/jquery.magnific-popup.min.js"></script>
     <!-- Main JS File -->
-    <script src="~/assets/Home/assets/js/main.js"></script>
+    <script src="~/assets/Home/assets/js/main.js"></script>  
 </body>
 
 

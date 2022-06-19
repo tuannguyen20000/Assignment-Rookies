@@ -1,5 +1,4 @@
 ﻿using eCommerce_CustomerSite.Api.Common;
-using eCommerce_CustomerSite.ApiComsumes.Common;
 using eCommerce_CustomerSite.ApiComsumes.IServices;
 using eCommerce_SharedViewModels.Common;
 using eCommerce_SharedViewModels.EntitiesDto.Product;

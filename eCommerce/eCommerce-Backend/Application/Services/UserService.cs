@@ -48,7 +48,7 @@ namespace eCommerce_Backend.Application.Services
 
                 return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
             }
-            return new ApiErrorResult<string>(ErrorMessage.LoginFail); ;
+            return new ApiErrorResult<string>(ErrorMessage.LoginFail);
         }
 
         public async Task<ApiResult<bool>> Register(RegisterDto request)

@@ -784,7 +784,7 @@ $(document).ready(function () {
     $('#btnLogin').click(() => {
         let userName = document.getElementById('login-username').value;
         let password = document.getElementById('login-password').value;
-        let urlAction = "Login/ModalLogin";
+        let urlAction = "../Login/ModalLogin";
         let request = { Username: userName, Password: password };
         $.ajax({
             url: urlAction,
@@ -793,13 +793,47 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.success) {
                     window.location.replace(response.newUrl);
+                } else {
+                    toastr.error(response.responseText);
                 } 
             },
             error: (response) => {
-                console.log(response.responseText);
+                console.log("Ajax fail");
             }
         })
     });
+
+    $(function () {
+        if ($('#success').val()) {
+            displayMessage($('#success').val(), 'success');
+        }
+        if ($('#info').val()) {
+            displayMessage($('#info').val(), 'info');
+        }
+        if ($('#warning').val()) {
+            displayMessage($('#warning').val(), 'warning');
+        }
+        if ($('#error').val()) {
+            displayMessage($('#error').val(), 'error');
+        }
+    });
+    var displayMessage = function (message, msgType) {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onClick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "8000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+        toastr[msgType](message);
+    };
 });
 
 

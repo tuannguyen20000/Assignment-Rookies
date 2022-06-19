@@ -1,5 +1,6 @@
 ﻿using eCommerce_CustomerSite.Extensions;
 using eCommerce_SharedViewModels.EntitiesDto.Login;
+using Newtonsoft.Json;
 using System.Net.Http.Headers;
 
 namespace eCommerce_CustomerSite.Api.Common
@@ -44,9 +45,13 @@ namespace eCommerce_CustomerSite.Api.Common
             }
 
             using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-            response.EnsureSuccessStatusCode();
-            var createdObject = await response.Content.ReadAs<T>();
-            return createdObject;
+            if (response.IsSuccessStatusCode)
+            {
+                var createdObject = await response.Content.ReadAs<T>();
+                return createdObject;
+            }
+            var body = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(body);
         }
 
         public async Task<T> PutAsync<T>(string url, object data, string accessToken = null)
