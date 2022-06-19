@@ -15,7 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\fonts\Home\fonts\" />
+    <Folder Include="wwwroot\assets\Home\popup\assets\images\demos\demo-6\products\" />
+    <Folder Include="wwwroot\assets\Home\popup\assets\images\popup\quickView\" />
+    <Folder Include="wwwroot\assets\Home\popup\popup\" />
+    <Folder Include="wwwroot\fonts\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

@@ -8,28 +8,18 @@ namespace eCommerce_CustomerSite.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IUserApi _userApi;
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger, IUserApi userApi)
+        public HomeController(ILogger<HomeController> logger)
         {
-            _userApi = userApi;
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index(LoginDto request)
+
+        [HttpGet]
+        public IActionResult Index()
         {
-            request.Username = "tuanAdmin";
-            request.Password = "tuanAdmin@123";
-            var result = await _userApi.Authenticate(request);
-            if (result.ResultObj == null)
-            {
-                ModelState.AddModelError("", result.Message);
-                return View();
-            }
             return View();
         }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
