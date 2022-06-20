@@ -8,7 +8,7 @@ namespace eCommerce_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = UserRoles.Admin)]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;

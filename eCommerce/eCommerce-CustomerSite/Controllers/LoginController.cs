@@ -1,6 +1,7 @@
 ﻿using eCommerce_CustomerSite.Api.IServices;
 using eCommerce_SharedViewModels.EntitiesDto.Login;
 using eCommerce_SharedViewModels.EntitiesDto.Register;
+using eCommerce_SharedViewModels.Utilities.Constants;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,13 @@ namespace eCommerce_CustomerSite.Controllers
 {    public class LoginController : Controller
     {
         private readonly IUserApi _userApi;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
-        public LoginController(IUserApi userApi, IConfiguration configuration)
+        public LoginController(IUserApi userApi, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
             _userApi = userApi;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -43,7 +46,7 @@ namespace eCommerce_CustomerSite.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = false
             };
-            HttpContext.Session.SetString("JWT", result.ResultObj);
+            _httpContextAccessor.HttpContext.Session.SetString(SystemConstants.AppSettings.Token, result.ResultObj);
             await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
@@ -68,7 +71,7 @@ namespace eCommerce_CustomerSite.Controllers
                     ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                     IsPersistent = false
                 };
-                HttpContext.Session.SetString("JWT", result.ResultObj);
+                _httpContextAccessor.HttpContext.Session.SetString(SystemConstants.AppSettings.Token, result.ResultObj);
                 await HttpContext.SignInAsync(
                             CookieAuthenticationDefaults.AuthenticationScheme,
                             userPrincipal,
@@ -101,7 +104,7 @@ namespace eCommerce_CustomerSite.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Session.Remove("Token");
+            HttpContext.Session.Remove(SystemConstants.AppSettings.Token);
             return RedirectToAction("Index", "Home");
         }
 

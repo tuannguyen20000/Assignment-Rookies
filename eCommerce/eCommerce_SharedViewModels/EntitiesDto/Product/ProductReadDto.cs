@@ -5,6 +5,8 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Product
     public class ProductReadDto
     {
         public string ProductName { get; set; }
+        public int CategoiesId { get; set; }
+        public string CategoiesName { get; set; }
         public string Description { get; set; }
         public string Price { get; set; }
         public DateTime CreatedDate { get; set; }

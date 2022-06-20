@@ -33,6 +33,7 @@ namespace eCommerce_Backend.Application.Services
                 Price = request.Price,
                 CreatedDate = DateTime.Now.Date,
                 UpdatedDate = DateTime.Now.Date,
+                Status = Status.Available,
             };
             // Save image
             if (request.ThumbnailImage != null)
@@ -61,6 +62,7 @@ namespace eCommerce_Backend.Application.Services
         public async Task<ApiResult<ProductReadDto>> GetById(int Id)
         {
             var data = await _dbContext.Products.FindAsync(Id);
+            var image = await _dbContext.ProductImages.Where(x => x.ProductsId == Id && x.IsDefault == true).FirstOrDefaultAsync();
             if (data == null)
                 return new ApiErrorResult<ProductReadDto>(ErrorMessage.ProductNotFound);
             var result = new ProductReadDto()
@@ -70,7 +72,8 @@ namespace eCommerce_Backend.Application.Services
                 UpdatedDate=DateTime.Now.Date,
                 Description = data.Description,
                 Price=data.Price,
-                Status =data.Status
+                Status =data.Status,
+                ThumbnailImage = image != null ? image.ImagePath : "no-image.jpg"
             };
             return new ApiSuccessResult<ProductReadDto>(result);
         }
@@ -95,10 +98,14 @@ namespace eCommerce_Backend.Application.Services
         {
             using (_dbContext)
             {
-                var query = _dbContext.Products.Where(x => x.Status == Status.Available).AsQueryable();
+                var query = from p in _dbContext.Products
+                            join pi in _dbContext.ProductImages on p.Id equals pi.ProductsId into ppi
+                            from pi in ppi.DefaultIfEmpty()
+                            where pi == null || pi.IsDefault == true && p.Status == Status.Available
+                            select new { p, pi };
                 if (!string.IsNullOrEmpty(request.Keyword))
                 {
-                    query = query.Where(x => x.ProductName.Contains(request.Keyword));
+                    query = query.Where(x => x.p.ProductName.Contains(request.Keyword));
                 }
                 int totalRow = await query.CountAsync();
 
@@ -106,11 +113,12 @@ namespace eCommerce_Backend.Application.Services
                     .Take(request.PageSize)
                     .Select(x => new ProductReadDto()
                     {
-                        ProductName = x.ProductName,
-                        CreatedDate = x.CreatedDate,
-                        Description = x.Description,
-                        Price = x.Price,
-                        UpdatedDate = x.UpdatedDate
+                        ProductName = x.p.ProductName,
+                        CreatedDate = x.p.CreatedDate,
+                        Description = x.p.Description,
+                        Price = x.p.Price,
+                        UpdatedDate = x.p.UpdatedDate,
+                        ThumbnailImage = x.pi.ImagePath
                     }).ToListAsync();
                 var pagedResult = new PagedResult<ProductReadDto>()
                 {

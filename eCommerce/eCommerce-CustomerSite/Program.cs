@@ -3,7 +3,6 @@ using eCommerce_CustomerSite.Api.Services;
 using eCommerce_CustomerSite.ApiComsumes.IServices;
 using eCommerce_CustomerSite.ApiComsumes.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -19,11 +18,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddSession(option =>
 {
     option.IdleTimeout = TimeSpan.FromMinutes(30);
+    option.Cookie.HttpOnly = true;
+    option.Cookie.IsEssential = true;
 });
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddHttpClient<IProductApi, ProductApi>();
-builder.Services.AddTransient<IUserApi, UserApi>();
+builder.Services.AddHttpClient<IUserApi, UserApi>();
 
 var app = builder.Build();
 

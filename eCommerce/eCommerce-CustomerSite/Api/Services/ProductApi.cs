@@ -2,6 +2,7 @@
 using eCommerce_CustomerSite.ApiComsumes.IServices;
 using eCommerce_SharedViewModels.Common;
 using eCommerce_SharedViewModels.EntitiesDto.Product;
+using eCommerce_SharedViewModels.Utilities.Constants;
 using Newtonsoft.Json;
 using System.Text;
 
@@ -9,11 +10,14 @@ namespace eCommerce_CustomerSite.ApiComsumes.Services
 {
     public class ProductApi : HttpService,IProductApi
     {
-        public ProductApi(HttpClient httpClient) : base(httpClient){}
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public ProductApi(HttpClient httpClient, IHttpContextAccessor httpContextAccessor) : base(httpClient){
+            _httpContextAccessor = httpContextAccessor;
+        }
 
         public async Task<ApiResult<bool>> Create(ProductCreateDto request)
         {
-            var data = await PostAsync<ApiResult<bool>>($"/api/Products/", request);
+            var data = await PostAsync<ApiResult<bool>>($"https://localhost:7211/api/Products/create-product", request);
             if (!data.IsSuccessed)
             {
                 return new ApiErrorResult<bool>(data.Message);
@@ -22,9 +26,10 @@ namespace eCommerce_CustomerSite.ApiComsumes.Services
         }
 
         public async Task<PagedResult<ProductReadDto>> GetPagingProduct(ProductPagingDto request)
-        {
-            var data = await GetAsync<PagedResult<ProductReadDto>>($"/api/Products/GetPagingProduct?&" +
-                $"pageIndex={request.PageIndex}&pageSize={request.PageSize}");
+        {      
+            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var data = await GetAsync<PagedResult<ProductReadDto>>($"https://localhost:7211/api/Products/get-paging-product?&" +
+                $"pageIndex={request.PageIndex}&pageSize={request.PageSize}", session);
             return data;
         }
     }

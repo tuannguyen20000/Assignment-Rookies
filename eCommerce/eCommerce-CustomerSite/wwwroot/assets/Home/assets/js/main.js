@@ -805,6 +805,10 @@ $(document).ready(function () {
             },
             error: (response) => {
                 console.log("Ajax fail");
+                toastr.error("Server error");
+                setTimeout(function () {
+                    $("#overlay").fadeOut(300);
+                }, 500);
             }
         }).done(function () {
             setTimeout(function () {
