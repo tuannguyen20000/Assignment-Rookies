@@ -784,6 +784,7 @@ $(document).ready(function () {
     $('#btnLogin').click(() => {
         let userName = document.getElementById('login-username').value;
         let password = document.getElementById('login-password').value;
+
         let urlAction = "../Login/ModalLogin";
         let request = { Username: userName, Password: password };
         $.ajax({
@@ -803,6 +804,38 @@ $(document).ready(function () {
         })
     });
 
+    // Register
+    $('#btnRegister').click(() => {
+        let userName = document.getElementById('register-username').value;
+        let password = document.getElementById('register-password').value;
+        let confirmPassword = document.getElementById('register-confirmpassword').value;
+        let email = document.getElementById('register-email').value;
+
+        let urlAction = "../Login/ModalRegister";
+        let request = { Username: userName, Password: password, Email: email, ConfirmPassword: confirmPassword };
+        $.ajax({
+            url: urlAction,
+            method: "POST",
+            data: request,
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.responseText).then(
+                        window.setTimeout(() => {
+                            window.location.replace(response.newUrl);
+                        }, 2000)
+                    );
+                } else {
+                    toastr.error(response.responseText);
+                }
+            },
+            error: (response) => {
+                console.log("Ajax fail");
+            }
+        })
+    });
+
+
+    // Toastr
     $(function () {
         if ($('#success').val()) {
             displayMessage($('#success').val(), 'success');

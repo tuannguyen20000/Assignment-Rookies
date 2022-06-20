@@ -7,7 +7,7 @@ namespace eCommerce_Backend.Application.IServices
     public interface IUserService
     {
         Task<ApiResult<string>> Authenticate(LoginDto request);
-        Task<ApiResult<bool>> Register(RegisterDto request);
-        Task<ApiResult<bool>> RegisterAdmin(RegisterDto request);
+        Task<ApiResult<string>> Register(RegisterDto request);
+        Task<ApiResult<string>> RegisterAdmin(RegisterDto request);
     }
 }

@@ -1,5 +1,4 @@
 ﻿@model eCommerce_SharedViewModels.EntitiesDto.Login.LoginDto
-
 <main class="main">
 	<nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
 		<div class="container">
@@ -28,15 +27,15 @@
 							<!--Login form-->
 							<form action="Login/Index" method="post">
 							    <div class="form-group">
-							    	<label for="singin-email-2">Username or email address *</label>
+							    	<label>Username or email address *</label>
 							    	<input asp-for="Username" type="text" class="form-control" required>
 							    </div><!-- End .form-group -->
 
 							    <div class="form-group">
-							    	<label for="singin-password-2">Password *</label>
+							    	<label>Password *</label>
 							    	<input asp-for="Password" type="password" class="form-control"required>
 							    </div><!-- End .form-group -->
-								<input type="hidden" id="error" value="@TempData["warning"]" />
+								<input type="hidden" id="error" value="@TempData["error"]" />
 							    <div class="form-footer">
 							    	<button type="submit" class="btn btn-outline-primary-2">
 			                			<span>LOG IN</span>
@@ -70,47 +69,7 @@
 							</div><!-- End .form-choice -->
 						</div><!-- .End .tab-pane -->
 						<div class="tab-pane fade" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
-							<!--Register form-->
-							<form action="#">
-							    <div class="form-group">
-							    	<label for="register-email-2">Your email address *</label>
-							    	<input type="email" class="form-control" id="register-email-2" name="register-email" required>
-							    </div><!-- End .form-group -->
-
-							    <div class="form-group">
-							    	<label for="register-password-2">Password *</label>
-							    	<input type="password" class="form-control" id="register-password-2" name="register-password" required>
-							    </div><!-- End .form-group -->
-
-							    <div class="form-footer">
-							    	<button type="submit" class="btn btn-outline-primary-2">
-			                			<span>SIGN UP</span>
-			            				<i class="icon-long-arrow-right"></i>
-			                		</button>
-
-			                		<div class="custom-control custom-checkbox">
-										<input type="checkbox" class="custom-control-input" id="register-policy-2" required>
-										<label class="custom-control-label" for="register-policy-2">I agree to the <a href="#">privacy policy</a> *</label>
-									</div><!-- End .custom-checkbox -->
-							    </div><!-- End .form-footer -->
-							</form>
-							<div class="form-choice">
-								<p class="text-center">or sign in with</p>
-								<div class="row">
-								    <div class="col-sm-6">
-								    	<a href="#" class="btn btn-login btn-g">
-								    		<i class="icon-google"></i>
-								    		Login With Google
-								    	</a>
-								    </div><!-- End .col-6 -->
-								    <div class="col-sm-6">
-								    	<a href="#" class="btn btn-login  btn-f">
-								    		<i class="icon-facebook-f"></i>
-								    		Login With Facebook
-								    	</a>
-								    </div><!-- End .col-6 -->
-								</div><!-- End .row -->
-							</div><!-- End .form-choice -->
+							@await Html.PartialAsync("~/Views/Login/Register.cshtml");
 						</div><!-- .End .tab-pane -->
 					</div><!-- End .tab-content -->
 				</div><!-- End .form-tab -->

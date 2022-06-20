@@ -51,13 +51,13 @@ namespace eCommerce_Backend.Application.Services
             return new ApiErrorResult<string>(ErrorMessage.LoginFail);
         }
 
-        public async Task<ApiResult<bool>> Register(RegisterDto request)
+        public async Task<ApiResult<string>> Register(RegisterDto request)
         {
             if (request.Password != request.ConfirmPassword)
-                return new ApiErrorResult<bool>(ErrorMessage.WrongPasswordConfirm);
+                return new ApiErrorResult<string>(ErrorMessage.WrongPasswordConfirm);
             var userExists = await _userManager.FindByNameAsync(request.Username);
             if (userExists != null)
-                return new ApiErrorResult<bool>(ErrorMessage.UserNameExists);
+                return new ApiErrorResult<string>(ErrorMessage.UserNameExists);
 
             IdentityUser user = new()
             {
@@ -68,24 +68,24 @@ namespace eCommerce_Backend.Application.Services
 
             var result = await _userManager.CreateAsync(user, request.Password);
             if (!result.Succeeded)
-                return new ApiErrorResult<bool>(ErrorMessage.UserCreateFail);
+                return new ApiErrorResult<string>(ErrorMessage.UserCreateFail);
             else
             {
                 if (await _roleManager.RoleExistsAsync(UserRoles.User))
                 {
                     await _userManager.AddToRoleAsync(user, UserRoles.User);
                 }
-                return new ApiSuccessResult<bool>();
+                return new ApiSuccessResult<string>(SuccessMessage.UserCreated);
             }
         }
 
-        public async Task<ApiResult<bool>> RegisterAdmin(RegisterDto request)
+        public async Task<ApiResult<string>> RegisterAdmin(RegisterDto request)
         {
             if (request.Password != request.ConfirmPassword)
-                return new ApiErrorResult<bool>(ErrorMessage.WrongPasswordConfirm);
+                return new ApiErrorResult<string>(ErrorMessage.WrongPasswordConfirm);
             var userExists = await _userManager.FindByNameAsync(request.Username);
             if (userExists != null)
-                return new ApiErrorResult<bool>(ErrorMessage.UserNameExists);
+                return new ApiErrorResult<string>(ErrorMessage.UserNameExists);
 
             IdentityUser user = new()
             {
@@ -96,14 +96,14 @@ namespace eCommerce_Backend.Application.Services
 
             var result = await _userManager.CreateAsync(user, request.Password);
             if (!result.Succeeded)
-                return new ApiErrorResult<bool>(ErrorMessage.UserCreateFail);
+                return new ApiErrorResult<string>(ErrorMessage.UserCreateFail);
             else
             {
                 if (await _roleManager.RoleExistsAsync(UserRoles.User))
                 {
                     await _userManager.AddToRoleAsync(user, UserRoles.Admin);
                 }
-                return new ApiSuccessResult<bool>();
+                return new ApiSuccessResult<string>(SuccessMessage.UserCreated);
             }
         }
 

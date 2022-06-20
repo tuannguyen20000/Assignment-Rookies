@@ -1,5 +1,6 @@
 ﻿using eCommerce_CustomerSite.Api.IServices;
 using eCommerce_SharedViewModels.EntitiesDto.Login;
+using eCommerce_SharedViewModels.EntitiesDto.Register;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -102,6 +103,32 @@ namespace eCommerce_CustomerSite.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Remove("Token");
             return RedirectToAction("Index", "Home");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterDto request)
+        {
+            var result = await _userApi.Register(request);
+            if (!result.IsSuccessed)
+            {
+                TempData["error"] = result.Message;
+                return RedirectToAction("Index", "Login");
+            }
+            TempData["success"] = result.ResultObj;
+            return RedirectToAction("Index", "Login");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ModalRegister(RegisterDto request)
+        {
+            var result = await _userApi.Register(request); // Token response
+            if (!result.IsSuccessed)
+            {
+                return Json(new { success = false, responseText = result.Message });
+            }
+            return Json(new { success = true, responseText = result.ResultObj, newUrl = Url.Action("Index", "Login") });
         }
     }
 }

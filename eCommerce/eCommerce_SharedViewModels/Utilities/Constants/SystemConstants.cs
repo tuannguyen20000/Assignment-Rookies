@@ -35,7 +35,7 @@ namespace eCommerce_SharedViewModels.Utilities.Constants
 
         public class SuccessMessage
         {
-            public const string UserCreated = "User created successfully!";
+            public const string UserCreated = "User created successfully! Let login to your account";
         }
 
         public class Status_code
