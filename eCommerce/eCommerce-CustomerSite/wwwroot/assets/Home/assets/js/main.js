@@ -780,6 +780,11 @@ $(document).ready(function () {
         }, 10000)
     }
 
+    $(document).ajaxSend(() => {
+        $('#signin-modal').modal('hide');
+        $("#overlay").fadeIn(300);
+    });
+
     // Login
     $('#btnLogin').click(() => {
         let userName = document.getElementById('login-username').value;
@@ -796,12 +801,16 @@ $(document).ready(function () {
                     window.location.replace(response.newUrl);
                 } else {
                     toastr.error(response.responseText);
-                } 
+                }
             },
             error: (response) => {
                 console.log("Ajax fail");
             }
-        })
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
     });
 
     // Register
@@ -813,6 +822,7 @@ $(document).ready(function () {
 
         let urlAction = "../Login/ModalRegister";
         let request = { Username: userName, Password: password, Email: email, ConfirmPassword: confirmPassword };
+
         $.ajax({
             url: urlAction,
             method: "POST",
@@ -831,7 +841,11 @@ $(document).ready(function () {
             error: (response) => {
                 console.log("Ajax fail");
             }
-        })
+        }).done(function () {
+            setTimeout(function () {
+                $("#overlay").fadeOut(300);
+            }, 500);
+        });
     });
 
 

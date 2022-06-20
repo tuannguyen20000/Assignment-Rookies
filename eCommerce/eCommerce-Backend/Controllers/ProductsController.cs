@@ -36,6 +36,7 @@ namespace eCommerce_Backend.Controllers
 
         [HttpPost]
         [Route("create-product")]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] ProductCreateDto request)
         {
             var result = await _productService.Create(request);
@@ -58,6 +59,7 @@ namespace eCommerce_Backend.Controllers
         }
 
         [HttpPut("update-product/{Id}")]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update(int Id, [FromForm] ProductUpdateDto request)
         {
             if (!ModelState.IsValid)

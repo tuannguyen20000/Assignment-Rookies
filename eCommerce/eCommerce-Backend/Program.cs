@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using eCommerce_Backend.Application.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -72,6 +73,7 @@ builder.Services.AddAuthentication(options => {
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<IFileStorage, FileStorage>();
 
 var app = builder.Build();
 

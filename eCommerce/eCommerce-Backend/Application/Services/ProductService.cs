@@ -6,15 +6,21 @@ using eCommerce_SharedViewModels.Common;
 using Microsoft.EntityFrameworkCore;
 using eCommerce_SharedViewModels.Enums;
 using static eCommerce_SharedViewModels.Utilities.Constants.SystemConstants;
+using eCommerce_Backend.Application.Common;
+using System.Net.Http.Headers;
+using eCommerce_SharedViewModels.Utilities.Constants;
 
 namespace eCommerce_Backend.Application.Services
 {
     public class ProductService : IProductService
     {
         private readonly eCommerceDbContext _dbContext;
-        public ProductService(eCommerceDbContext dbContext)
+        private readonly IFileStorage _fileStorage;
+        public ProductService(eCommerceDbContext dbContext,
+            IFileStorage fileStorage)
         {
             _dbContext = dbContext;
+            _fileStorage = fileStorage;
         }
 
         public async Task<ApiResult<bool>> Create(ProductCreateDto request)
@@ -24,11 +30,25 @@ namespace eCommerce_Backend.Application.Services
                 ProductName = request.ProductName,
                 CategoiesId = request.CategoryId,
                 Description = request.Description,
-                ImagessURL = request.ImagessURL,
                 Price = request.Price,
                 CreatedDate = DateTime.Now.Date,
                 UpdatedDate = DateTime.Now.Date,
             };
+            // Save image
+            if (request.ThumbnailImage != null)
+            {
+                Product.ProductImages = new List<ProductImages>()
+                {
+                    new ProductImages()
+                    {
+                        Caption = "Thumbnail image",
+                        DateCreated = DateTime.Now,
+                        FileSize = request.ThumbnailImage.Length,
+                        ImagePath = await SaveFile(request.ThumbnailImage),
+                        IsDefault = true,
+                    }
+                };
+            }
 
             using (_dbContext)
             {
@@ -49,7 +69,6 @@ namespace eCommerce_Backend.Application.Services
                 CreatedDate=DateTime.Now.Date,
                 UpdatedDate=DateTime.Now.Date,
                 Description = data.Description,
-                ImagessURL  =data.ImagessURL,
                 Price=data.Price,
                 Status =data.Status
             };
@@ -64,7 +83,6 @@ namespace eCommerce_Backend.Application.Services
                 {
                     CreatedDate = x.CreatedDate,
                     Description = x.Description,
-                    ImagessURL = x.ImagessURL,
                     Price = x.Price,
                     ProductName = x.ProductName,
                     UpdatedDate = x.UpdatedDate,
@@ -92,7 +110,6 @@ namespace eCommerce_Backend.Application.Services
                         CreatedDate = x.CreatedDate,
                         Description = x.Description,
                         Price = x.Price,
-                        ImagessURL = x.ImagessURL,
                         UpdatedDate = x.UpdatedDate
                     }).ToListAsync();
                 var pagedResult = new PagedResult<ProductReadDto>()
@@ -137,13 +154,31 @@ namespace eCommerce_Backend.Application.Services
                 data.UpdatedDate = DateTime.Now.Date;
                 data.ProductName = request.ProductName;
                 data.Price = request.Price;
-                data.ImagessURL = request.ImagessURL;
                 data.Description = request.Description;
                 data.CategoiesId = request.CategoiesId;
+                //Save image
+                if (request.ThumbnailImage != null)
+                {
+                    var thumbnailImage = await _dbContext.ProductImages.FirstOrDefaultAsync(i => i.IsDefault == true && i.ProductsId == Id);
+                    if (thumbnailImage != null)
+                    {
+                        thumbnailImage.FileSize = request.ThumbnailImage.Length;
+                        thumbnailImage.ImagePath = await SaveFile(request.ThumbnailImage);
+                        _dbContext.ProductImages.Update(thumbnailImage);
+                    }
+                }
                 _dbContext.Products.Update(data);
                 await _dbContext.SaveChangesAsync();
                 return new ApiSuccessResult<bool>();
             }
+        }
+
+        private async Task<string> SaveFile(IFormFile file)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            await _fileStorage.SaveFileAsync(file.OpenReadStream(), fileName);
+            return "/" + RESOURCES +"/"+ USER_IMAGES_FOLDER_NAME + "/" + fileName;
         }
     }
 }

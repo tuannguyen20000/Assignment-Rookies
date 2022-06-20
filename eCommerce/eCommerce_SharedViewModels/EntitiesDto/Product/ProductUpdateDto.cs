@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,8 +13,8 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Product
         public string ProductName { get; set; }
         public string Description { get; set; }
         public string Price { get; set; }
-        public string ImagessURL { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
+        public IFormFile ThumbnailImage { get; set; }
     }
 }

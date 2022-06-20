@@ -12,5 +12,6 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Categories
         public string CategoryName { get; set; }
         public string Description { get; set; }
         public Status Status { get; set; }
+        public string ThumbnailImage { get; set; }
     }
 }

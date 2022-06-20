@@ -14,7 +14,11 @@ namespace eCommerce_CustomerSite.ApiComsumes.Services
         public async Task<ApiResult<bool>> Create(ProductCreateDto request)
         {
             var data = await PostAsync<ApiResult<bool>>($"/api/Products/", request);
-            return data;
+            if (!data.IsSuccessed)
+            {
+                return new ApiErrorResult<bool>(data.Message);
+            }
+            return new ApiSuccessResult<bool>();
         }
 
         public async Task<PagedResult<ProductReadDto>> GetPagingProduct(ProductPagingDto request)

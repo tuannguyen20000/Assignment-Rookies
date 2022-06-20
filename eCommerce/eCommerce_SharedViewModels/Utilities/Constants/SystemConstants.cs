@@ -9,7 +9,9 @@ namespace eCommerce_SharedViewModels.Utilities.Constants
     public class SystemConstants
     {
         public const string MainConnectionString = "eCommerceDb";
-       
+        public const string USER_IMAGES_FOLDER_NAME = "Images";
+        public const string RESOURCES = "Resources";
+
         public class AppSettings
         {
             public const string Token = "access_token";

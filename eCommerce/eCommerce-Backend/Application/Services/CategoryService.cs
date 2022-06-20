@@ -6,14 +6,19 @@ using eCommerce_SharedViewModels.Common;
 using static eCommerce_SharedViewModels.Utilities.Constants.SystemConstants;
 using eCommerce_SharedViewModels.Enums;
 using Microsoft.EntityFrameworkCore;
+using eCommerce_Backend.Application.Common;
+using System.Net.Http.Headers;
 
 namespace eCommerce_Backend.Application.Services
 {
     public class CategoryService : ICategoryService
     {
         private readonly eCommerceDbContext _dbContext;
-        public CategoryService(eCommerceDbContext dbContext)
+        private readonly IFileStorage _fileStorage;
+        public CategoryService(eCommerceDbContext dbContext,
+            IFileStorage fileStorage)
         {
+            _fileStorage = fileStorage;
             _dbContext = dbContext;
         }
         public async Task<ApiResult<bool>> Create(CategoryCreateDto request)
@@ -23,6 +28,22 @@ namespace eCommerce_Backend.Application.Services
                 CategoryName = request.CategoryName,
                 Description = request.Description,
             };
+
+            // Save image
+            if (request.ThumbnailImage != null)
+            {
+                category.CategoryImages = new List<CategoryImages>()
+                {
+                    new CategoryImages()
+                    {
+                        Caption = "Thumbnail image",
+                        DateCreated = DateTime.Now,
+                        FileSize = request.ThumbnailImage.Length,
+                        ImagePath = await SaveFile(request.ThumbnailImage),
+                        IsDefault = true,
+                    }
+                };
+            }
 
             using (_dbContext)
             {
@@ -118,9 +139,28 @@ namespace eCommerce_Backend.Application.Services
                 }
                 data.CategoryName = request.CategoryName;
                 data.Description = request.Description;
+                //Save image
+                if (request.ThumbnailImage != null)
+                {
+                    var thumbnailImage = await _dbContext.CategoryImages.FirstOrDefaultAsync(i => i.IsDefault == true && i.CategoriesId == Id);
+                    if (thumbnailImage != null)
+                    {
+                        thumbnailImage.FileSize = request.ThumbnailImage.Length;
+                        thumbnailImage.ImagePath = await SaveFile(request.ThumbnailImage);
+                        _dbContext.CategoryImages.Update(thumbnailImage);
+                    }
+                }
                 await _dbContext.SaveChangesAsync();
                 return new ApiSuccessResult<bool>();
             }
+        }
+
+        private async Task<string> SaveFile(IFormFile file)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            await _fileStorage.SaveFileAsync(file.OpenReadStream(), fileName);
+            return "/" + RESOURCES + "/" + USER_IMAGES_FOLDER_NAME + "/" + fileName;
         }
     }
 }
