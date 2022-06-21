@@ -11,5 +11,12 @@ namespace eCommerce_Backend.Application.IServices
         Task<ApiResult<bool>> Update(int Id,ProductUpdateDto request);
         Task<ApiResult<ProductReadDto>> GetById(int Id);
         Task<ApiResult<bool>> SoftDelete(int Id);
+
+        // Images
+        Task<ApiResult<bool>> AddImage(int Id, ProductImageCreateDto request);
+        Task<ApiResult<bool>> RemoveImage(int imageId);
+        Task<ApiResult<bool>> UpdateImage(int imageId, ProductImageUpdateDto request);
+        Task<List<ProductImageDto>> GetListImageByProductId(int Id);
+        Task<ApiResult<ProductImageDto>> GetImageById(int imageId);
     }
 }

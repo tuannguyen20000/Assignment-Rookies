@@ -8,6 +8,7 @@ using eCommerce_SharedViewModels.Enums;
 using Microsoft.EntityFrameworkCore;
 using eCommerce_Backend.Application.Common;
 using System.Net.Http.Headers;
+using eCommerce_SharedViewModels.EntitiesDto.Product;
 
 namespace eCommerce_Backend.Application.Services
 {
@@ -27,6 +28,7 @@ namespace eCommerce_Backend.Application.Services
             {
                 CategoryName = request.CategoryName,
                 Description = request.Description,
+                Status = Status.Available,
             };
 
             // Save image
@@ -60,6 +62,7 @@ namespace eCommerce_Backend.Application.Services
                 return new ApiErrorResult<CategoryReadDto>(ErrorMessage.CategoryNotFound);
             var result = new CategoryReadDto()
             {
+                Id = data.Id,
                 CategoryName = data.CategoryName,
                 Description = data.Description,
                 Status = data.Status
@@ -74,8 +77,28 @@ namespace eCommerce_Backend.Application.Services
             {
                 var data = await _dbContext.Categories.Where(x => x.Status == Status.Available).Select(x => new CategoryReadDto()
                 {
+                    Id = x.Id,
                     CategoryName = x.CategoryName,
                     Description = x.Description,
+                }).ToListAsync();
+                return data;
+            }
+        }
+
+        public async Task<List<ProductReadDto>> GetListProductById(int categoryId)
+        {
+            using (_dbContext)
+            {
+                var data = await _dbContext.Products.Where(x => x.Status == Status.Available && x.CategoiesId == categoryId)
+                    .Select(x => new ProductReadDto()
+                {
+                    Id = x.Id,
+                    ProductName = x.ProductName,
+                    CreatedDate = x.CreatedDate,
+                    Description = x.Description,
+                    Price = x.Price,
+                    CategoiesId = x.CategoiesId,
+                    UpdatedDate = x.UpdatedDate,
                 }).ToListAsync();
                 return data;
             }
@@ -96,6 +119,7 @@ namespace eCommerce_Backend.Application.Services
                     .Take(request.PageSize)
                     .Select(x => new CategoryReadDto()
                     {
+                        Id = x.Id,
                         CategoryName = x.CategoryName,
                         Description = x.Description,
                     }).ToListAsync();

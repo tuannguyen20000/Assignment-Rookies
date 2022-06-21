@@ -1,5 +1,6 @@
 ﻿using eCommerce_SharedViewModels.Common;
 using eCommerce_SharedViewModels.EntitiesDto.Categories;
+using eCommerce_SharedViewModels.EntitiesDto.Product;
 
 namespace eCommerce_Backend.Application.IServices
 {
@@ -11,5 +12,6 @@ namespace eCommerce_Backend.Application.IServices
         Task<ApiResult<bool>> Update(int Id, CategoryUpdateDto request);
         Task<ApiResult<CategoryReadDto>> GetById(int Id);
         Task<ApiResult<bool>> SoftDelete(int Id);
+        Task<List<ProductReadDto>> GetListProductById(int categoryId);
     }
 }

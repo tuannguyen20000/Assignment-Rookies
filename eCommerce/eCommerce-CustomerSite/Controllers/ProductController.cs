@@ -12,7 +12,7 @@ namespace eCommerce_CustomerSite.Controllers
             _productApi = productApi;
         }
 
-        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 1)
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 12)
         {
             var request = new ProductPagingDto()
             {
@@ -22,6 +22,17 @@ namespace eCommerce_CustomerSite.Controllers
             };
             var data = await _productApi.GetPagingProduct(request);
             return View(data);
+        }
+
+        public async Task<IActionResult> Detail(int Id)
+        {
+            var result = await _productApi.GetById(Id);
+            if (!result.IsSuccessed)
+            {
+                TempData["error"] = result.Message;
+                return View();
+            }
+            return View(result.ResultObj);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace eCommerce_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
@@ -35,6 +35,7 @@ namespace eCommerce_Backend.Controllers
 
         [HttpPost]
         [Route("create-category")]
+        [Authorize]
         public async Task<IActionResult> Create([FromForm] CategoryCreateDto request)
         {
             var result = await _categoryService.Create(request);
@@ -45,14 +46,17 @@ namespace eCommerce_Backend.Controllers
             return Ok(result);
         }
 
-        [HttpGet("get-by-id/{Id}")]
+        [HttpGet]
+        [Route("get-by-id/{Id}")]
         public async Task<IActionResult> GetById(int Id)
         {
             var user = await _categoryService.GetById(Id);
             return Ok(user);
         }
 
-        [HttpPut("update-category/{Id}")]
+        [HttpPut]
+        [Authorize]
+        [Route("update-category/{Id}")]
         public async Task<IActionResult> Update(int Id, [FromForm] CategoryUpdateDto request)
         {
             if (!ModelState.IsValid)
@@ -67,11 +71,21 @@ namespace eCommerce_Backend.Controllers
             return Ok(result);
         }
 
-        [HttpPost("soft-delete/{Id}")]
-
+        [HttpPost]
+        [Authorize]
+        [Route("soft-delete/{Id}")]
         public async Task<IActionResult> SoftDelete(int Id)
         {
             var result = await _categoryService.SoftDelete(Id);
+            return Ok(result);
+        }
+
+
+        [HttpGet]
+        [Route("get-list-product-by-Id/{categoryId}")]
+        public async Task<IActionResult> GetListProductById(int categoryId)
+        {
+            var result = await _categoryService.GetListProductById(categoryId);
             return Ok(result);
         }
     }

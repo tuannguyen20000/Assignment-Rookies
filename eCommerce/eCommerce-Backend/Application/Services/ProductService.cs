@@ -9,6 +9,7 @@ using static eCommerce_SharedViewModels.Utilities.Constants.SystemConstants;
 using eCommerce_Backend.Application.Common;
 using System.Net.Http.Headers;
 using eCommerce_SharedViewModels.Utilities.Constants;
+using eCommerce_SharedViewModels.Exceptions;
 
 namespace eCommerce_Backend.Application.Services
 {
@@ -21,6 +22,30 @@ namespace eCommerce_Backend.Application.Services
         {
             _dbContext = dbContext;
             _fileStorage = fileStorage;
+        }
+
+        public async Task<ApiResult<bool>> AddImage(int Id, ProductImageCreateDto request)
+        {
+            var Image = new ProductImages()
+            {
+                ProductsId = Id,
+                Caption = request.Caption,
+                DateCreated = DateTime.Now,
+                IsDefault = request.IsDefault,
+            };
+
+            if (request.ImageFile != null)
+            {
+                Image.ImagePath = await SaveFile(request.ImageFile);
+                Image.FileSize = request.ImageFile.Length;
+            }
+            using (_dbContext)
+            {
+                _dbContext.ProductImages.Add(Image);
+                await _dbContext.SaveChangesAsync();
+                return new ApiSuccessResult<bool>();
+            }
+
         }
 
         public async Task<ApiResult<bool>> Create(ProductCreateDto request)
@@ -67,7 +92,9 @@ namespace eCommerce_Backend.Application.Services
                 return new ApiErrorResult<ProductReadDto>(ErrorMessage.ProductNotFound);
             var result = new ProductReadDto()
             {
+                Id = data.Id,
                 ProductName=data.ProductName,
+                CategoiesId = data.CategoiesId,
                 CreatedDate=DateTime.Now.Date,
                 UpdatedDate=DateTime.Now.Date,
                 Description = data.Description,
@@ -78,20 +105,61 @@ namespace eCommerce_Backend.Application.Services
             return new ApiSuccessResult<ProductReadDto>(result);
         }
 
+        public async Task<ApiResult<ProductImageDto>> GetImageById(int imageId)
+        {
+            var image = await _dbContext.ProductImages.FindAsync(imageId);
+            if (image == null)
+            {
+                throw new eComExceptions($"Cannot find an image with id {imageId}");
+            }
+
+            var dto = new ProductImageDto()
+            {
+                ProductsId = image.ProductsId,
+                Caption = image.Caption,
+                DateCreated = image.DateCreated,
+                FileSize = image.FileSize,
+                Id = image.Id,
+                ImagePath = image.ImagePath,
+                IsDefault = image.IsDefault,
+            };
+            return new ApiSuccessResult<ProductImageDto>(dto);
+        }
+
         public async Task<List<ProductReadDto>> GetList()
         {
             using (_dbContext)
             {
                 var data = await _dbContext.Products.Where(x=>x.Status == Status.Available).Select(x => new ProductReadDto()
                 {
+                    Id = x.Id,
                     CreatedDate = x.CreatedDate,
                     Description = x.Description,
                     Price = x.Price,
                     ProductName = x.ProductName,
                     UpdatedDate = x.UpdatedDate,
+                    CategoiesId = x.CategoiesId,                   
                 }).ToListAsync();
                 return data;
             }              
+        }
+
+        public async Task<List<ProductImageDto>> GetListImageByProductId(int Id)
+        {
+            using (_dbContext)
+            {
+                return await _dbContext.ProductImages.Where(x => x.ProductsId == Id)
+                .Select(i => new ProductImageDto()
+                {
+                    Caption = i.Caption,
+                    DateCreated = i.DateCreated,
+                    FileSize = i.FileSize,
+                    Id = i.Id,
+                    ImagePath = i.ImagePath,
+                    IsDefault = i.IsDefault,
+                    ProductsId = i.ProductsId,
+                }).ToListAsync();
+            }        
         }
 
         public async Task<PagedResult<ProductReadDto>> GetPaging(ProductPagingDto request)
@@ -113,10 +181,12 @@ namespace eCommerce_Backend.Application.Services
                     .Take(request.PageSize)
                     .Select(x => new ProductReadDto()
                     {
+                        Id = x.p.Id,
                         ProductName = x.p.ProductName,
                         CreatedDate = x.p.CreatedDate,
                         Description = x.p.Description,
                         Price = x.p.Price,
+                        CategoiesId =x.p.CategoiesId,
                         UpdatedDate = x.p.UpdatedDate,
                         ThumbnailImage = x.pi.ImagePath
                     }).ToListAsync();
@@ -129,6 +199,18 @@ namespace eCommerce_Backend.Application.Services
                 };
                 return pagedResult;
             }
+        }
+
+        public async Task<ApiResult<bool>> RemoveImage(int imageId)
+        {
+            var image = await _dbContext.ProductImages.FindAsync(imageId);
+            if (image == null)
+            {
+                throw new eComExceptions($"Cannot find an image with id {imageId}");
+            }
+            _dbContext.ProductImages.Remove(image);
+            await _dbContext.SaveChangesAsync();
+            return new ApiSuccessResult<bool>();
         }
 
         public async Task<ApiResult<bool>> SoftDelete(int Id)
@@ -176,6 +258,27 @@ namespace eCommerce_Backend.Application.Services
                     }
                 }
                 _dbContext.Products.Update(data);
+                await _dbContext.SaveChangesAsync();
+                return new ApiSuccessResult<bool>();
+            }
+        }
+
+        public async Task<ApiResult<bool>> UpdateImage(int imageId, ProductImageUpdateDto request)
+        {
+            var image = await _dbContext.ProductImages.FindAsync(imageId);
+            if (image == null)
+            {
+                throw new eComExceptions($"Cannot find an image with id {imageId}");
+            }
+
+            if (request.ImageFile != null)
+            {
+                image.ImagePath = await SaveFile(request.ImageFile);
+                image.FileSize = request.ImageFile.Length;
+            }
+            using (_dbContext)
+            {
+                _dbContext.ProductImages.Update(image);
                 await _dbContext.SaveChangesAsync();
                 return new ApiSuccessResult<bool>();
             }

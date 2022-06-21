@@ -25,6 +25,7 @@ builder.Services.AddSession(option =>
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddHttpClient<IProductApi, ProductApi>();
 builder.Services.AddHttpClient<IUserApi, UserApi>();
+builder.Services.AddHttpClient<ICategoryApi, CategoryApi>();
 
 var app = builder.Build();
 

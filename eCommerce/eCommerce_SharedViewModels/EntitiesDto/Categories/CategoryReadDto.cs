@@ -9,6 +9,7 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Categories
 {
     public class CategoryReadDto
     {
+        public int Id { get; set; }
         public string CategoryName { get; set; }
         public string Description { get; set; }
         public Status Status { get; set; }

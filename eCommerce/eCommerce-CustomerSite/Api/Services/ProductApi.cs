@@ -25,6 +25,17 @@ namespace eCommerce_CustomerSite.ApiComsumes.Services
             return new ApiSuccessResult<bool>();
         }
 
+        public async Task<ApiResult<ProductReadDto>> GetById(int Id)
+        {
+            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var data = await GetAsync<ApiResult<ProductReadDto>>($"https://localhost:7211/api/Products/get-by-id/{Id}", session);
+            if (!data.IsSuccessed)
+            {
+                return new ApiErrorResult<ProductReadDto>(data.Message);
+            }
+            return new ApiSuccessResult<ProductReadDto>(data.ResultObj);
+        }
+
         public async Task<PagedResult<ProductReadDto>> GetPagingProduct(ProductPagingDto request)
         {      
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);

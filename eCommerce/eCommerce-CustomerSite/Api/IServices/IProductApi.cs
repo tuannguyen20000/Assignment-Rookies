@@ -7,5 +7,6 @@ namespace eCommerce_CustomerSite.ApiComsumes.IServices
     {
         Task<ApiResult<bool>> Create(ProductCreateDto request);
         Task<PagedResult<ProductReadDto>> GetPagingProduct(ProductPagingDto request);
+        Task<ApiResult<ProductReadDto>> GetById(int Id);
     }
 }
