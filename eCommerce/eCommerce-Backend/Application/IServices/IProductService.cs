@@ -1,5 +1,6 @@
 ﻿using eCommerce_SharedViewModels.EntitiesDto.Product;
 using eCommerce_SharedViewModels.Common;
+using eCommerce_SharedViewModels.EntitiesDto.Product.ProductImage;
 
 namespace eCommerce_Backend.Application.IServices
 {
@@ -18,5 +19,6 @@ namespace eCommerce_Backend.Application.IServices
         Task<ApiResult<bool>> UpdateImage(int imageId, ProductImageUpdateDto request);
         Task<List<ProductImageDto>> GetListImageByProductId(int Id);
         Task<ApiResult<ProductImageDto>> GetImageById(int imageId);
+        Task<ApiResult<bool>> CategoryAssign(int Id, CategoryAssignDto request);
     }
 }

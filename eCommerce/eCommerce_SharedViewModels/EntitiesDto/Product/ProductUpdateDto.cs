@@ -9,7 +9,6 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Product
 {
     public class ProductUpdateDto
     {
-        public int CategoiesId { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }
         public string Price { get; set; }

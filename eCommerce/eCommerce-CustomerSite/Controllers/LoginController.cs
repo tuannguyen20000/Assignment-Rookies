@@ -31,6 +31,7 @@ namespace eCommerce_CustomerSite.Controllers
         }
 
 
+
         [HttpPost]
         public async Task<IActionResult> Index(LoginDto request)
         {
@@ -38,7 +39,6 @@ namespace eCommerce_CustomerSite.Controllers
             if (!result.IsSuccessed)
             {
                 TempData["error"] = result.Message;
-                return View();
             }
             var userPrincipal = ValidateToken(result.ResultObj);
             var authProperties = new AuthenticationProperties

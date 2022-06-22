@@ -12,13 +12,14 @@ namespace eCommerce_CustomerSite.Controllers
             _productApi = productApi;
         }
 
-        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 12)
+        public async Task<IActionResult> Index(string keyword, int? categoryId, int pageIndex = 1, int pageSize = 12)
         {
             var request = new ProductPagingDto()
             {
                 Keyword = keyword,
                 PageIndex = pageIndex,
-                PageSize = pageSize
+                PageSize = pageSize,
+                CategoriesId = categoryId
             };
             var data = await _productApi.GetPagingProduct(request);
             return View(data);

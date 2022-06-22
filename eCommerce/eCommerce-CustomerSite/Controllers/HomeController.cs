@@ -26,5 +26,11 @@ namespace eCommerce_CustomerSite.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        [HttpGet]
+        public IActionResult Page401()
+        {
+            return View();
+        }
     }
 }

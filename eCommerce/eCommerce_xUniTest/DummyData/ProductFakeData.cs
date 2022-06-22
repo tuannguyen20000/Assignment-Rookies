@@ -29,8 +29,7 @@
         public static ProductCreateDto itemProduct()
         {
             return new ProductCreateDto()
-            {
-                CategoryId = 1,               
+            {            
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now,
                 Description = "test Description",

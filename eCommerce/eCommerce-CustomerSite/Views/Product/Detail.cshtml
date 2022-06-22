@@ -105,9 +105,18 @@
                             <div class="product-details-footer">
                                 <div class="product-cat">
                                     <span>Category:</span>
-                                    <a href="#">Women</a>,
-                                    <a href="#">Dresses</a>,
-                                    <a href="#">Yellow</a>
+                                    @foreach(var item in Model.Categories)
+                                    {
+                                        if(@Model.Categories.Count == 1)
+                                        {
+                                            <a>@item</a>
+                                        }
+                                        else
+                                        {
+                                            <a>@item, </a>
+                                        }
+                                    }
+                                                                   
                                 </div><!-- End .product-cat -->
 
                                 <div class="social-icons social-icons-sm">
@@ -131,62 +140,7 @@
                                     <div id="product-accordion-desc" class="collapse" aria-labelledby="product-desc-heading" data-parent="#product-accordion">
                                         <div class="card-body">
                                             <div class="product-desc-content">
-                                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci.</p>
-                                                <ul>
-                                                    <li>Nunc nec porttitor turpis. In eu risus enim. In vitae mollis elit. </li>
-                                                    <li>Vivamus finibus vel mauris ut vehicula.</li>
-                                                    <li>Nullam a magna porttitor, dictum risus nec, faucibus sapien.</li>
-                                                </ul>
-
-                                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna viverra non, semper suscipit, posuere a, pede.</p>
-                                            </div><!-- End .product-desc-content -->
-                                        </div><!-- End .card-body -->
-                                    </div><!-- End .collapse -->
-                                </div><!-- End .card -->
-
-                                <div class="card card-box card-sm">
-                                    <div class="card-header" id="product-info-heading">
-                                        <h2 class="card-title">
-                                            <a role="button" data-toggle="collapse" href="#product-accordion-info" aria-expanded="true" aria-controls="product-accordion-info">
-                                                Additional Information
-                                            </a>
-                                        </h2>
-                                    </div><!-- End .card-header -->
-                                    <div id="product-accordion-info" class="collapse show" aria-labelledby="product-info-heading" data-parent="#product-accordion">
-                                        <div class="card-body">
-                                            <div class="product-desc-content">
-                                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna viverra non, semper suscipit, posuere a, pede. Donec nec justo eget felis facilisis fermentum. Aliquam porttitor mauris sit amet orci. </p>
-
-                                                <h3>Fabric & care</h3>
-                                                <ul>
-                                                    <li>100% Polyester</li>
-                                                    <li>Do not iron</li>
-                                                    <li>Do not wash</li>
-                                                    <li>Do not bleach</li>
-                                                    <li>Do not tumble dry</li>
-                                                    <li>Professional dry clean only</li>
-                                                </ul>
-
-                                                <h3>Size</h3>
-                                                <p>S, M, L, XL</p>
-                                            </div><!-- End .product-desc-content -->
-                                        </div><!-- End .card-body -->
-                                    </div><!-- End .collapse -->
-                                </div><!-- End .card -->
-
-                                <div class="card card-box card-sm">
-                                    <div class="card-header" id="product-shipping-heading">
-                                        <h2 class="card-title">
-                                            <a class="collapsed" role="button" data-toggle="collapse" href="#product-accordion-shipping" aria-expanded="false" aria-controls="product-accordion-shipping">
-                                                Shipping & Returns
-                                            </a>
-                                        </h2>
-                                    </div><!-- End .card-header -->
-                                    <div id="product-accordion-shipping" class="collapse" aria-labelledby="product-shipping-heading" data-parent="#product-accordion">
-                                        <div class="card-body">
-                                            <div class="product-desc-content">
-                                                <p>We deliver to over 100 countries around the world. For full details of the delivery options we offer, please view our <a href="#">Delivery information</a><br>
-                                                We hope you’ll love every purchase, but if you ever need to return an item you can do so within a month of receipt. For full details of how to make a return, please view our <a href="#">Returns information</a></p>
+                                                @Model.Description
                                             </div><!-- End .product-desc-content -->
                                         </div><!-- End .card-body -->
                                     </div><!-- End .collapse -->
@@ -258,6 +212,55 @@
                                         </div><!-- End .card-body -->
                                     </div><!-- End .collapse -->
                                 </div><!-- End .card -->
+                                <div class="card card-box card-sm">
+                                    <div class="card-header" id="product-shipping-heading">
+                                        <h2 class="card-title">
+                                            <a class="collapsed" role="button" data-toggle="collapse" href="#product-accordion-shipping" aria-expanded="false" aria-controls="product-accordion-shipping">
+                                                Leave a Comment
+                                            </a>
+                                        </h2>
+                                    </div><!-- End .card-header -->
+                                    <div id="product-accordion-shipping" class="collapse" aria-labelledby="product-shipping-heading" data-parent="#product-accordion">
+                                        <div class="card-body">
+                                            <div class="product-desc-content">
+
+                                                @*Comment*@
+                                                <div class="reply">
+                                                    <div class="heading">
+                                                        <p class="title-desc">Your email address will not be published. Required fields are marked *</p>
+                                                    </div><!-- End .heading -->
+
+                                                    <form action="#">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                       
+                                                                <input type="text" class="form-control" required="" placeholder="Title *">
+                                                            </div><!-- End .col-md-6 -->                                                     
+                                                        </div><!-- End .row -->
+                                                        <label class="sr-only">Comment</label>
+                                                        <textarea name="reply-message" cols="30" rows="4" class="form-control" required="" placeholder="Comment *"></textarea>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <input type="text" class="form-control" required="" placeholder="Name *">
+                                                            </div><!-- End .col-md-6 -->
+
+                                                            <div class="col-md-6">
+                                                                <input type="email" class="form-control"required="" placeholder="Email *">
+                                                            </div><!-- End .col-md-6 -->
+                                                        </div><!-- End .row -->
+
+                                                        <button type="submit" class="btn btn-outline-primary-2">
+                                                            <span>POST COMMENT</span>
+                                                            <i class="icon-long-arrow-right"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div><!-- End .product-desc-content -->
+                                        </div><!-- End .card-body -->
+                                    </div><!-- End .collapse -->
+                                </div><!-- End .card -->
+
+
                             </div><!-- End .accordion -->
                         </div><!-- End .product-details -->
                     </div><!-- End .col-md-6 -->

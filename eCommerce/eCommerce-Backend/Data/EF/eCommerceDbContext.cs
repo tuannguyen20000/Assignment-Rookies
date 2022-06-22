@@ -1,4 +1,5 @@
-﻿using eCommerce_Backend.Data.Entities;
+﻿using eCommerce_Backend.Data.Configuration;
+using eCommerce_Backend.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,14 +17,12 @@ namespace eCommerce_Backend.Data.EF
         public DbSet<Categories> Categories { get; set; }
         public DbSet<ProductImages> ProductImages { get; set; }
         public DbSet<CategoryImages> CategoryImages { get; set; }
+        public DbSet<ProductInCategory> ProductInCategory { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new ProductInCategoryCf());
         }
-    }
-
-    public class AppUser : IdentityUser
-    {
     }
 }

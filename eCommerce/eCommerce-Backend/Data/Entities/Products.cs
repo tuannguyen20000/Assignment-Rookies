@@ -5,7 +5,6 @@ namespace eCommerce_Backend.Data.Entities
     public class Products
     {
         public int Id { get; set; }
-        public int CategoiesId { get; set; }
         public string ProductName { get; set; }
         public string Description { get; set; }
         public string Price { get; set; }   
@@ -13,7 +12,7 @@ namespace eCommerce_Backend.Data.Entities
         public DateTime UpdatedDate { get; set; }
         public Status Status { get; set; }
 
-        public Categories Categoies { get; set; }
+        public List<ProductInCategory> ProductInCategory { get; set; }
         public List<ProductImages> ProductImages { get; set; }
     }
 }

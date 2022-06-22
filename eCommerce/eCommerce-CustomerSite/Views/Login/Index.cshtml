@@ -25,7 +25,7 @@
 					<div class="tab-content">
 						<div class="tab-pane fade show active" id="signin-2" role="tabpanel" aria-labelledby="signin-tab-2">
 							<!--Login form-->
-							<form action="Login/Index" method="post">
+							<form asp-controller="Login" asp-action="Index" method="post">
 							    <div class="form-group">
 							    	<label>Username or email address *</label>
 							    	<input asp-for="Username" type="text" class="form-control" required>

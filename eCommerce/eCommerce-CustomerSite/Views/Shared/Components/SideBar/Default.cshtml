@@ -1,0 +1,11 @@
+﻿@model List<eCommerce_SharedViewModels.EntitiesDto.Categories.CategoryReadDto>
+@foreach(var item in Model)
+{
+<div class="filter-item">
+	<div class="custom-control custom-checkbox">
+		<input type="checkbox" class="custom-control-input" id="@item.CategoryName">
+		<label for="@item.CategoryName" class="custom-control-label">@item.CategoryName</label>
+	</div><!-- End .custom-checkbox -->
+	<span class="item-count">3</span>
+</div><!-- End .filter-item -->
+}

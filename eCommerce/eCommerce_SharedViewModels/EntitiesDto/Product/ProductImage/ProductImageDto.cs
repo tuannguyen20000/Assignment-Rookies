@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eCommerce_SharedViewModels.EntitiesDto.Product
+namespace eCommerce_SharedViewModels.EntitiesDto.Product.ProductImage
 {
     public class ProductImageDto
     {

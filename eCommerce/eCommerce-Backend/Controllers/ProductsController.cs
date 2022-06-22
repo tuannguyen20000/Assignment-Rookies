@@ -1,6 +1,7 @@
 ﻿using eCommerce_Backend.Application.IServices;
 using eCommerce_SharedViewModels.Common;
 using eCommerce_SharedViewModels.EntitiesDto.Product;
+using eCommerce_SharedViewModels.EntitiesDto.Product.ProductImage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -138,6 +139,19 @@ namespace eCommerce_Backend.Controllers
                 return BadRequest();
             }
             return Ok();
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Route("{Id}/categories-assign")]
+        public async Task<IActionResult> CategoryAssign(int Id, [FromBody] CategoryAssignDto request)
+        {
+            var result = await _productService.CategoryAssign(Id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }

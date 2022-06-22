@@ -5,9 +5,6 @@ $(document).ready(function () {
     owlCarousels();
     quantityInputs();
 
-    // API
-    const api_catById = 'https://localhost:7211/api/Categories/get-by-id';
-
     // Header Search Toggle
 
     var $searchWrapper = $('.header-search-wrapper'),
@@ -887,24 +884,57 @@ $(document).ready(function () {
         toastr[msgType](message);
     };
 
+    var $filterCheckboxes = $('input[type="checkbox"]');
+    var filterFunc = function () {
 
-    // Get cateogry name at product view
-    $(() => {
-        let cateId = document.getElementsByClassName('product-cate-id');
-        for (var i = 0; i < cateId.length; i++) {
-            axios
-                .get(`${api_catById}/${cateId[i].innerHTML}`)
-                .then(function (response) {
-                    let categoryName = document.getElementsByClassName('product-cate-name');
-                    for (var e = 0; e < categoryName.length; e++) {
-                        categoryName[e].innerHTML = response.data.resultObj.categoryName;
+        var selectedFilters = {};
+
+        $filterCheckboxes.filter(':checked').each(function () {
+
+            if (!selectedFilters.hasOwnProperty(this.name)) {
+                selectedFilters[this.name] = [];
+            }
+
+            selectedFilters[this.name].push(this.value);
+        });
+
+        // create a collection containing all of the filterable elements
+        var $filteredResults = $('.item-product');
+
+        // loop over the selected filter name -> (array) values pairs
+        $.each(selectedFilters, function (name, filterValues) {
+
+            // filter each .flower element
+            $filteredResults = $filteredResults.filter(function () {
+
+                var matched = false,
+                    currentFilterValues = $(this).data('category').split(' ');
+
+                // loop over each category value in the current .flower's data-category
+                $.each(currentFilterValues, function (_, currentFilterValue) {
+
+                    // if the current category exists in the selected filters array
+                    // set matched to true, and stop looping. as we're ORing in each
+                    // set of filters, we only need to match once
+
+                    if ($.inArray(currentFilterValue, filterValues) != -1) {
+                        matched = true;
+                        return false;
                     }
-                })
-                .catch(function (error) {
-                    console.log(error);
                 });
-        }     
-    })   
+
+                // if matched is true the current .flower element is returned
+                return matched;
+
+            });
+        });
+
+        $('.item-product').hide().filter($filteredResults).show();
+    }
+
+    $filterCheckboxes.on('change', filterFunc);  
+
+
 });
 
 

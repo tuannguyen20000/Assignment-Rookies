@@ -89,7 +89,7 @@ namespace eCommerce_Backend.Application.Services
         {
             using (_dbContext)
             {
-                var data = await _dbContext.Products.Where(x => x.Status == Status.Available && x.CategoiesId == categoryId)
+                var data = await _dbContext.Products.Where(x => x.Status == Status.Available)
                     .Select(x => new ProductReadDto()
                 {
                     Id = x.Id,
@@ -97,7 +97,6 @@ namespace eCommerce_Backend.Application.Services
                     CreatedDate = x.CreatedDate,
                     Description = x.Description,
                     Price = x.Price,
-                    CategoiesId = x.CategoiesId,
                     UpdatedDate = x.UpdatedDate,
                 }).ToListAsync();
                 return data;

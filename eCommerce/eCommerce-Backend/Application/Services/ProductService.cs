@@ -10,6 +10,7 @@ using eCommerce_Backend.Application.Common;
 using System.Net.Http.Headers;
 using eCommerce_SharedViewModels.Utilities.Constants;
 using eCommerce_SharedViewModels.Exceptions;
+using eCommerce_SharedViewModels.EntitiesDto.Product.ProductImage;
 
 namespace eCommerce_Backend.Application.Services
 {
@@ -48,12 +49,43 @@ namespace eCommerce_Backend.Application.Services
 
         }
 
+        public async Task<ApiResult<bool>> CategoryAssign(int Id, CategoryAssignDto request)
+        {
+            using (_dbContext)
+            {
+                var data = await _dbContext.Products.FindAsync(Id);
+                if (data == null)
+                {
+                    return new ApiErrorResult<bool>(ErrorMessage.ProductNotFound);
+                }
+                foreach (var category in request.Categories)
+                {
+                    var productInCategory = await _dbContext.ProductInCategory
+                        .FirstOrDefaultAsync(x => x.CategoriesId == int.Parse(category.Id)
+                        && x.ProductsId == Id);
+                    if (productInCategory != null && category.Selected == false)
+                    {
+                        _dbContext.ProductInCategory.Remove(productInCategory);
+                    }
+                    else if (productInCategory == null && category.Selected)
+                    {
+                        await _dbContext.ProductInCategory.AddAsync(new ProductInCategory()
+                        {
+                            CategoriesId = int.Parse(category.Id),
+                            ProductsId = Id
+                        });
+                    }
+                }
+                await _dbContext.SaveChangesAsync();
+                return new ApiSuccessResult<bool>();
+            }       
+        }
+
         public async Task<ApiResult<bool>> Create(ProductCreateDto request)
         {
             var Product = new Products()
             {
                 ProductName = request.ProductName,
-                CategoiesId = request.CategoryId,
                 Description = request.Description,
                 Price = request.Price,
                 CreatedDate = DateTime.Now.Date,
@@ -88,19 +120,23 @@ namespace eCommerce_Backend.Application.Services
         {
             var data = await _dbContext.Products.FindAsync(Id);
             var image = await _dbContext.ProductImages.Where(x => x.ProductsId == Id && x.IsDefault == true).FirstOrDefaultAsync();
+            var categories = await (from c in _dbContext.Categories
+                                    join pic in _dbContext.ProductInCategory on c.Id equals pic.CategoriesId
+                                    where pic.ProductsId == Id
+                                    select c.CategoryName).ToListAsync();
             if (data == null)
                 return new ApiErrorResult<ProductReadDto>(ErrorMessage.ProductNotFound);
             var result = new ProductReadDto()
             {
                 Id = data.Id,
                 ProductName=data.ProductName,
-                CategoiesId = data.CategoiesId,
                 CreatedDate=DateTime.Now.Date,
                 UpdatedDate=DateTime.Now.Date,
                 Description = data.Description,
                 Price=data.Price,
                 Status =data.Status,
-                ThumbnailImage = image != null ? image.ImagePath : "no-image.jpg"
+                ThumbnailImage = image != null ? image.ImagePath : "no-image.jpg",
+                Categories = categories
             };
             return new ApiSuccessResult<ProductReadDto>(result);
         }
@@ -137,8 +173,7 @@ namespace eCommerce_Backend.Application.Services
                     Description = x.Description,
                     Price = x.Price,
                     ProductName = x.ProductName,
-                    UpdatedDate = x.UpdatedDate,
-                    CategoiesId = x.CategoiesId,                   
+                    UpdatedDate = x.UpdatedDate,                  
                 }).ToListAsync();
                 return data;
             }              
@@ -169,11 +204,19 @@ namespace eCommerce_Backend.Application.Services
                 var query = from p in _dbContext.Products
                             join pi in _dbContext.ProductImages on p.Id equals pi.ProductsId into ppi
                             from pi in ppi.DefaultIfEmpty()
+                            join pic in _dbContext.ProductInCategory on p.Id equals pic.ProductsId into ppic
+                            from pic in ppic.DefaultIfEmpty()
+                            join c in _dbContext.Categories on pic.CategoriesId equals c.Id into picc
+                            from c in picc.DefaultIfEmpty()
                             where pi == null || pi.IsDefault == true && p.Status == Status.Available
-                            select new { p, pi };
+                            select new { p, pi, pic, c.CategoryName, c.Id};
                 if (!string.IsNullOrEmpty(request.Keyword))
                 {
                     query = query.Where(x => x.p.ProductName.Contains(request.Keyword));
+                }
+                if (request.CategoriesId != null && request.CategoriesId != 0)
+                {
+                    query = query.Where(p => p.pic.CategoriesId == request.CategoriesId);
                 }
                 int totalRow = await query.CountAsync();
 
@@ -186,9 +229,10 @@ namespace eCommerce_Backend.Application.Services
                         CreatedDate = x.p.CreatedDate,
                         Description = x.p.Description,
                         Price = x.p.Price,
-                        CategoiesId =x.p.CategoiesId,
                         UpdatedDate = x.p.UpdatedDate,
-                        ThumbnailImage = x.pi.ImagePath
+                        ThumbnailImage = x.pi.ImagePath,
+                        CategoryId = x.Id,
+                        CategoryName = x.CategoryName,
                     }).ToListAsync();
                 var pagedResult = new PagedResult<ProductReadDto>()
                 {
@@ -245,7 +289,6 @@ namespace eCommerce_Backend.Application.Services
                 data.ProductName = request.ProductName;
                 data.Price = request.Price;
                 data.Description = request.Description;
-                data.CategoiesId = request.CategoiesId;
                 //Save image
                 if (request.ThumbnailImage != null)
                 {
