@@ -2,6 +2,7 @@
 using eCommerce_SharedViewModels.Common;
 using eCommerce_SharedViewModels.EntitiesDto.Product;
 using eCommerce_SharedViewModels.EntitiesDto.Product.ProductImage;
+using eCommerce_SharedViewModels.EntitiesDto.Product.ProductRating;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -147,6 +148,18 @@ namespace eCommerce_Backend.Controllers
         public async Task<IActionResult> CategoryAssign(int Id, [FromBody] CategoryAssignDto request)
         {
             var result = await _productService.CategoryAssign(Id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("{Id}/add-comment")]
+        public async Task<IActionResult> AddComment(int Id, [FromBody] ProductRatingCreateDto request)
+        {
+            var result = await _productService.AddComment(Id, request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);

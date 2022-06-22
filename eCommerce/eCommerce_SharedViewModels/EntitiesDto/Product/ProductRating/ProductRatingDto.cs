@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eCommerce_SharedViewModels.EntitiesDto.Product
+namespace eCommerce_SharedViewModels.EntitiesDto.Product.ProductRating
 {
-    public class ProductRatingCreateDto
+    public class ProductRatingDto
     {
-        public string UserId { get; set; }
+        public int Id { get; set; }
+        public int ProductsId { get; set; }
         public string Title { get; set; }
         public string Comment { get; set; }
         public string UserName { get; set; }

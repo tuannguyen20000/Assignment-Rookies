@@ -18,6 +18,7 @@ namespace eCommerce_Backend.Data.EF
         public DbSet<ProductImages> ProductImages { get; set; }
         public DbSet<CategoryImages> CategoryImages { get; set; }
         public DbSet<ProductInCategory> ProductInCategory { get; set; }
+        public DbSet<ProductRatings> ProductRatings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

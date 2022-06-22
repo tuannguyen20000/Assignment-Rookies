@@ -11,6 +11,7 @@ using System.Net.Http.Headers;
 using eCommerce_SharedViewModels.Utilities.Constants;
 using eCommerce_SharedViewModels.Exceptions;
 using eCommerce_SharedViewModels.EntitiesDto.Product.ProductImage;
+using eCommerce_SharedViewModels.EntitiesDto.Product.ProductRating;
 
 namespace eCommerce_Backend.Application.Services
 {
@@ -23,6 +24,31 @@ namespace eCommerce_Backend.Application.Services
         {
             _dbContext = dbContext;
             _fileStorage = fileStorage;
+        }
+
+        public async Task<ApiResult<bool>> AddComment(int Id, ProductRatingCreateDto request)
+        {
+            var data = await _dbContext.Products.FindAsync(Id);
+            if (data == null)
+            {
+                return new ApiErrorResult<bool>(ErrorMessage.ProductNotFound);
+            }
+            var product = new ProductRatings()
+            {
+                Comment = request.Comment,
+                Rating = request.Rating,
+                TimeStamp = DateTime.Now,
+                Title = request.Title,
+                UserEmail = request.UserEmail,
+                UserName = request.UserName,
+                ProductsId = Id
+            };
+            using (_dbContext)
+            {
+                _dbContext.ProductRatings.Add(product);
+                await _dbContext.SaveChangesAsync();
+                return new ApiSuccessResult<bool>();
+            }
         }
 
         public async Task<ApiResult<bool>> AddImage(int Id, ProductImageCreateDto request)

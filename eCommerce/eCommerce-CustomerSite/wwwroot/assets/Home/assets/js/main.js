@@ -931,10 +931,20 @@ $(document).ready(function () {
 
         $('.item-product').hide().filter($filteredResults).show();
     }
-
     $filterCheckboxes.on('change', filterFunc);  
 
 
+    // Rating
+    $(".ratingStar").hover(function () {
+        $(".ratingStar").addClass("fa-star-o").removeClass("fa-star");
+        $(this).addClass("fa-star").removeClass("fa-star-o");
+        $(this).prevAll(".ratingStar").addClass("fa-star").removeClass("fa-star-o");
+    });
+    $(".ratingStar").click(function () {
+        var starValue = $(this).attr("data-value");
+        $("#ratingValue").val(starValue);
+/*        $("#ratingValue").text(starValue);*/
+    });
 });
 
 

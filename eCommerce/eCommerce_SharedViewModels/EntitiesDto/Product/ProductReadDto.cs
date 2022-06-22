@@ -17,5 +17,6 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Product
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public List<string> Categories { get; set; } = new List<string>();
+        public List<string> Comments { get; set; } = new List<string>();
     }
 }

@@ -12,6 +12,7 @@ namespace eCommerce_Backend.Data.Entities
         public DateTime UpdatedDate { get; set; }
         public Status Status { get; set; }
 
+        public List<ProductRatings> ProductRatings { get; set; }
         public List<ProductInCategory> ProductInCategory { get; set; }
         public List<ProductImages> ProductImages { get; set; }
     }
