@@ -45,16 +45,22 @@ namespace eCommerce_CustomerSite.Controllers
         [HttpPost]
         public async Task<IActionResult> Detail(int Id, ProductRatingVM request)
         {
-            var result = await _productApi.GetById(Id);
-            if (!result.IsSuccessed)
+            if (!ModelState.IsValid)
             {
-                TempData["error"] = result.Message;
                 return View();
             }
+            var result = await _productApi.GetById(Id);
             var rating = await _productApi.AddComment(Id, request.Rating);
-            return View(new ProductRatingVM() { 
-                Product = result.ResultObj,
-            });
+            if (rating.IsSuccessed)
+            {
+                TempData["success"] = "Your comment post success";
+                ModelState.Clear();
+                return View(new ProductRatingVM()
+                {
+                    Product = result.ResultObj,
+                });
+            }
+            return View(request);
         }
     }
 }

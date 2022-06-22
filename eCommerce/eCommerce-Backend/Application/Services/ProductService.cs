@@ -150,6 +150,22 @@ namespace eCommerce_Backend.Application.Services
                                     join pic in _dbContext.ProductInCategory on c.Id equals pic.CategoriesId
                                     where pic.ProductsId == Id
                                     select c.CategoryName).ToListAsync();
+            var comment = await (from r in _dbContext.ProductRatings.OrderByDescending(x => x.Id)
+                                 join p in _dbContext.Products on r.ProductsId equals p.Id
+                                 where p.Id == Id
+                                 select r).ToListAsync();
+            var ListComment = comment.Select(x => new ProductRatingDto
+            {
+                Comment = x.Comment,
+                Id = x.Id,
+                ProductsId = x.ProductsId,
+                Rating = x.Rating,
+                TimeStamp = x.TimeStamp,
+                Title = x.Title,
+                UserEmail = x.UserEmail,
+                UserName = x.UserName
+            }).ToList();
+
             if (data == null)
                 return new ApiErrorResult<ProductReadDto>(ErrorMessage.ProductNotFound);
             var result = new ProductReadDto()
@@ -162,7 +178,8 @@ namespace eCommerce_Backend.Application.Services
                 Price=data.Price,
                 Status =data.Status,
                 ThumbnailImage = image != null ? image.ImagePath : "no-image.jpg",
-                Categories = categories
+                Categories = categories,
+                Comments = ListComment
             };
             return new ApiSuccessResult<ProductReadDto>(result);
         }

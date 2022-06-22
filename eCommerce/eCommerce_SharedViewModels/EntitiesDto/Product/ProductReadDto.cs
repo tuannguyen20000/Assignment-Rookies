@@ -1,4 +1,5 @@
-﻿using eCommerce_SharedViewModels.Enums;
+﻿using eCommerce_SharedViewModels.EntitiesDto.Product.ProductRating;
+using eCommerce_SharedViewModels.Enums;
 
 namespace eCommerce_SharedViewModels.EntitiesDto.Product
 {
@@ -17,6 +18,6 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Product
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public List<string> Categories { get; set; } = new List<string>();
-        public List<string> Comments { get; set; } = new List<string>();
+        public List<ProductRatingDto> Comments { get; set; } = new List<ProductRatingDto>();
     }
 }

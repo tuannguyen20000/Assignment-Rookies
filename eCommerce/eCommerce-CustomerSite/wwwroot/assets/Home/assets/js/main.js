@@ -945,6 +945,7 @@ $(document).ready(function () {
         $("#ratingValue").val(starValue);
 /*        $("#ratingValue").text(starValue);*/
     });
+    document.getElementById("formRating").reset();
 });
 
 

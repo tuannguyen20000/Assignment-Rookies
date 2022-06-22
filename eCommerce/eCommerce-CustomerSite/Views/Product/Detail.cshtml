@@ -150,29 +150,32 @@
                                     <div class="card-header" id="product-review-heading">
                                         <h2 class="card-title">
                                             <a class="collapsed" role="button" data-toggle="collapse" href="#product-accordion-review" aria-expanded="false" aria-controls="product-accordion-review">
-                                                Reviews (2)
+                                                Reviews (@Model.Product.Comments.Count())
                                             </a>
                                         </h2>
                                     </div><!-- End .card-header -->
                                     <div id="product-accordion-review" class="collapse" aria-labelledby="product-review-heading" data-parent="#product-accordion">
                                         <div class="card-body">
                                             <div class="reviews">
+
+                                                @foreach(var item in Model.Product.Comments)
+                                                {
                                                 <div class="review">
                                                     <div class="row no-gutters">
                                                         <div class="col-auto">
-                                                            <h4><a href="#">Samanta J.</a></h4>
+                                                            <h4><a href="#">@item.UserName</a></h4>
                                                             <div class="ratings-container">
                                                                 <div class="ratings">
                                                                     <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
                                                                 </div><!-- End .ratings -->
                                                             </div><!-- End .rating-container -->
-                                                            <span class="review-date">6 days ago</span>
+                                                            <span class="review-date">@item.TimeStamp</span>
                                                         </div><!-- End .col -->
                                                         <div class="col">
-                                                            <h4>Good, perfect size</h4>
+                                                            <h4>@item.Title</h4>
 
                                                             <div class="review-content">
-                                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus cum dolores assumenda asperiores facilis porro reprehenderit animi culpa atque blanditiis commodi perspiciatis doloremque, possimus, explicabo, autem fugit beatae quae voluptas!</p>
+                                                                <p>@item.Comment</p>
                                                             </div><!-- End .review-content -->
 
                                                             <div class="review-action">
@@ -181,33 +184,13 @@
                                                             </div><!-- End .review-action -->
                                                         </div><!-- End .col-auto -->
                                                     </div><!-- End .row -->
-                                                </div><!-- End .review -->
+                                                </div><!-- End .review -->                                                    
+                                                }
 
-                                                <div class="review">
-                                                    <div class="row no-gutters">
-                                                        <div class="col-auto">
-                                                            <h4><a href="#">John Doe</a></h4>
-                                                            <div class="ratings-container">
-                                                                <div class="ratings">
-                                                                    <div class="ratings-val" style="width: 100%;"></div><!-- End .ratings-val -->
-                                                                </div><!-- End .ratings -->
-                                                            </div><!-- End .rating-container -->
-                                                            <span class="review-date">5 days ago</span>
-                                                        </div><!-- End .col -->
-                                                        <div class="col">
-                                                            <h4>Very good</h4>
 
-                                                            <div class="review-content">
-                                                                <p>Sed, molestias, tempore? Ex dolor esse iure hic veniam laborum blanditiis laudantium iste amet. Cum non voluptate eos enim, ab cumque nam, modi, quas iure illum repellendus, blanditiis perspiciatis beatae!</p>
-                                                            </div><!-- End .review-content -->
 
-                                                            <div class="review-action">
-                                                                <a href="#"><i class="icon-thumbs-up"></i>Helpful (0)</a>
-                                                                <a href="#"><i class="icon-thumbs-down"></i>Unhelpful (0)</a>
-                                                            </div><!-- End .review-action -->
-                                                        </div><!-- End .col-auto -->
-                                                    </div><!-- End .row -->
-                                                </div><!-- End .review -->
+
+
                                             </div><!-- End .reviews -->
                                         </div><!-- End .card-body -->
                                     </div><!-- End .collapse -->
@@ -240,22 +223,22 @@
                                                         <p class="title-desc">Your email address will not be published. Required fields are marked *</p>
                                                     </div><!-- End .heading -->
 
-                                                    <form asp-controller="Product" asp-action="Detail" method="post">
+                                                    <form id="formRating" asp-controller="Product" asp-action="Detail" method="post">
                                                         <input  type="hidden" asp-for="Rating.Rating" id="ratingValue" value="1" />
                                                         <div class="row">
                                                             <div class="col-md-12">
-                                                                <input asp-for="Rating.Title" type="text" class="form-control" required="" placeholder="Title *">
+                                                                <input asp-for="Rating.Title" type="text" class="form-control" placeholder="Title *">
                                                             </div><!-- End .col-md-6 -->                                                     
                                                         </div><!-- End .row -->
                                                         <label class="sr-only">Comment</label>
-                                                        <textarea asp-for="Rating.Comment" cols="30" rows="4" class="form-control" required="" placeholder="Comment *"></textarea>
+                                                        <textarea asp-for="Rating.Comment" cols="30" rows="4" class="form-control" placeholder="Comment *"></textarea>
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                                <input asp-for="Rating.UserName" type="text" class="form-control" required="" placeholder="Name *">
+                                                                <input asp-for="Rating.UserName" type="text" class="form-control" placeholder="Name *">
                                                             </div><!-- End .col-md-6 -->
 
                                                             <div class="col-md-6">
-                                                                <input asp-for="Rating.UserEmail" type="email" class="form-control"required="" placeholder="Email *">
+                                                                <input asp-for="Rating.UserEmail" type="email" class="form-control placeholder="Email *">
                                                             </div><!-- End .col-md-6 -->
                                                         </div><!-- End .row -->
 
