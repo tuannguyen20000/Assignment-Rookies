@@ -11,6 +11,7 @@ namespace eCommerce_SharedViewModels.Utilities.Constants
         public const string MainConnectionString = "eCommerceDb";
         public const string USER_IMAGES_FOLDER_NAME = "Images";
         public const string RESOURCES = "Resources";
+        public const string SESSION_CART = "session_cart";
 
         public class AppSettings
         {

@@ -13,6 +13,7 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Product
         public DateTime UpdatedDate { get; set; }
         public Status Status { get; set; }
         public string ThumbnailImage { get; set; }
+        public int avrRating { get; set; }
 
 
         public int CategoryId { get; set; }

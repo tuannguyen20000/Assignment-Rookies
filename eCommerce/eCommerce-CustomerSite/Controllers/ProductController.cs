@@ -49,16 +49,11 @@ namespace eCommerce_CustomerSite.Controllers
             {
                 return View();
             }
-            var result = await _productApi.GetById(Id);
             var rating = await _productApi.AddComment(Id, request.Rating);
             if (rating.IsSuccessed)
             {
-                TempData["success"] = "Your comment post success";
                 ModelState.Clear();
-                return View(new ProductRatingVM()
-                {
-                    Product = result.ResultObj,
-                });
+                return RedirectToAction("Detail");
             }
             return View(request);
         }

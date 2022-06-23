@@ -154,6 +154,7 @@ namespace eCommerce_Backend.Application.Services
                                  join p in _dbContext.Products on r.ProductsId equals p.Id
                                  where p.Id == Id
                                  select r).ToListAsync();
+            var avrComment = comment.Select(x => x.Rating).Average();
             var ListComment = comment.Select(x => new ProductRatingDto
             {
                 Comment = x.Comment,
@@ -163,7 +164,7 @@ namespace eCommerce_Backend.Application.Services
                 TimeStamp = x.TimeStamp,
                 Title = x.Title,
                 UserEmail = x.UserEmail,
-                UserName = x.UserName
+                UserName = x.UserName,
             }).ToList();
 
             if (data == null)
@@ -179,7 +180,8 @@ namespace eCommerce_Backend.Application.Services
                 Status =data.Status,
                 ThumbnailImage = image != null ? image.ImagePath : "no-image.jpg",
                 Categories = categories,
-                Comments = ListComment
+                avrRating = (int)Math.Ceiling(avrComment),
+                Comments = ListComment,
             };
             return new ApiSuccessResult<ProductReadDto>(result);
         }
@@ -262,7 +264,22 @@ namespace eCommerce_Backend.Application.Services
                     query = query.Where(p => p.pic.CategoriesId == request.CategoriesId);
                 }
                 int totalRow = await query.CountAsync();
-
+                var comment = await (from r in _dbContext.ProductRatings.OrderByDescending(x => x.Id)
+                                     join p in _dbContext.Products on r.ProductsId equals p.Id
+                                     where p.Id == query.Select(x=>x.p.Id).FirstOrDefault()
+                                     select r).ToListAsync();
+                var ListComment = comment.Select(x => new ProductRatingDto
+                {
+                    Comment = x.Comment,
+                    Id = x.Id,
+                    ProductsId = x.ProductsId,
+                    Rating = x.Rating,
+                    TimeStamp = x.TimeStamp,
+                    Title = x.Title,
+                    UserEmail = x.UserEmail,
+                    UserName = x.UserName,
+                }).ToList();
+                var avrComment = comment.Select(x => x.Rating).Average();
                 var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
                     .Take(request.PageSize)
                     .Select(x => new ProductReadDto()
@@ -276,6 +293,8 @@ namespace eCommerce_Backend.Application.Services
                         ThumbnailImage = x.pi.ImagePath,
                         CategoryId = x.Id,
                         CategoryName = x.CategoryName,
+                        Comments = ListComment,
+                        avrRating = (int)Math.Ceiling(avrComment),
                     }).ToListAsync();
                 var pagedResult = new PagedResult<ProductReadDto>()
                 {

@@ -924,6 +924,8 @@ $(document).ready(function () {
         var starValue = $(this).attr("data-value");
         $("#ratingValue").val(starValue);
     });
+
+
 });
 
 
