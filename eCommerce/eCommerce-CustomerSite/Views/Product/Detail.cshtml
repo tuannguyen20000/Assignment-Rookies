@@ -52,7 +52,7 @@
                     <div class="col-md-6">
                         <div class="product-details sticky-content">
                             <h1 class="product-title">@Model.Product.ProductName</h1><!-- End .product-title -->
-
+                            <input type="hidden" id="productId" value="@Model.Product.Id" />
                             <div class="ratings-container">
                                 <div class="ratings">
                                     <div class="ratings-val" style="width: @(20 * Model.Product.avrRating)%;"></div><!-- End .ratings-val -->
@@ -92,7 +92,7 @@
                             </div><!-- End .details-filter-row -->
 
                             <div class="product-details-action">
-                                <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
+                                <a href="#" class="btn-product add-to-cart btn-cart"><span>add to cart</span></a>
 
                                 <div class="details-action-wrapper">
                                     <a href="#" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></a>
@@ -164,7 +164,7 @@
                                                             <h4><a href="#">@item.UserName</a></h4>
                                                             <div class="ratings-container">
                                                                 <div class="ratings">
-                                                                    <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
+                                                                    <div class="ratings-val" style="width: @(20 * item.Rating)%;"></div><!-- End .ratings-val -->
                                                                 </div><!-- End .ratings -->
                                                             </div><!-- End .rating-container -->
                                                             <span class="review-date">@item.TimeStamp</span>

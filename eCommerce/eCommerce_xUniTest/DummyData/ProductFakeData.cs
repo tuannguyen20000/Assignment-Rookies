@@ -1,4 +1,6 @@
-﻿namespace eCommerce_xUniTest.DummyData
+﻿using eCommerce_SharedViewModels.Common;
+
+namespace eCommerce_xUniTest.DummyData
 {
     public class ProductFakeData
     {
@@ -12,7 +14,8 @@
                     Description = "test1 Description",
                     Price = "200000",
                     ProductName = "Dep ca sau",
-                    UpdatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now,       
+                    CategoryId = 1,
                 },
 
                 new ProductReadDto()
@@ -22,19 +25,52 @@
                     Price = "1200000",
                     ProductName = "Giay da",
                     UpdatedDate = DateTime.Now,
+                    CategoryId = 1,
                 },
              };
         }
 
-        public static ProductCreateDto itemProduct()
+        public static ProductCreateDto createItemProduct()
         {
             return new ProductCreateDto()
             {            
-                CreatedDate = DateTime.Now,
-                UpdatedDate = DateTime.Now,
                 Description = "test Description",
                 Price = "100000",
-                ProductName = "Giay test2"
+                ProductName = "Giay test2",
+                Status = Status.Available,             
+            };
+        }
+
+        public static ProductUpdateDto UpdatetemProduct()
+        {
+            return new ProductUpdateDto()
+            {
+                Description = "update Description",
+                Price = "100000",
+                ProductName = "Giay update",
+            };
+        }
+
+
+        public static PagedResult<ProductReadDto> PageResultProductRead()
+        {
+            return new PagedResult<ProductReadDto>()
+            {
+               Items = GetProduct(),
+               PageIndex = 1,
+               PageSize = 12,
+               TotalRecords = 12
+            };
+        }
+
+        public static ProductPagingDto PagingItemProduct()
+        {
+            return new ProductPagingDto()
+            {
+                PageIndex = 1,
+                PageSize = 12,
+                CategoriesId = 1,
+                Keyword = null
             };
         }
     }

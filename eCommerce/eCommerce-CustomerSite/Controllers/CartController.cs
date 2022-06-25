@@ -14,18 +14,45 @@ namespace eCommerce_CustomerSite.Controllers
             _productApi = productApi;
         }
 
-        public async Task<IActionResult> AddProductToCart(int Id)
+        [HttpGet]
+        public IActionResult GetListCart()
+        {
+            var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
+            List<CartItemVM> currentCart = new List<CartItemVM>();
+            if (session != null)
+                currentCart = JsonConvert.DeserializeObject<List<CartItemVM>>(session);
+            return Ok(currentCart);
+        }
+
+        public IActionResult UpdateCart(int id, int quantity)
+        {
+            var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
+            List<CartItemVM> currentCart = new List<CartItemVM>();
+            if (session != null)
+                currentCart = JsonConvert.DeserializeObject<List<CartItemVM>>(session);
+            foreach (var item in currentCart)
+            {
+                if (item.ProductId == id)
+                {
+                    if (quantity == 0)
+                    {
+                        currentCart.Remove(item);
+                        break;
+                    }
+                    item.Quantity = quantity;
+                }
+            }
+            HttpContext.Session.SetString(SystemConstants.SESSION_CART, JsonConvert.SerializeObject(currentCart));
+            return Ok(currentCart);
+        }
+
+        public async Task<IActionResult> AddProductToCart(int Id, int Quantity)
         {
             var product = await _productApi.GetById(Id);
             var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
             List<CartItemVM> currentCart = new List<CartItemVM>();
             if (session != null)
                 currentCart = JsonConvert.DeserializeObject<List<CartItemVM>>(session);
-            int quantity = 1;
-            if (currentCart.Any(x => x.ProductId == Id))
-            {
-                quantity = currentCart.First(x => x.ProductId == Id).Quantity + 1;
-            }
             var cartItem = new CartItemVM()
             {
                 ProductId = Id,
@@ -33,11 +60,11 @@ namespace eCommerce_CustomerSite.Controllers
                 Image = product.ResultObj.ThumbnailImage,
                 Name = product.ResultObj.ProductName,
                 Price = product.ResultObj.Price,
-                Quantity = quantity
+                Quantity = Quantity
             };
             currentCart.Add(cartItem);
             HttpContext.Session.SetString(SystemConstants.SESSION_CART, JsonConvert.SerializeObject(currentCart));
-            return Ok(currentCart);
+            return Json(new { success = true, responseText = "The product has been added to the cart" });
         }
     }
 }

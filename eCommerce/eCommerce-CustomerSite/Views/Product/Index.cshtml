@@ -3,6 +3,7 @@
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 
 <main class="main">
+    <input type="hidden" id="success" value="@TempData["success"]" />
     <div class="page-header text-center" style="background-image: url('../../assets/Home/assets/images/page-header-bg.jpg')">
         <div class="container">
         	<h1 class="page-title">Welcome customers<span>Our products</span></h1>
