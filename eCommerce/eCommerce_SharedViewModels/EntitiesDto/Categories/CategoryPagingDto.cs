@@ -10,5 +10,6 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Categories
     public class CategoryPagingDto : PagingRequestBase
     {
         public string Keyword { get; set; }
+        public int? CategoriesId { get; set; }
     }
 }

@@ -13,12 +13,11 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Product
         public DateTime UpdatedDate { get; set; }
         public Status Status { get; set; }
         public string ThumbnailImage { get; set; }
-        public int avrRating { get; set; }
-
+        public int? avrRating { get; set; }
 
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public List<string> Categories { get; set; } = new List<string>();
-        public List<ProductRatingDto> Comments { get; set; } = new List<ProductRatingDto>();
+        public List<ProductRatingDto> Comments { get; set; }
     }
 }

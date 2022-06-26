@@ -8,7 +8,6 @@ using eCommerce_SharedViewModels.Enums;
 using static eCommerce_SharedViewModels.Utilities.Constants.SystemConstants;
 using eCommerce_Backend.Application.Common;
 using System.Net.Http.Headers;
-using eCommerce_SharedViewModels.Utilities.Constants;
 using eCommerce_SharedViewModels.Exceptions;
 using eCommerce_SharedViewModels.EntitiesDto.Product.ProductImage;
 using eCommerce_SharedViewModels.EntitiesDto.Product.ProductRating;
@@ -145,16 +144,23 @@ namespace eCommerce_Backend.Application.Services
         public async Task<ApiResult<ProductReadDto>> GetById(int Id)
         {
             var data = await _dbContext.Products.FindAsync(Id);
+            if (data == null)
+                return new ApiErrorResult<ProductReadDto>(ErrorMessage.ProductNotFound);
             var image = await _dbContext.ProductImages.Where(x => x.ProductsId == Id && x.IsDefault == true).FirstOrDefaultAsync();
             var categories = await (from c in _dbContext.Categories
                                     join pic in _dbContext.ProductInCategory on c.Id equals pic.CategoriesId
                                     where pic.ProductsId == Id
                                     select c.CategoryName).ToListAsync();
             var comment = await (from r in _dbContext.ProductRatings.OrderByDescending(x => x.Id)
-                                 join p in _dbContext.Products on r.ProductsId equals p.Id
-                                 where p.Id == Id
+                                 join p in _dbContext.Products on r.ProductsId equals p.Id into pr
+                                 from p in pr.DefaultIfEmpty()
+                                 where r.ProductsId == Id
                                  select r).ToListAsync();
-            var avrComment = comment.Select(x => x.Rating).Average();
+            double avrComment = 0;
+            if (comment.Count != 0)
+            {
+                avrComment = comment.Where(x => x.Rating.HasValue).Select(x => x.Rating.Value).Average();
+            }
             var ListComment = comment.Select(x => new ProductRatingDto
             {
                 Comment = x.Comment,
@@ -166,9 +172,6 @@ namespace eCommerce_Backend.Application.Services
                 UserEmail = x.UserEmail,
                 UserName = x.UserName,
             }).ToList();
-
-            if (data == null)
-                return new ApiErrorResult<ProductReadDto>(ErrorMessage.ProductNotFound);
             var result = new ProductReadDto()
             {
                 Id = data.Id,
@@ -180,7 +183,7 @@ namespace eCommerce_Backend.Application.Services
                 Status =data.Status,
                 ThumbnailImage = image != null ? image.ImagePath : "no-image.jpg",
                 Categories = categories,
-                avrRating = (int)Math.Ceiling(avrComment),
+                avrRating = (int?)Math.Ceiling(avrComment),
                 Comments = ListComment,
             };
             return new ApiSuccessResult<ProductReadDto>(result);
@@ -246,15 +249,18 @@ namespace eCommerce_Backend.Application.Services
         {
             using (_dbContext)
             {
-                var query = from p in _dbContext.Products
+                var query = from p in _dbContext.Products.OrderByDescending(x => x.Id)
                             join pi in _dbContext.ProductImages on p.Id equals pi.ProductsId into ppi
                             from pi in ppi.DefaultIfEmpty()
                             join pic in _dbContext.ProductInCategory on p.Id equals pic.ProductsId into ppic
                             from pic in ppic.DefaultIfEmpty()
                             join c in _dbContext.Categories on pic.CategoriesId equals c.Id into picc
                             from c in picc.DefaultIfEmpty()
+                            join r in _dbContext.ProductRatings.OrderByDescending(x => x.Id) on p.Id equals r.ProductsId into pr
+                            from r in pr.DefaultIfEmpty()
                             where pi == null || pi.IsDefault == true && p.Status == Status.Available
-                            select new { p, pi, pic, c.CategoryName, c.Id};
+                            select new { p, pi, pic, c.CategoryName, c.Id , r };
+
                 if (!string.IsNullOrEmpty(request.Keyword))
                 {
                     query = query.Where(x => x.p.ProductName.Contains(request.Keyword));
@@ -264,22 +270,6 @@ namespace eCommerce_Backend.Application.Services
                     query = query.Where(p => p.pic.CategoriesId == request.CategoriesId);
                 }
                 int totalRow = await query.CountAsync();
-                var comment = await (from r in _dbContext.ProductRatings.OrderByDescending(x => x.Id)
-                                     join p in _dbContext.Products on r.ProductsId equals p.Id
-                                     where p.Id == query.Select(x=>x.p.Id).FirstOrDefault()
-                                     select r).ToListAsync();
-                var ListComment = comment.Select(x => new ProductRatingDto
-                {
-                    Comment = x.Comment,
-                    Id = x.Id,
-                    ProductsId = x.ProductsId,
-                    Rating = x.Rating,
-                    TimeStamp = x.TimeStamp,
-                    Title = x.Title,
-                    UserEmail = x.UserEmail,
-                    UserName = x.UserName,
-                }).ToList();
-                var avrComment = comment.Select(x => x.Rating).Average();
                 var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
                     .Take(request.PageSize)
                     .Select(x => new ProductReadDto()
@@ -293,8 +283,6 @@ namespace eCommerce_Backend.Application.Services
                         ThumbnailImage = x.pi.ImagePath,
                         CategoryId = x.Id,
                         CategoryName = x.CategoryName,
-                        Comments = ListComment,
-                        avrRating = (int)Math.Ceiling(avrComment),
                     }).ToListAsync();
                 var pagedResult = new PagedResult<ProductReadDto>()
                 {

@@ -4,10 +4,11 @@ $(document).ready(function () {
 
     owlCarousels();
     quantityInputs();
-    var urlListCart = 'https://localhost:7146/Cart/GetListCart';
-    var urlUpdateCart = 'https://localhost:7146/Cart/UpdateCart';
-    var urlAddToCart = 'https://localhost:7146/Cart/AddProductToCart';
-    var urlDetailProduct = 'https://localhost:7146/Product/Detail/';
+    const urlDetailCart = 'https://localhost:7146/Cart/Detail/';
+    const urlListCart = 'https://localhost:7146/Cart/GetListCart';
+    const urlUpdateCart = 'https://localhost:7146/Cart/UpdateCart';
+    const urlAddToCart = 'https://localhost:7146/Cart/AddProductToCart';
+    const urlDetailProduct = 'https://localhost:7146/Product/Detail/';
 
     // Header Search Toggle
 
@@ -883,6 +884,7 @@ $(document).ready(function () {
 
 
     LoadProductInCart();
+    LoadDetailProductInCart();
 
     const productId = $('#productId').val();
 
@@ -907,6 +909,7 @@ $(document).ready(function () {
             },
             success: function (response) {
                 LoadProductInCart();
+                LoadProductInCart();
             },
             error: (err) => {
                 console.log(err);
@@ -926,8 +929,10 @@ $(document).ready(function () {
                 $('.cart-count').text(response.length);
                 if (response.length === 0) {
                     $('.cart-dropdown').hide();
+                    window.location.replace(urlDetailCart);
                 }
                 LoadProductInCart();
+                LoadDetailProductInCart();
             },
             error: function (err) {
                 console.log(err);
@@ -961,7 +966,7 @@ $(document).ready(function () {
 
                                     <figure class="product-image-container">
                                         <a href="${urlDetailProduct + item.productId}" class="product-image">
-                                            <img src='${$('#BaseAddress').val() + item.image}' alt="product">
+                                            <img src='${$('#BaseAddress').val() + item.image}' alt="${item.name}">
                                         </a>
                                     </figure>
                                     <a href="#" data-id="${item.productId}" class="btn-remove" title="Remove Product"><i class="icon-close"></i></a>
@@ -977,6 +982,55 @@ $(document).ready(function () {
             }
         })
     }
+
+
+
+    // Cart Detail
+    function LoadDetailProductInCart() {
+        $.ajax({
+            type: "GET",
+            url: urlListCart,
+            success: (response) => {
+                if (response.length != 0) {
+                    $('.cart-dropdown').show();
+                }
+                var html = '';
+                var total = 0;
+
+                $.each(response, (i, item) => {
+                    var amount = item.quantity * item.price;
+                    total += amount;
+                    html += `   <tr id="itemTr-${item.productId}">
+									<td class="product-col">
+										<div class="product">
+											<figure class="product-media">
+												<a href="${urlDetailProduct + item.productId}">
+													<img src="${$('#BaseAddress').val() + item.image}" alt="${item.name}">
+												</a>
+											</figure>
+
+											<h3 class="product-title">
+												<a href="${urlDetailProduct + item.productId}">${item.name}</a>
+											</h3><!-- End .product-title -->
+										</div><!-- End .product -->
+									</td>
+									<td class="price-col">$${item.price}</td>
+									<td class="quantity-col">${item.quantity}</td>
+									<td class="total-col">$${amount}</td>
+									<td class="remove-col"><button  data-id="${item.productId}" class="btn-remove"><i class="icon-close"></i></button></td>
+								</tr>`;
+                    
+                    $('#bodyCart').html(html);
+                    $('#subtotal').text("$" + total);
+                    $('#total').text("$" + total);
+                })
+            },
+            error: (response) => {
+                console.log("Ajax fail");
+            }
+        })
+    }
+
 
     // Toastr
     $(function () {

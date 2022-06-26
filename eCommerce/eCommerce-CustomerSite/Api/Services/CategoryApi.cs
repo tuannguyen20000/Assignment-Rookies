@@ -36,7 +36,7 @@ namespace eCommerce_CustomerSite.Api.Services
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
             var data = await GetAsync<PagedResult<CategoryReadDto>>($"https://localhost:7211/api/Categories/get-paging-category?&" +
-                $"pageIndex={request.PageIndex}&pageSize={request.PageSize}", session);
+                $"pageIndex={request.PageIndex}&pageSize={request.PageSize}&CategoriesId={request.CategoriesId}", session);
             return data;
         }
     }

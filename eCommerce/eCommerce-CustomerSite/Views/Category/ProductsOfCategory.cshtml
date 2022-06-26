@@ -2,7 +2,7 @@
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 
 <main class="main">
-    <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+    <div class="page-header text-center" style="background-image: url('../../assets/Home/assets/images/page-header-bg.jpg')">
         <div class="container">
         	<h1 class="page-title">@Model.Category.CategoryName<span>Category</span></h1>
         </div><!-- End .container -->
@@ -10,10 +10,9 @@
     <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
         <div class="container">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Shop</a></li>
-                <li class="breadcrumb-item"><a href="#">No Sidebar</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Boxed</li>
+                <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+                <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Product">Product</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Category</li>
             </ol>
         </div><!-- End .container -->
     </nav><!-- End .breadcrumb-nav -->
@@ -25,11 +24,6 @@
                     <a href="#" class="sidebar-toggler"><i class="icon-bars"></i>Filters</a>
         		</div><!-- End .toolbox-left -->
 
-                <div class="toolbox-center">
-                    <div class="toolbox-info">
-                        Showing <span>12 of 56</span> Products
-                    </div><!-- End .toolbox-info -->
-                </div><!-- End .toolbox-center -->
 
         		<div class="toolbox-right">
         			<div class="toolbox-sort">
@@ -62,9 +56,7 @@
                                 </div><!-- End .product-action -->
 
                                 <div class="product-action action-icon-top">
-                                    <a href="#" class="btn-product btn-cart"><span>add to cart</span></a>
-                                    <a href="popup/quickView.html" class="btn-product btn-quickview" title="Quick view"><span>quick view</span></a>
-                                    <a href="#" class="btn-product btn-compare" title="Compare"><span>compare</span></a>
+                                    <a href="@Url.Action("Detail", "Product", new {item.Id})" class="btn-product btn-cart"><span>add to cart</span></a>
                                 </div><!-- End .product-action -->
                             </figure><!-- End .product-media -->
 
@@ -76,17 +68,6 @@
                                 <div class="product-price">
                                     $@item.Price
                                 </div><!-- End .product-price -->
-                                <div class="ratings-container">
-                                    <div class="ratings">
-                                        <div class="ratings-val" style="width: 0%;"></div><!-- End .ratings-val -->
-                                    </div><!-- End .ratings -->
-                                    <span class="ratings-text">( 0 Reviews )</span>
-                                </div><!-- End .rating-container -->
-
-                                <div class="product-nav product-nav-dots">
-                                    <a href="#" style="background: #cc9966;"><span class="sr-only">Color name</span></a>
-                                    <a href="#" class="active" style="background: #ebebeb;"><span class="sr-only">Color name</span></a>
-                                </div><!-- End .product-nav -->
                             </div><!-- End .product-body -->
                         </div><!-- End .product -->
                     </div><!-- End .col-sm-6 col-lg-4 col-xl-3 -->                      

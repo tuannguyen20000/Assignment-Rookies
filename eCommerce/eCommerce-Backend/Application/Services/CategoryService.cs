@@ -112,6 +112,10 @@ namespace eCommerce_Backend.Application.Services
                 {
                     query = query.Where(x => x.CategoryName.Contains(request.Keyword));
                 }
+                if (request.CategoriesId != null && request.CategoriesId != 0)
+                {
+                    query = query.Where(x => x.Id == request.CategoriesId);
+                }
                 int totalRow = await query.CountAsync();
 
                 var data = await query.Skip((request.PageIndex - 1) * request.PageSize)

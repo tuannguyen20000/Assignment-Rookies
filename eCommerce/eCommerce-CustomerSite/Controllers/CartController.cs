@@ -66,5 +66,10 @@ namespace eCommerce_CustomerSite.Controllers
             HttpContext.Session.SetString(SystemConstants.SESSION_CART, JsonConvert.SerializeObject(currentCart));
             return Json(new { success = true, responseText = "The product has been added to the cart" });
         }
+
+        public IActionResult Detail()
+        {
+            return View();
+        }
     }
 }

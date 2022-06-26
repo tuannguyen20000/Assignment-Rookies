@@ -6,6 +6,6 @@
 		<input type="checkbox" class="custom-control-input" value="@item.CategoryName" id="@item.CategoryName">
 		<label for="@item.CategoryName" class="custom-control-label">@item.CategoryName</label>
 	</div><!-- End .custom-checkbox -->
-	<span class="item-count">3</span>
+	<span class="item-count">@Model.Where(x=>x.Id == item.Id).Count()</span>
 </div><!-- End .filter-item -->
 }

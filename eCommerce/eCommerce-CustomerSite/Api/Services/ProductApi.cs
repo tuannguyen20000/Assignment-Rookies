@@ -53,7 +53,7 @@ namespace eCommerce_CustomerSite.ApiComsumes.Services
         {      
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
             var data = await GetAsync<PagedResult<ProductReadDto>>($"https://localhost:7211/api/Products/get-paging-product?&" +
-                $"pageIndex={request.PageIndex}&pageSize={request.PageSize}", session);
+                $"CategoriesId={request.CategoriesId}&pageIndex={request.PageIndex}&pageSize={request.PageSize}", session);
             return data;
         }
     }

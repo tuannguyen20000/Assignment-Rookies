@@ -32,12 +32,14 @@ namespace eCommerce_CustomerSite.Controllers
 
         public async Task<IActionResult> ProductsOfCategory(int CategoryId, int pageIndex = 1, int pageSize = 12)
         {
-            var products = await _productApi.GetPagingProduct(new ProductPagingDto()
+            var request = new ProductPagingDto()
             {
                 CategoriesId = CategoryId,
                 PageIndex = pageIndex,
-                PageSize = pageSize,              
-            });
+                PageSize = pageSize,
+
+            };
+            var products = await _productApi.GetPagingProduct(request);
             var category = await _categoryApi.GetById(CategoryId);
             return View(new ProductsOfCategoryVM()
             {
