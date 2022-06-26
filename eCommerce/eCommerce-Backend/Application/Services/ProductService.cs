@@ -256,10 +256,8 @@ namespace eCommerce_Backend.Application.Services
                             from pic in ppic.DefaultIfEmpty()
                             join c in _dbContext.Categories on pic.CategoriesId equals c.Id into picc
                             from c in picc.DefaultIfEmpty()
-                            join r in _dbContext.ProductRatings.OrderByDescending(x => x.Id) on p.Id equals r.ProductsId into pr
-                            from r in pr.DefaultIfEmpty()
                             where pi == null || pi.IsDefault == true && p.Status == Status.Available
-                            select new { p, pi, pic, c.CategoryName, c.Id , r };
+                            select new { p, pi, pic, c.CategoryName, c.Id};
 
                 if (!string.IsNullOrEmpty(request.Keyword))
                 {
