@@ -1,5 +1,5 @@
 # Assignment-Rookies
 
-Develop branch : Develop
+Develop branch (Last commit) : Develop
 
 Handle js : eCommerce/eCommerce-CustomerSite/wwwroot/assets/Home/assets/js/main.js
