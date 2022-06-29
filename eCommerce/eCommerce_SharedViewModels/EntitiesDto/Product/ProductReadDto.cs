@@ -1,4 +1,5 @@
-﻿using eCommerce_SharedViewModels.EntitiesDto.Product.ProductRating;
+﻿using eCommerce_SharedViewModels.EntitiesDto.Product.ProductImage;
+using eCommerce_SharedViewModels.EntitiesDto.Product.ProductRating;
 using eCommerce_SharedViewModels.Enums;
 
 namespace eCommerce_SharedViewModels.EntitiesDto.Product
@@ -15,9 +16,11 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Product
         public string ThumbnailImage { get; set; }
         public int? avrRating { get; set; }
 
+
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public List<string> Categories { get; set; } = new List<string>();
         public List<ProductRatingDto> Comments { get; set; }
+        public List<ProductImageDto> SubImages { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using eCommerce_CustomerSite.Models;
 using eCommerce_SharedViewModels.EntitiesDto.Product;
 using eCommerce_SharedViewModels.EntitiesDto.Product.ProductRating;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eCommerce_CustomerSite.Controllers
@@ -56,6 +57,16 @@ namespace eCommerce_CustomerSite.Controllers
                 return RedirectToAction("Detail");
             }
             return View(request);
+        }
+
+        public async Task<IActionResult> GetAvgRating(int Id)
+        {
+            var result = await _productApi.GetAvgRatingById(Id);
+            if (!result.IsSuccessed)
+            {
+                return Json(new { success = false, responseText = result.Message });
+            }
+            return Json(new { success = true, responseData = result.ResultObj});
         }
     }
 }

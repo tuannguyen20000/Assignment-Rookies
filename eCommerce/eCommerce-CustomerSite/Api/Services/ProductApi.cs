@@ -38,6 +38,17 @@ namespace eCommerce_CustomerSite.ApiComsumes.Services
             return new ApiSuccessResult<bool>();
         }
 
+        public async Task<ApiResult<AvgRatingDto>> GetAvgRatingById(int Id)
+        {
+            var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var data = await GetAsync<ApiResult<AvgRatingDto>>($"https://localhost:7211/api/Products/{Id}/get-avg-by-id", session);
+            if (!data.IsSuccessed)
+            {
+                return new ApiErrorResult<AvgRatingDto>(data.Message);
+            }
+            return new ApiSuccessResult<AvgRatingDto>(data.ResultObj);
+        }
+
         public async Task<ApiResult<ProductReadDto>> GetById(int Id)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);

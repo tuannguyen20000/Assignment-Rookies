@@ -10,6 +10,6 @@ namespace eCommerce_CustomerSite.ApiComsumes.IServices
         Task<PagedResult<ProductReadDto>> GetPagingProduct(ProductPagingDto request);
         Task<ApiResult<ProductReadDto>> GetById(int Id);
         Task<ApiResult<bool>> AddComment(int Id, ProductRatingCreateDto request);
-
+        Task<ApiResult<AvgRatingDto>> GetAvgRatingById(int Id);
     }
 }

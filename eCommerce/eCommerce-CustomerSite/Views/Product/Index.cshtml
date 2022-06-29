@@ -90,10 +90,10 @@
                                 <div class="product product-7 text-center">
                                     <figure class="product-media">
                                         @*<span class="product-label label-new">New</span>*@
-                                        <a href="product.html">
+                                        <a href="@Url.Action("Detail", "Product", new {item.Id})">
                                             <img src="@(Configuration["BaseAddress"] + item.ThumbnailImage)" alt="@item.ProductName" class="product-image">
                                         </a>
-
+                                        <input class="productId" type="hidden"  value="@item.Id">
                                         <div class="product-action-vertical">
                                             <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
                                         </div><!-- End .product-action-vertical -->
@@ -111,7 +111,7 @@
                                         <div class="product-price">
                                             $@item.Price
                                         </div><!-- End .product-price -->
-
+                                        <div class="ratings-container" id="ratings-@item.Id"></div>
                                     </div><!-- End .product-body -->
                                 </div><!-- End .product -->
                             </div><!-- End .col-sm-6 col-lg-4 col-xl-3 -->

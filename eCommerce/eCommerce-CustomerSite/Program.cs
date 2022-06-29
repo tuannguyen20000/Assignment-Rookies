@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -28,6 +29,15 @@ builder.Services.AddHttpClient<IProductApi, ProductApi>();
 builder.Services.AddHttpClient<IUserApi, UserApi>();
 builder.Services.AddHttpClient<ICategoryApi, CategoryApi>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "CorsApi",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); ;
+                      });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,11 +52,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-app.UseAuthentication();
-
 app.UseRouting();
-
+app.UseCors("CorsApi");
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 

@@ -34,18 +34,13 @@
                             <figure class="product-separated-item">
                                 <img src="@(Configuration["BaseAddress"]+Model.Product.ThumbnailImage)" data-zoom-image="@(Configuration["BaseAddress"]+Model.Product.ThumbnailImage)" alt="@Model.Product.ProductName">
                             </figure>
-
-                            <figure class="product-separated-item">
-                                <img src="~/assets/Home/assets/images/products/single/sticky/2.jpg" data-zoom-image="~/assets/Home/assets/images/products/single/sticky/2-big.jpg" alt="product image">
-                            </figure>
-
-                            <figure class="product-separated-item">
-                                <img src="~/assets/Home/assets/images/products/single/sticky/3.jpg" data-zoom-image="~/assets/Home/assets/images/products/single/sticky/3-big.jpg" alt="product image">
-                            </figure>
-
-                            <figure class="product-separated-item">
-                                <img src="~/assets/Home/assets/images/products/single/sticky/4.jpg" data-zoom-image="~/assets/Home/assets/images/products/single/sticky/4-big.jpg" alt="product image">
-                            </figure>
+                            @foreach(var item in Model.Product.SubImages)
+                            {
+                                <figure class="product-separated-item">
+                                    <img src="@(Configuration["BaseAddress"]+item.ImagePath)" data-zoom-image="~/assets/Home/assets/images/products/single/sticky/2-big.jpg" alt="product image">
+                                </figure>
+                            }
+                           
                         </div><!-- End .product-gallery -->
                     </div><!-- End .col-md-6 -->
 

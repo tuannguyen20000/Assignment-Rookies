@@ -26,5 +26,6 @@ namespace eCommerce_Backend.Application.IServices
 
         // Comments
         Task<ApiResult<bool>> AddComment(int Id, ProductRatingCreateDto request);
+        Task<ApiResult<AvgRatingDto>> GetAvgRatingById(int Id);
     }
 }

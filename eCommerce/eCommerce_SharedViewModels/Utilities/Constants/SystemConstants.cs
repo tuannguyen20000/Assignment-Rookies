@@ -25,6 +25,7 @@ namespace eCommerce_SharedViewModels.Utilities.Constants
             //Product
             public const string ProductNotFound = "Product does not exists";
             public const string ProductNameExists = "Product name already exists";
+            public const string ProductNoComment = "Product have no comment";
 
             //Category
             public const string CategoryNotFound = "Category does not exists";

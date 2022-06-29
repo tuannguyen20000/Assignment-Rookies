@@ -4,6 +4,7 @@ using eCommerce_SharedViewModels.EntitiesDto.Register;
 using eCommerce_SharedViewModels.Utilities.Constants;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +13,8 @@ using System.Security.Claims;
 using System.Text;
 
 namespace eCommerce_CustomerSite.Controllers
-{    public class LoginController : Controller
+{
+    public class LoginController : Controller
     {
         private readonly IUserApi _userApi;
         private readonly IHttpContextAccessor _httpContextAccessor;

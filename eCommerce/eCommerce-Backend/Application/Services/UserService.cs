@@ -2,7 +2,9 @@
 using eCommerce_SharedViewModels.Common;
 using eCommerce_SharedViewModels.EntitiesDto.Login;
 using eCommerce_SharedViewModels.EntitiesDto.Register;
+using eCommerce_SharedViewModels.EntitiesDto.User;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -49,6 +51,53 @@ namespace eCommerce_Backend.Application.Services
                 return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
             }
             return new ApiErrorResult<string>(ErrorMessage.LoginFail);
+        }
+
+        public async Task<ApiResult<UserReadDto>> GetById(string UserId)
+        {
+            var user = await _userManager.FindByIdAsync(UserId);
+            if (user == null)
+            {
+                return new ApiErrorResult<UserReadDto>(ErrorMessage.UserNameExists);
+            }
+            var userVm = new UserReadDto()
+            {
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                UserId = user.Id,
+                UserName = user.UserName,
+            };
+            return new ApiSuccessResult<UserReadDto>(userVm);
+        }
+
+        public async Task<ApiResult<PagedResult<UserReadDto>>> GetPaging(UserPagingDto request)
+        {
+            var query = _userManager.Users;
+            if (!string.IsNullOrEmpty(request.Keyword))
+            {
+                query = query.Where(x => x.UserName.Contains(request.Keyword)
+                || x.PhoneNumber.Contains(request.Keyword));
+            }
+            int totalRow = await query.CountAsync();
+
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new UserReadDto()
+                {
+                    UserId = x.Id,
+                    Email = x.Email,
+                    PhoneNumber = x.PhoneNumber,
+                    UserName = x.UserName,
+
+                }).ToListAsync();
+            var pagedResult = new PagedResult<UserReadDto>()
+            {
+                TotalRecords = totalRow,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+                Items = data
+            };
+            return new ApiSuccessResult<PagedResult<UserReadDto>>(pagedResult);
         }
 
         public async Task<ApiResult<string>> Register(RegisterDto request)

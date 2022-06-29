@@ -147,21 +147,31 @@ namespace eCommerce_Backend.Application.Services
             if (data == null)
                 return new ApiErrorResult<ProductReadDto>(ErrorMessage.ProductNotFound);
             var image = await _dbContext.ProductImages.Where(x => x.ProductsId == Id && x.IsDefault == true).FirstOrDefaultAsync();
+            var listSubImage = await _dbContext.ProductImages.Where(x => x.ProductsId == Id && x.IsDefault == false).Select(x=> new ProductImageDto()
+            {
+                ImagePath = x.ImagePath,
+                Caption = x.Caption,
+                DateCreated = x.DateCreated,
+                FileSize = x.FileSize,
+                Id = x.Id,
+                IsDefault = x.IsDefault,
+                ProductsId = x.ProductsId
+            }).ToListAsync();
             var categories = await (from c in _dbContext.Categories
                                     join pic in _dbContext.ProductInCategory on c.Id equals pic.CategoriesId
                                     where pic.ProductsId == Id
                                     select c.CategoryName).ToListAsync();
-            var comment = await (from r in _dbContext.ProductRatings.OrderByDescending(x => x.Id)
+            var ratings = await (from r in _dbContext.ProductRatings.OrderByDescending(x => x.Id)
                                  join p in _dbContext.Products on r.ProductsId equals p.Id into pr
                                  from p in pr.DefaultIfEmpty()
                                  where r.ProductsId == Id
                                  select r).ToListAsync();
-            double avrComment = 0;
-            if (comment.Count != 0)
+            double avrRating = 0;
+            if (ratings.Count != 0)
             {
-                avrComment = comment.Where(x => x.Rating.HasValue).Select(x => x.Rating.Value).Average();
+                avrRating = ratings.Where(x => x.Rating.HasValue).Select(x => x.Rating.Value).Average();
             }
-            var ListComment = comment.Select(x => new ProductRatingDto
+            var ListComment = ratings.Select(x => new ProductRatingDto
             {
                 Comment = x.Comment,
                 Id = x.Id,
@@ -183,10 +193,36 @@ namespace eCommerce_Backend.Application.Services
                 Status =data.Status,
                 ThumbnailImage = image != null ? image.ImagePath : "no-image.jpg",
                 Categories = categories,
-                avrRating = (int?)Math.Ceiling(avrComment),
+                avrRating = (int?)Math.Ceiling(avrRating),
                 Comments = ListComment,
+                SubImages = listSubImage
             };
             return new ApiSuccessResult<ProductReadDto>(result);
+        }
+
+        public async Task<ApiResult<AvgRatingDto>> GetAvgRatingById(int Id)
+        {
+            var product = await _dbContext.Products.FindAsync(Id);
+            if (product == null)
+                return new ApiErrorResult<AvgRatingDto>(ErrorMessage.ProductNotFound);
+            var ratings = await (from r in _dbContext.ProductRatings.OrderByDescending(x => x.Id)
+                                 join p in _dbContext.Products on r.ProductsId equals p.Id into pr
+                                 from p in pr.DefaultIfEmpty()
+                                 where r.ProductsId == Id
+                                 select r).ToListAsync();
+            double avrRating = 0;
+            if (ratings.Count != 0)
+            {
+                avrRating = ratings.Where(x => x.Rating.HasValue).Select(x => x.Rating.Value).Average();
+            }
+            var countComment = ratings.Where(x => x.ProductsId == Id && x.Rating.HasValue).Select(x => x.Comment).Count();
+            var data = new AvgRatingDto()
+            {
+                avgRating = (int)Math.Ceiling(avrRating),
+                countComment = countComment
+            };
+            return new ApiSuccessResult<AvgRatingDto>(data);
+
         }
 
         public async Task<ApiResult<ProductImageDto>> GetImageById(int imageId)
@@ -256,8 +292,11 @@ namespace eCommerce_Backend.Application.Services
                             from pic in ppic.DefaultIfEmpty()
                             join c in _dbContext.Categories on pic.CategoriesId equals c.Id into picc
                             from c in picc.DefaultIfEmpty()
+                      /*      join r in _dbContext.ProductRatings on p.Id equals r.ProductsId into ric
+                            from r in ric.DefaultIfEmpty()*/
                             where pi == null || pi.IsDefault == true && p.Status == Status.Available
                             select new { p, pi, pic, c.CategoryName, c.Id};
+               /* var test = await _dbContext.Products.Include(x => x.ProductRatings).Select(x => new {product = x ,rating = x.ProductRatings != null}).ToListAsync();*/
 
                 if (!string.IsNullOrEmpty(request.Keyword))
                 {
@@ -267,6 +306,7 @@ namespace eCommerce_Backend.Application.Services
                 {
                     query = query.Where(p => p.pic.CategoriesId == request.CategoriesId);
                 }
+                
                 int totalRow = await query.CountAsync();
                 var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
                     .Take(request.PageSize)

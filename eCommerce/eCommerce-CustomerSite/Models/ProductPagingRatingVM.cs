@@ -4,10 +4,9 @@ using eCommerce_SharedViewModels.EntitiesDto.Product.ProductRating;
 
 namespace eCommerce_CustomerSite.Models
 {
-    public class ProductRatingVM
+    public class ProductPagingRatingVM
     {
-        public ProductReadDto Product { get; set; }
-
-        public ProductRatingCreateDto Rating { get; set; }
+        public PagedResult<ProductReadDto> ProductsPaging { get; set; }
+        public AvgRatingDto Rating { get; set; }
     }
 }

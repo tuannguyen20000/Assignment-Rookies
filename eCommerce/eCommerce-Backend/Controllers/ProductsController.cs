@@ -166,5 +166,17 @@ namespace eCommerce_Backend.Controllers
             }
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("{Id}/get-avg-by-id")]
+        public async Task<IActionResult> GetAvgRatingById(int Id)
+        {
+            var result = await _productService.GetAvgRatingById(Id);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
     }
 }
