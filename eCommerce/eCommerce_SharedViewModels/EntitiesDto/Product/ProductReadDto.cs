@@ -15,6 +15,7 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Product
         public Status Status { get; set; }
         public string ThumbnailImage { get; set; }
         public int? avrRating { get; set; }
+        public int? countComment { get; set; }
 
 
         public int CategoryId { get; set; }

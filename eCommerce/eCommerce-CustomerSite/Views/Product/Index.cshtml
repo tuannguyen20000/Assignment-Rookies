@@ -111,7 +111,12 @@
                                         <div class="product-price">
                                             $@item.Price
                                         </div><!-- End .product-price -->
-                                        <div class="ratings-container" id="ratings-@item.Id"></div>
+                                        <div class="ratings-container">
+                                            <div class="ratings">
+                                                <div class="ratings-val" style="width: @(20 * item.avrRating)%;"></div><!-- End .ratings-val -->
+                                            </div><!-- End .ratings -->
+                                            <span class="ratings-text">( @item.countComment Reviews )</span>
+                                        </div>
                                     </div><!-- End .product-body -->
                                 </div><!-- End .product -->
                             </div><!-- End .col-sm-6 col-lg-4 col-xl-3 -->

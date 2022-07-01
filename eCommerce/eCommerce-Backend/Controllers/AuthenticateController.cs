@@ -25,7 +25,7 @@ namespace eCommerce_Backend.Controllers
         {
             var result = await _userService.Authenticate(request);
 
-            if (string.IsNullOrEmpty(result.ResultObj))
+            if (!result.IsSuccessed)
             {
                 return BadRequest(result);
             }
@@ -48,7 +48,7 @@ namespace eCommerce_Backend.Controllers
         [Route("register-admin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDto request)
         {
-            var result = await _userService.Register(request);
+            var result = await _userService.RegisterAdmin(request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);

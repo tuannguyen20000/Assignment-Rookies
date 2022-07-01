@@ -33,5 +33,13 @@ namespace eCommerce_Backend.Controllers
             var user = await _userService.GetById(UserId);
             return Ok(user);
         }
+
+        [HttpGet]
+        [Route("get-by-user-name/{UserName}")]
+        public async Task<IActionResult> GetByUserName(string UserName)
+        {
+            var user = await _userService.GetByUserName(UserName);
+            return Ok(user);
+        }
     }
 }

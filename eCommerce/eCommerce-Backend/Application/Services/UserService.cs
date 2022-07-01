@@ -28,17 +28,21 @@ namespace eCommerce_Backend.Application.Services
             _roleManager = roleManager;
             _configuration = configuration;
         }
-        public async Task<ApiResult<string>> Authenticate(LoginDto request)
+        public async Task<ApiResult<ResponseAuth>> Authenticate(LoginDto request)
         {
             var user = await _userManager.FindByNameAsync(request.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
 
+                var roles = await _userManager.GetRolesAsync(user);
+
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(ClaimTypes.Role, string.Join(";", roles))
                 };
 
                 foreach (var userRole in userRoles)
@@ -48,9 +52,14 @@ namespace eCommerce_Backend.Application.Services
 
                 var token = GetToken(authClaims);
 
-                return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
+                return new ApiSuccessResult<ResponseAuth>(new ResponseAuth()
+                {
+                    accessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                    user = request.Username,
+                    isInRole = string.Join("", roles)
+                });
             }
-            return new ApiErrorResult<string>(ErrorMessage.LoginFail);
+            return new ApiErrorResult<ResponseAuth>(ErrorMessage.LoginFail);
         }
 
         public async Task<ApiResult<UserReadDto>> GetById(string UserId)
@@ -60,19 +69,43 @@ namespace eCommerce_Backend.Application.Services
             {
                 return new ApiErrorResult<UserReadDto>(ErrorMessage.UserNameExists);
             }
+
+            var roles = await _userManager.GetRolesAsync(user);
             var userVm = new UserReadDto()
             {
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 UserId = user.Id,
                 UserName = user.UserName,
+                IsInRole = string.Join(";", roles)
+            };
+            return new ApiSuccessResult<UserReadDto>(userVm);
+        }
+
+        public async Task<ApiResult<UserReadDto>> GetByUserName(string UserName)
+        {
+            var user = await _userManager.FindByNameAsync(UserName);
+            if (user == null)
+            {
+                return new ApiErrorResult<UserReadDto>(ErrorMessage.UserNameExists);
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var userVm = new UserReadDto()
+            {
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                UserId = user.Id,
+                UserName = user.UserName,
+                IsInRole = string.Join(";", roles)
             };
             return new ApiSuccessResult<UserReadDto>(userVm);
         }
 
         public async Task<ApiResult<PagedResult<UserReadDto>>> GetPaging(UserPagingDto request)
         {
-            var query = _userManager.Users;
+            var query = _userManager.Users;         
             if (!string.IsNullOrEmpty(request.Keyword))
             {
                 query = query.Where(x => x.UserName.Contains(request.Keyword)
@@ -148,7 +181,7 @@ namespace eCommerce_Backend.Application.Services
                 return new ApiErrorResult<string>(ErrorMessage.UserCreateFail);
             else
             {
-                if (await _roleManager.RoleExistsAsync(UserRoles.User))
+                if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
                 {
                     await _userManager.AddToRoleAsync(user, UserRoles.Admin);
                 }

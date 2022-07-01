@@ -292,11 +292,13 @@ namespace eCommerce_Backend.Application.Services
                             from pic in ppic.DefaultIfEmpty()
                             join c in _dbContext.Categories on pic.CategoriesId equals c.Id into picc
                             from c in picc.DefaultIfEmpty()
-                      /*      join r in _dbContext.ProductRatings on p.Id equals r.ProductsId into ric
-                            from r in ric.DefaultIfEmpty()*/
+                            join r in _dbContext.ProductRatings on p.Id equals r.ProductsId into ric
+                            from r in ric.DefaultIfEmpty()
                             where pi == null || pi.IsDefault == true && p.Status == Status.Available
-                            select new { p, pi, pic, c.CategoryName, c.Id};
-               /* var test = await _dbContext.Products.Include(x => x.ProductRatings).Select(x => new {product = x ,rating = x.ProductRatings != null}).ToListAsync();*/
+                            select new { p, pi, pic, c.CategoryName, c.Id, 
+                                avrRating =  p.ProductRatings.Count != 0 ? (int)p.ProductRatings.Select(x => x.Rating).Average() : 0,
+                                countComment = p.ProductRatings.Count != 0 ? p.ProductRatings.Select(x => x.Comment).Count() : 0
+                            };
 
                 if (!string.IsNullOrEmpty(request.Keyword))
                 {
@@ -321,7 +323,9 @@ namespace eCommerce_Backend.Application.Services
                         ThumbnailImage = x.pi.ImagePath,
                         CategoryId = x.Id,
                         CategoryName = x.CategoryName,
-                    }).ToListAsync();
+                        avrRating = (int)Math.Ceiling((decimal)x.avrRating),
+                        countComment = x.countComment
+                    }).Distinct().ToListAsync();
                 var pagedResult = new PagedResult<ProductReadDto>()
                 {
                     TotalRecords = totalRow,
