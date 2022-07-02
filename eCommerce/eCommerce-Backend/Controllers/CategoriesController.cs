@@ -33,6 +33,22 @@ namespace eCommerce_Backend.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("get-by-id/{Id}")]
+        public async Task<IActionResult> GetById(int Id)
+        {
+            var user = await _categoryService.GetById(Id);
+            return Ok(user);
+        }
+
+        [HttpGet]
+        [Route("get-list-product-by-Id/{categoryId}")]
+        public async Task<IActionResult> GetListProductById(int categoryId)
+        {
+            var result = await _categoryService.GetListProductById(categoryId);
+            return Ok(result);
+        }
+
         [HttpPost]
         [Route("create-category")]
         [Authorize]
@@ -46,13 +62,16 @@ namespace eCommerce_Backend.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        [Route("get-by-id/{Id}")]
-        public async Task<IActionResult> GetById(int Id)
+
+        [HttpPost]
+        [Authorize]
+        [Route("soft-delete/{Id}")]
+        public async Task<IActionResult> SoftDelete(int Id)
         {
-            var user = await _categoryService.GetById(Id);
-            return Ok(user);
+            var result = await _categoryService.SoftDelete(Id);
+            return Ok(result);
         }
+
 
         [HttpPut]
         [Authorize]
@@ -71,22 +90,7 @@ namespace eCommerce_Backend.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        [Authorize]
-        [Route("soft-delete/{Id}")]
-        public async Task<IActionResult> SoftDelete(int Id)
-        {
-            var result = await _categoryService.SoftDelete(Id);
-            return Ok(result);
-        }
 
 
-        [HttpGet]
-        [Route("get-list-product-by-Id/{categoryId}")]
-        public async Task<IActionResult> GetListProductById(int categoryId)
-        {
-            var result = await _categoryService.GetListProductById(categoryId);
-            return Ok(result);
-        }
     }
 }

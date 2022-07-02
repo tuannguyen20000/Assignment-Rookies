@@ -34,6 +34,45 @@ namespace eCommerce_Backend.Controllers
             return Ok(result);
         }
 
+        [HttpGet("get-by-id/{Id}")]
+        public async Task<IActionResult> GetById(int Id)
+        {
+            var result = await _productService.GetById(Id);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("get-image-by-id/{imageId}")]
+        public async Task<IActionResult> GetImageById(int imageId)
+        {
+            var image = await _productService.GetImageById(imageId);
+            if (image == null)
+            {
+                return BadRequest("Cannot find image");
+            }
+            return Ok(image);
+        }
+
+        [HttpGet]
+        [Route("{Id}/get-image-list-by-product-id")]
+        public async Task<IActionResult> GetListImageByProductId(int Id)
+        {
+            var image = await _productService.GetListImageByProductId(Id);
+            return Ok(image);
+        }
+
+        [HttpGet]
+        [Route("{Id}/get-avg-by-id")]
+        public async Task<IActionResult> GetAvgRatingById(int Id)
+        {
+            var result = await _productService.GetAvgRatingById(Id);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
 
         [HttpPost]
         [Authorize]
@@ -46,27 +85,6 @@ namespace eCommerce_Backend.Controllers
             {
                 return BadRequest(result.errorMessage);
             }
-            if (!result.IsSuccessed)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
-        }
-
-        [HttpGet("get-by-id/{Id}")]
-        public async Task<IActionResult> GetById(int Id)
-        {
-            var result = await _productService.GetById(Id);
-            return Ok(result);
-        }
-
-        [HttpPut]
-        [Authorize]
-        [Consumes("multipart/form-data")]
-        [Route("update-product/{Id}")]
-        public async Task<IActionResult> Update(int Id, [FromForm] ProductUpdateDto request)
-        {
-            var result = await _productService.Update(Id, request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);
@@ -96,6 +114,34 @@ namespace eCommerce_Backend.Controllers
             return Ok(imageId);
         }
 
+        [HttpPost]
+        [Route("{Id}/add-comment")]
+        public async Task<IActionResult> AddComment(int Id, [FromBody] ProductRatingCreateDto request)
+        {
+            var result = await _productService.AddComment(Id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [Authorize]
+        [Consumes("multipart/form-data")]
+        [Route("update-product/{Id}")]
+        public async Task<IActionResult> Update(int Id, [FromForm] ProductUpdateDto request)
+        {
+            var result = await _productService.Update(Id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+
+
         [HttpPut]
         [Authorize]
         [Route("update-image/{imageId}")]
@@ -107,39 +153,6 @@ namespace eCommerce_Backend.Controllers
                 return BadRequest(result);
             }
             return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("get-image-by-id/{imageId}")]
-        public async Task<IActionResult> GetImageById(int imageId)
-        {
-            var image = await _productService.GetImageById(imageId);
-            if (image == null)
-            {
-                return BadRequest("Cannot find image");
-            }
-            return Ok(image);
-        }
-
-        [HttpGet]
-        [Route("{Id}/get-image-list-by-product-id")]
-        public async Task<IActionResult> GetListImageByProductId(int Id)
-        {
-            var image = await _productService.GetListImageByProductId(Id);
-            return Ok(image);
-        }
-
-        [HttpDelete]
-        [Authorize]
-        [Route("remove-image/{imageId}")]
-        public async Task<IActionResult> RemoveImage(int imageId)
-        {
-            var result = await _productService.RemoveImage(imageId);
-            if (!result.IsSuccessed)
-            {
-                return BadRequest();
-            }
-            return Ok();
         }
 
         [HttpPut]
@@ -155,28 +168,20 @@ namespace eCommerce_Backend.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        [Route("{Id}/add-comment")]
-        public async Task<IActionResult> AddComment(int Id, [FromBody] ProductRatingCreateDto request)
+
+
+        [HttpDelete]
+        [Authorize]
+        [Route("remove-image/{imageId}")]
+        public async Task<IActionResult> RemoveImage(int imageId)
         {
-            var result = await _productService.AddComment(Id, request);
+            var result = await _productService.RemoveImage(imageId);
             if (!result.IsSuccessed)
             {
-                return BadRequest(result);
+                return BadRequest();
             }
-            return Ok(result);
+            return Ok();
         }
 
-        [HttpGet]
-        [Route("{Id}/get-avg-by-id")]
-        public async Task<IActionResult> GetAvgRatingById(int Id)
-        {
-            var result = await _productService.GetAvgRatingById(Id);
-            if (!result.IsSuccessed)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
-        }
     }
 }

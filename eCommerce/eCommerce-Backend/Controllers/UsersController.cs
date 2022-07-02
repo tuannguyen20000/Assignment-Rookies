@@ -41,5 +41,13 @@ namespace eCommerce_Backend.Controllers
             var user = await _userService.GetByUserName(UserName);
             return Ok(user);
         }
+
+        [HttpGet]
+        [Route("get-list-user")]
+        public async Task<IActionResult> GetListUser()
+        {
+            var result = await _userService.GetList();
+            return Ok(result);
+        }
     }
 }

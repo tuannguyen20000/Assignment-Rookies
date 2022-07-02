@@ -13,5 +13,6 @@ namespace eCommerce_Backend.Application.IServices
         Task<ApiResult<PagedResult<UserReadDto>>> GetPaging(UserPagingDto request);
         Task<ApiResult<UserReadDto>> GetById(string UserId);
         Task<ApiResult<UserReadDto>> GetByUserName(string UserName);
+        Task<List<UserReadDto>> GetList();
     }
 }

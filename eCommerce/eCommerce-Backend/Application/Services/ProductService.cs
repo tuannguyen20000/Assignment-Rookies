@@ -285,7 +285,7 @@ namespace eCommerce_Backend.Application.Services
         {
             using (_dbContext)
             {
-                var query = from p in _dbContext.Products.OrderByDescending(x => x.Id)
+                var query = from p in _dbContext.Products.OrderByDescending(x => x.Id).Distinct()
                             join pi in _dbContext.ProductImages on p.Id equals pi.ProductsId into ppi
                             from pi in ppi.DefaultIfEmpty()
                             join pic in _dbContext.ProductInCategory on p.Id equals pic.ProductsId into ppic
@@ -309,7 +309,7 @@ namespace eCommerce_Backend.Application.Services
                     query = query.Where(p => p.pic.CategoriesId == request.CategoriesId);
                 }
                 
-                int totalRow = await query.CountAsync();
+                int totalRow = await query.Select(x=>x.p.Id).Distinct().CountAsync();
                 var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
                     .Take(request.PageSize)
                     .Select(x => new ProductReadDto()

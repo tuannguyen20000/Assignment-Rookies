@@ -103,6 +103,21 @@ namespace eCommerce_Backend.Application.Services
             return new ApiSuccessResult<UserReadDto>(userVm);
         }
 
+        public async Task<List<UserReadDto>> GetList()
+        {
+            using (_userManager)
+            {
+                var data = await _userManager.Users.Select(x => new UserReadDto
+                {
+                    UserId = x.Id,
+                    Email = x.Email,
+                    PhoneNumber = x.PhoneNumber,
+                    UserName = x.UserName,
+                }).ToListAsync();
+                return data;
+            }
+        }
+
         public async Task<ApiResult<PagedResult<UserReadDto>>> GetPaging(UserPagingDto request)
         {
             var query = _userManager.Users;         
