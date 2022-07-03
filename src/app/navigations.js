@@ -9,7 +9,10 @@ export const navigations = [
   {
     name: 'Manage Products',
     icon: 'local_grocery_store',
-    children: [{ name: 'List Products', path: '/product/paging', iconText: 'P' }],
+    children: [
+      { name: 'List Products', path: '/product/paging', iconText: 'P' },
+      { name: 'Create Product', iconText: 'CP', path: '/product/create' },
+    ],
   },
   {
     name: 'Manage Categories',

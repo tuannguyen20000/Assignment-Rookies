@@ -1,4 +1,4 @@
-import axiosInstance from '../../../axios.js';
+import axiosInstance, { axiosFormData } from '../../../axios.js';
 
 export const GET_LIST_PRODUCT = 'GET_LIST_PRODUCT';
 export const CREATE_PRODUCT = 'CREATE_PRODUCT';
@@ -15,11 +15,11 @@ export const getListProduct = () => (dispatch) => {
   });
 };
 
-export const createProduct = (product) => (dispatch) => {
-  axiosInstance.post('Products/create-product', { product }).then((res) => {
+export const createProduct = (formData) => (dispatch) => {
+  axiosFormData.post('Products/create-product', formData).then((res) => {
     dispatch({
       type: CREATE_PRODUCT,
-      payload: res.data,
+      payload: res,
     });
   });
 };

@@ -7,6 +7,7 @@ import {
 } from '../actions/ProductActions';
 
 const initialState = {
+  isCreated: false,
   productList: [],
 };
 
@@ -18,7 +19,10 @@ const ProductReducer = function (state = initialState, action) {
       };
     }
     case CREATE_PRODUCT: {
-      return [...action.payload];
+      return {
+        ...state,
+        isCreated: true,
+      };
     }
     case GET_BY_ID_PRODUCT: {
       return [...action.payload];

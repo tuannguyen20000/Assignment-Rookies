@@ -17,6 +17,7 @@ import { Breadcrumb, SimpleCard } from 'app/components';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getListProduct } from 'app/redux/actions/ProductActions';
+import { baseUrlApi } from 'app/utils/constant';
 
 const Container = styled('div')(({ theme }) => ({
   margin: '30px',
@@ -65,6 +66,7 @@ const PaginationTable = () => {
             <TableCell align="center">Price</TableCell>
             <TableCell align="center">Created Date</TableCell>
             <TableCell align="center">Updated Date</TableCell>
+            <TableCell align="center"></TableCell>
             <TableCell align="right">Action</TableCell>
           </TableRow>
         </TableHead>
@@ -82,6 +84,18 @@ const PaginationTable = () => {
                   <TableCell align="center">
                     {moment(item.updatedDate).utc().format('DD-MM-YYYY')}
                   </TableCell>
+                  <Box
+                    component="img"
+                    align="center"
+                    sx={{
+                      height: 225,
+                      width: 225,
+                      maxHeight: { xs: 233, md: 167 },
+                      maxWidth: { xs: 350, md: 250 },
+                    }}
+                    alt={item.productName}
+                    src={baseUrlApi + item.thumbnailImages}
+                  />
                   <TableCell align="right">
                     <IconButton>
                       <Icon color="error">close</Icon>
