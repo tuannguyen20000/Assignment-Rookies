@@ -175,11 +175,6 @@ const SimpleForm = () => {
                 control={<Radio color="secondary" />}
               />
             </RadioGroup>
-
-            <FormControlLabel
-              control={<Checkbox />}
-              label="I have read and agree to the terms of service."
-            />
           </Grid>
         </Grid>
 
