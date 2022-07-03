@@ -2,6 +2,8 @@
 
 Link Demo week 1 (20/6/2022 - 26/6/2022): https://drive.google.com/file/d/1DvLpWe4fnaeeKWDcvPMykNOZPxfNqwGA/view?usp=sharing
 
+Link Demo week 2 (27/6/2022 - 3/7/2022): https://drive.google.com/file/d/1-AqTi2R5SaSRpHD4eYqzBHbeSQBBlkkh/view?usp=sharing
+
 ----- Backend Api + Customer Site (Last commit) : (Branch)Develop -----
 
 ----- Admin Site (Last commit) : (Branch)AdminSite -----
