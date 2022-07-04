@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material';
 import { Box, styled } from '@mui/system';
 import { Breadcrumb, SimpleCard } from 'app/components';
-import StepperForm from './form/StepperForm';
+import EditForm from './form/EditForm';
 
 const Container = styled('div')(({ theme }) => ({
   margin: '30px',
@@ -12,22 +12,22 @@ const Container = styled('div')(({ theme }) => ({
   },
 }));
 
-const ProductCreateForm = () => {
+const ProductEditForm = () => {
   return (
     <Container>
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[{ name: 'Product', path: '/product/paging' }, { name: 'Create' }]}
+          routeSegments={[{ name: 'Product', path: '/product/paging' }, { name: 'Edit' }]}
         />
       </Box>
 
       <Stack spacing={3}>
-        <SimpleCard title="Create Product">
-          <StepperForm />
+        <SimpleCard title="Edit">
+          <EditForm />
         </SimpleCard>
       </Stack>
     </Container>
   );
 };
 
-export default ProductCreateForm;
+export default ProductEditForm;

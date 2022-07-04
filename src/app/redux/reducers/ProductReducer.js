@@ -8,6 +8,7 @@ import {
 
 const initialState = {
   isCreated: false,
+  isUpdated: false,
   productList: [],
 };
 
@@ -28,7 +29,10 @@ const ProductReducer = function (state = initialState, action) {
       return [...action.payload];
     }
     case UPDATE_PRODUCT: {
-      return [...action.payload];
+      return {
+        ...state,
+        isUpdated: true,
+      };
     }
     case SOFT_DELETE_PRODUCT: {
       return [...action.payload];

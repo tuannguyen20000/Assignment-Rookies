@@ -25,7 +25,7 @@ export const createProduct = (formData) => (dispatch) => {
 };
 
 export const getByIdProduct = (Id) => (dispatch) => {
-  axiosInstance.get('Products/get-by-id' + { Id }).then((res) => {
+  axiosInstance.get('Products/get-by-id' + Id).then((res) => {
     dispatch({
       type: GET_BY_ID_PRODUCT,
       payload: res.data,
@@ -33,17 +33,18 @@ export const getByIdProduct = (Id) => (dispatch) => {
   });
 };
 
-export const updateProduct = (Id, product) => (dispatch) => {
-  axiosInstance.put('Products/update-product' + { Id }, product).then((res) => {
+export const updateProduct = (id, formData) => (dispatch) => {
+  console.log(id, formData);
+  axiosFormData.put('Products/update-product/' + id, formData).then((res) => {
     dispatch({
       type: 'UPDATE_PRODUCT',
-      payload: res.data,
+      payload: res,
     });
   });
 };
 
 export const softDeleteProduct = (Id) => (dispatch) => {
-  axiosInstance.post('Products/soft-delete' + { Id }).then((res) => {
+  axiosInstance.post('Products/soft-delete' + Id).then((res) => {
     dispatch({
       type: 'SOFT_DELETE_PRODUCT',
       payload: res.data,

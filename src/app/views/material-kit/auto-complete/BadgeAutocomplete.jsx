@@ -7,7 +7,6 @@ const BadgeAutocomplete = () => {
   return (
     <Box
       sx={{
-        width: 500,
         '& > * + *': {
           marginTop: theme.spacing(3),
         },
@@ -15,43 +14,9 @@ const BadgeAutocomplete = () => {
     >
       <Autocomplete
         multiple
-        id="tags-standard"
-        options={top100Films}
-        getOptionLabel={(option) => option.title}
-        defaultValue={[top100Films[13]]}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="standard"
-            label="Multiple values"
-            placeholder="Favorites"
-            fullWidth
-          />
-        )}
-      />
-      <Autocomplete
-        multiple
-        id="tags-outlined"
-        options={top100Films}
-        getOptionLabel={(option) => option.title}
-        defaultValue={[top100Films[13]]}
-        filterSelectedOptions
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="outlined"
-            label="filterSelectedOptions"
-            placeholder="Favorites"
-            fullWidth
-          />
-        )}
-      />
-      <Autocomplete
-        multiple
         id="tags-filled"
         options={top100Films.map((option) => option.title)}
         defaultValue={[top100Films[13].title]}
-        freeSolo
         renderTags={(value, getTagProps) =>
           value.map((option, index) => (
             <Chip variant="outlined" label={option} {...getTagProps({ index })} />
@@ -61,8 +26,8 @@ const BadgeAutocomplete = () => {
           <TextField
             {...params}
             variant="filled"
-            label="freeSolo"
-            placeholder="Favorites"
+            label="Category"
+            placeholder="Selected"
             fullWidth
           />
         )}

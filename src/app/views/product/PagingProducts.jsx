@@ -1,7 +1,5 @@
 import {
   Box,
-  Icon,
-  IconButton,
   styled,
   Table,
   TableBody,
@@ -18,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { getListProduct } from 'app/redux/actions/ProductActions';
 import { baseUrlApi } from 'app/utils/constant';
+import MaxHeightMenu from '../material-kit/menu/MaxHeightMenu';
 
 const Container = styled('div')(({ theme }) => ({
   margin: '30px',
@@ -97,9 +96,7 @@ const PaginationTable = () => {
                     src={baseUrlApi + item.thumbnailImages}
                   />
                   <TableCell align="right">
-                    <IconButton>
-                      <Icon color="error">close</Icon>
-                    </IconButton>
+                    <MaxHeightMenu data={item.id}></MaxHeightMenu>
                   </TableCell>
                 </TableRow>
               ))}

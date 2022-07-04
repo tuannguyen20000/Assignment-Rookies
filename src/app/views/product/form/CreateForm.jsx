@@ -12,7 +12,7 @@ const TextField = styled(TextValidator)(() => ({
   marginBottom: '16px',
 }));
 
-const SimpleForm = () => {
+const CreateForm = () => {
   const [state, setState] = useState('');
   const [isFilePicked, setIsFilePicked] = useState(false);
   const navigate = useNavigate();
@@ -22,7 +22,6 @@ const SimpleForm = () => {
   formData.append('ProductName', state.ProductName);
   formData.append('Description', state.Description);
   formData.append('Price', state.Price);
-  formData.append('Status', state.Status);
   formData.append('ThumbnailImage', state.ThumbnailImage);
 
   const handleChange = (event) => {
@@ -39,7 +38,7 @@ const SimpleForm = () => {
     navigate('/product/paging');
   };
 
-  const { ProductName, Description, Price, Status } = state;
+  const { ProductName, Description, Price } = state;
 
   return (
     <div>
@@ -76,17 +75,6 @@ const SimpleForm = () => {
               validators={['required']}
               errorMessages={['this field is required']}
             />
-
-            <TextField
-              sx={{ mb: 4 }}
-              type="number"
-              name="Status"
-              label="Status"
-              onChange={handleChange}
-              value={Status || ''}
-              errorMessages={['this field is required']}
-              validators={['required']}
-            />
           </Grid>
 
           <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
@@ -114,4 +102,4 @@ const SimpleForm = () => {
   );
 };
 
-export default SimpleForm;
+export default CreateForm;
