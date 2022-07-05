@@ -1,6 +1,5 @@
 using eCommerce_Backend.Application.IServices;
 using eCommerce_Backend.Controllers;
-using eCommerce_SharedViewModels.Common;
 using eCommerce_xUniTest.DummyData;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

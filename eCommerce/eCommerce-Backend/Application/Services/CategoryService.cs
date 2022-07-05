@@ -75,12 +75,16 @@ namespace eCommerce_Backend.Application.Services
         {
             using (_dbContext)
             {
-                var data = await _dbContext.Categories.Where(x => x.Status == Status.Available).Select(x => new CategoryReadDto()
+                var data = await _dbContext.Categories
+                    .Include(x => x.CategoryImages)
+                    .Where(x => x.Status == Status.Available).Select(x => new CategoryReadDto()
                 {
                     Id = x.Id,
                     CategoryName = x.CategoryName,
-                    Description = x.Description,
-                }).ToListAsync();
+                    Description = x.Description,             
+                    Status = x.Status,
+                    ThumbnailImage = x.CategoryImages.Where(x => x.IsDefault == true).Select(x => x.ImagePath).FirstOrDefault()
+                    }).ToListAsync();
                 return data;
             }
         }

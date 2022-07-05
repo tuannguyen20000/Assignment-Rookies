@@ -36,8 +36,7 @@ namespace eCommerce_xUniTest.DummyData
             {            
                 Description = "test Description",
                 Price = "100000",
-                ProductName = "Giay test2",
-                Status = Status.Available,             
+                ProductName = "Giay test2",         
             };
         }
 

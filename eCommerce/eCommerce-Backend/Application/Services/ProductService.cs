@@ -159,7 +159,7 @@ namespace eCommerce_Backend.Application.Services
             }).ToListAsync();
             var categories = await (from c in _dbContext.Categories
                                     join pic in _dbContext.ProductInCategory on c.Id equals pic.CategoriesId
-                                    where pic.ProductsId == Id
+                                    where pic.ProductsId == Id && c.Status == Status.Available
                                     select c.CategoryName).ToListAsync();
             var ratings = await (from r in _dbContext.ProductRatings.OrderByDescending(x => x.Id)
                                  join p in _dbContext.Products on r.ProductsId equals p.Id into pr
@@ -250,14 +250,20 @@ namespace eCommerce_Backend.Application.Services
         {
             using (_dbContext)
             {
-                var data = await _dbContext.Products.Where(x=>x.Status == Status.Available).Select(x => new ProductReadDto()
+
+                var data = await _dbContext.Products
+                    .Include(x=>x.ProductImages)
+                    .Include(x => x.ProductInCategory)
+                    .Where(x=>x.Status == Status.Available).Select(x => new ProductReadDto()
                 {
                     Id = x.Id,
                     CreatedDate = x.CreatedDate,
                     Description = x.Description,
                     Price = x.Price,
                     ProductName = x.ProductName,
-                    UpdatedDate = x.UpdatedDate,                  
+                    UpdatedDate = x.UpdatedDate,
+                    CategoryId = x.ProductInCategory.Select(x=>x.CategoriesId).FirstOrDefault(),
+                    ThumbnailImage = x.ProductImages.Where(x=>x.IsDefault == true).Select(x=>x.ImagePath).FirstOrDefault()
                 }).ToListAsync();
                 return data;
             }              
@@ -295,7 +301,9 @@ namespace eCommerce_Backend.Application.Services
                             join r in _dbContext.ProductRatings on p.Id equals r.ProductsId into ric
                             from r in ric.DefaultIfEmpty()
                             where pi == null || pi.IsDefault == true && p.Status == Status.Available
-                            select new { p, pi, pic, c.CategoryName, c.Id, 
+                            select new { p, pi, pic,
+                                CategoryName = p.ProductInCategory.Count != 0 && c.Status == Status.Available ? c.CategoryName : "Uncategory" ,
+                                CategoryId = p.ProductInCategory.Count != 0 && c.Status == Status.Available ? c.Id: 0, 
                                 avrRating =  p.ProductRatings.Count != 0 ? (int)p.ProductRatings.Select(x => x.Rating).Average() : 0,
                                 countComment = p.ProductRatings.Count != 0 ? p.ProductRatings.Select(x => x.Comment).Count() : 0
                             };
@@ -321,7 +329,7 @@ namespace eCommerce_Backend.Application.Services
                         Price = x.p.Price,
                         UpdatedDate = x.p.UpdatedDate,
                         ThumbnailImage = x.pi.ImagePath,
-                        CategoryId = x.Id,
+                        CategoryId = x.CategoryId,
                         CategoryName = x.CategoryName,
                         avrRating = (int)Math.Ceiling((decimal)x.avrRating),
                         countComment = x.countComment
