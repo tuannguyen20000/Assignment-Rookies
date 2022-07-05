@@ -10,10 +10,12 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material';
+import MaxHeightMenu from '../material-kit/menu/MaxHeightMenu';
 
 import { useState, useEffect } from 'react';
 import { Breadcrumb, SimpleCard } from 'app/components';
 import { useDispatch, useSelector } from 'react-redux';
+import { baseUrlApi } from 'app/utils/constant';
 
 import { getListCategory } from 'app/redux/actions/CategoryAction';
 
@@ -37,6 +39,7 @@ const StyledTable = styled(Table)(() => ({
 }));
 
 const PaginationTable = () => {
+  const currentParams = 'category';
   const dispatch = useDispatch();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -74,9 +77,21 @@ const PaginationTable = () => {
                 <TableRow key={index}>
                   <TableCell align="left">{item.categoryName}</TableCell>
                   <TableCell align="center">{item.description}</TableCell>
+                  <Box
+                    component="img"
+                    align="center"
+                    sx={{
+                      height: 225,
+                      width: 225,
+                      maxHeight: { xs: 233, md: 167 },
+                      maxWidth: { xs: 350, md: 250 },
+                    }}
+                    alt={item.productName}
+                    src={baseUrlApi + item.thumbnailImage}
+                  />
                   <TableCell align="right">
                     <IconButton>
-                      <Icon color="error">close</Icon>
+                      <MaxHeightMenu data={item.id} current={currentParams}></MaxHeightMenu>
                     </IconButton>
                   </TableCell>
                 </TableRow>

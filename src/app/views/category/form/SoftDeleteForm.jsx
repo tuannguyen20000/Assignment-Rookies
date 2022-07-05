@@ -10,7 +10,7 @@ import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { softDeleteProduct } from 'app/redux/actions/ProductActions';
+import { softDeleteCategory } from 'app/redux/actions/CategoryAction';
 
 import { baseUrlApi } from 'app/utils/constant';
 const TextField = styled(TextValidator)(() => ({
@@ -18,21 +18,19 @@ const TextField = styled(TextValidator)(() => ({
   marginBottom: '16px',
 }));
 
-function DetailProduct() {
+function DetailCategory() {
   const param = useParams();
-  const { productList } = useSelector((state) => state.products);
-  const currentProduct = productList.filter((product) => product.id == param.id);
-  const { productName, description, price, thumbnailImage } = currentProduct[0];
+  const { categoryList } = useSelector((state) => state.categories);
+  const currentCategory = categoryList.filter((category) => category.id == param.id);
+  const { categoryName, description, thumbnailImage } = currentCategory[0];
   return (
     <div>
       <ValidatorForm>
         <Grid container spacing={6}>
           <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
-            <TextField htmlFor="component-disabled" label="Product Name" value={productName} />
+            <TextField htmlFor="component-disabled" label="Category Name" value={categoryName} />
 
             <TextField htmlFor="component-disabled" label="Description" value={description} />
-
-            <TextField htmlFor="component-disabled" label="Price" value={price} />
           </Grid>
 
           <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
@@ -45,7 +43,7 @@ function DetailProduct() {
                 maxHeight: { xs: 233, md: 167 },
                 maxWidth: { xs: 350, md: 250 },
               }}
-              alt={productName}
+              alt={categoryName}
               src={baseUrlApi + thumbnailImage}
             />
           </Grid>
@@ -56,16 +54,16 @@ function DetailProduct() {
 }
 
 function getSteps() {
-  return ['Infomation product', 'Confirm Delete'];
+  return ['Infomation Category', 'Confirm Delete'];
 }
 
 function getStepContent(stepIndex) {
   switch (stepIndex) {
     case 0:
-      return <DetailProduct></DetailProduct>;
+      return <DetailCategory></DetailCategory>;
 
     case 1:
-      return `Are you sure you want to delete this product?`;
+      return `Are you sure you want to delete this Category?`;
   }
 }
 
@@ -78,14 +76,15 @@ export default function SoftDeleteForm() {
 
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
-      dispatch(softDeleteProduct(param.id));
+      console.log(param.id);
+      dispatch(softDeleteCategory(param.id));
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
 
-  const handleReset = () => navigate('/product/paging');
+  const handleReset = () => navigate('/category/paging');
 
   return (
     <Box>

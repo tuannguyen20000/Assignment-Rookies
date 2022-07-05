@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { updateProduct } from 'app/redux/actions/ProductActions';
+import { updateCategory } from 'app/redux/actions/CategoryAction';
 import { Button, Grid, Icon, styled, Box } from '@mui/material';
 import { Span } from 'app/components/Typography';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
@@ -17,20 +17,19 @@ const EditForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { productList } = useSelector((state) => state.products);
-  const currentProduct = productList.filter((product) => product.id == param.id);
-  const { id, productName, description, price, thumbnailImage } = currentProduct[0];
+  const { categoryList } = useSelector((state) => state.categories);
+  const currentCategory = categoryList.filter((category) => category.id == param.id);
+  console.log(param.id);
+  const { id, categoryName, description, thumbnailImage } = currentCategory[0];
   const [state, setState] = useState({
-    ProductName: productName,
+    CategoryName: categoryName,
     Description: description,
-    Price: price,
   });
   const [isFilePicked, setIsFilePicked] = useState(false);
 
   const formData = new FormData();
-  formData.append('ProductName', state.ProductName);
+  formData.append('CategoryName', state.CategoryName);
   formData.append('Description', state.Description);
-  formData.append('Price', state.Price);
   formData.append('ThumbnailImage', state.ThumbnailImage);
 
   const handleChange = (event) => {
@@ -43,11 +42,11 @@ const EditForm = () => {
     setIsFilePicked(true);
   };
   const handleSubmit = () => {
-    dispatch(updateProduct(id, formData));
-    navigate('/product/paging');
+    dispatch(updateCategory(id, formData));
+    navigate('/category/paging');
   };
 
-  const { ProductName, Description, Price } = state;
+  const { CategoryName, Description } = state;
 
   return (
     <div>
@@ -56,12 +55,12 @@ const EditForm = () => {
           <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
             <TextField
               type="text"
-              name="ProductName"
+              name="CategoryName"
               id="standard-basic"
-              value={ProductName || ''}
+              value={CategoryName || ''}
               onChange={handleChange}
               errorMessages={['this field is required']}
-              label="Product Name (Min length 4, Max length 9)"
+              label="Category Name (Min length 4, Max length 9)"
               validators={['required', 'minStringLength: 4', 'maxStringLength: 9']}
             />
 
@@ -71,16 +70,6 @@ const EditForm = () => {
               label="Description"
               onChange={handleChange}
               value={Description || ''}
-              validators={['required']}
-              errorMessages={['this field is required']}
-            />
-
-            <TextField
-              type="number"
-              name="Price"
-              label="Price"
-              value={Price || ''}
-              onChange={handleChange}
               validators={['required']}
               errorMessages={['this field is required']}
             />
@@ -109,7 +98,7 @@ const EditForm = () => {
                 maxHeight: { xs: 233, md: 167 },
                 maxWidth: { xs: 350, md: 250 },
               }}
-              alt={productName}
+              alt={categoryName}
               src={baseUrlApi + thumbnailImage}
             />
           </Grid>

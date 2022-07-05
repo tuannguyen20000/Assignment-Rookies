@@ -2,7 +2,7 @@ import { Box, Icon, IconButton, Menu, MenuItem } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const options = ['edit', 'delete', 'detail'];
+const options = ['edit', 'delete'];
 
 const ITEM_HEIGHT = 48;
 
@@ -20,7 +20,7 @@ function MaxHeightMenu(props) {
   }
 
   function redirect(option) {
-    navigate(`/product/${option}/${props.data}`);
+    navigate(`/${props.current}/${option}/${props.data}`);
   }
 
   return (

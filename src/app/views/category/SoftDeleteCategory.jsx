@@ -12,17 +12,17 @@ const Container = styled('div')(({ theme }) => ({
   },
 }));
 
-const ProductSoftDeleteForm = () => {
+const CategoryCreateForm = () => {
   return (
     <Container>
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[{ name: 'Product', path: '/product/paging' }, { name: 'Delete' }]}
+          routeSegments={[{ name: 'Category', path: '/category/paging' }, { name: 'Delete' }]}
         />
       </Box>
 
       <Stack spacing={3}>
-        <SimpleCard title="Delete Product">
+        <SimpleCard title="Delete Category">
           <SoftDeleteForm />
         </SimpleCard>
       </Stack>
@@ -30,4 +30,4 @@ const ProductSoftDeleteForm = () => {
   );
 };
 
-export default ProductSoftDeleteForm;
+export default CategoryCreateForm;

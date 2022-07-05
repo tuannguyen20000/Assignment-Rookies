@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material';
 import { Box, styled } from '@mui/system';
 import { Breadcrumb, SimpleCard } from 'app/components';
-import SoftDeleteForm from './form/SoftDeleteForm';
+import EditForm from './form/EditForm';
 
 const Container = styled('div')(({ theme }) => ({
   margin: '30px',
@@ -12,22 +12,22 @@ const Container = styled('div')(({ theme }) => ({
   },
 }));
 
-const ProductSoftDeleteForm = () => {
+const CategoryEditForm = () => {
   return (
     <Container>
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[{ name: 'Product', path: '/product/paging' }, { name: 'Delete' }]}
+          routeSegments={[{ name: 'Category', path: '/category/paging' }, { name: 'Edit' }]}
         />
       </Box>
 
       <Stack spacing={3}>
-        <SimpleCard title="Delete Product">
-          <SoftDeleteForm />
+        <SimpleCard title="Edit">
+          <EditForm />
         </SimpleCard>
       </Stack>
     </Container>
   );
 };
 
-export default ProductSoftDeleteForm;
+export default CategoryEditForm;

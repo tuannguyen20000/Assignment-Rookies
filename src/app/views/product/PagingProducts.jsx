@@ -38,6 +38,7 @@ const StyledTable = styled(Table)(() => ({
 }));
 
 const PaginationTable = () => {
+  const currentParams = 'product';
   const dispatch = useDispatch();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -93,10 +94,10 @@ const PaginationTable = () => {
                       maxWidth: { xs: 350, md: 250 },
                     }}
                     alt={item.productName}
-                    src={baseUrlApi + item.thumbnailImages}
+                    src={baseUrlApi + item.thumbnailImage}
                   />
                   <TableCell align="right">
-                    <MaxHeightMenu data={item.id}></MaxHeightMenu>
+                    <MaxHeightMenu data={item.id} current={currentParams}></MaxHeightMenu>
                   </TableCell>
                 </TableRow>
               ))}

@@ -1,7 +1,6 @@
 import {
   GET_LIST_PRODUCT,
   CREATE_PRODUCT,
-  GET_BY_ID_PRODUCT,
   UPDATE_PRODUCT,
   SOFT_DELETE_PRODUCT,
 } from '../actions/ProductActions';
@@ -25,9 +24,6 @@ const ProductReducer = function (state = initialState, action) {
         ...state,
         isCreated: true,
       };
-    }
-    case GET_BY_ID_PRODUCT: {
-      return [...action.payload];
     }
     case UPDATE_PRODUCT: {
       return {
