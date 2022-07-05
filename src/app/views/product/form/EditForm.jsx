@@ -1,11 +1,10 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateProduct } from 'app/redux/actions/ProductActions';
 import { Button, Grid, Icon, styled, Box } from '@mui/material';
 import { Span } from 'app/components/Typography';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { baseUrlApi } from 'app/utils/constant';
 
 const TextField = styled(TextValidator)(() => ({

@@ -44,10 +44,10 @@ export const updateProduct = (id, formData) => (dispatch) => {
 };
 
 export const softDeleteProduct = (Id) => (dispatch) => {
-  axiosInstance.post('Products/soft-delete' + Id).then((res) => {
+  axiosInstance.post('Products/soft-delete/' + Id).then((res) => {
     dispatch({
       type: 'SOFT_DELETE_PRODUCT',
-      payload: res.data,
+      payload: res,
     });
   });
 };
