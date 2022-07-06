@@ -253,7 +253,7 @@ namespace eCommerce_Backend.Application.Services
 
                 var data = await _dbContext.Products
                     .Include(x=>x.ProductImages)
-                    .Include(x => x.ProductInCategory)
+                    .Include(x => x.ProductInCategory).ThenInclude(p=>p.Categories)
                     .Where(x=>x.Status == Status.Available).Select(x => new ProductReadDto()
                 {
                     Id = x.Id,
@@ -262,7 +262,7 @@ namespace eCommerce_Backend.Application.Services
                     Price = x.Price,
                     ProductName = x.ProductName,
                     UpdatedDate = x.UpdatedDate,
-                    CategoryId = x.ProductInCategory.Select(x=>x.CategoriesId).FirstOrDefault(),
+                    Categories = x.ProductInCategory.Select(x=>x.Categories.CategoryName).ToList(),
                     ThumbnailImage = x.ProductImages.Where(x=>x.IsDefault == true).Select(x=>x.ImagePath).FirstOrDefault()
                 }).ToListAsync();
                 return data;
@@ -291,55 +291,44 @@ namespace eCommerce_Backend.Application.Services
         {
             using (_dbContext)
             {
-                var query = from p in _dbContext.Products.OrderByDescending(x => x.Id).Distinct()
-                            join pi in _dbContext.ProductImages on p.Id equals pi.ProductsId into ppi
-                            from pi in ppi.DefaultIfEmpty()
-                            join pic in _dbContext.ProductInCategory on p.Id equals pic.ProductsId into ppic
-                            from pic in ppic.DefaultIfEmpty()
-                            join c in _dbContext.Categories on pic.CategoriesId equals c.Id into picc
-                            from c in picc.DefaultIfEmpty()
-                            join r in _dbContext.ProductRatings on p.Id equals r.ProductsId into ric
-                            from r in ric.DefaultIfEmpty()
-                            where pi == null || pi.IsDefault == true && p.Status == Status.Available
-                            select new { p, pi, pic,
-                                CategoryName = p.ProductInCategory.Count != 0 && c.Status == Status.Available ? c.CategoryName : "Uncategory" ,
-                                CategoryId = p.ProductInCategory.Count != 0 && c.Status == Status.Available ? c.Id: 0, 
-                                avrRating =  p.ProductRatings.Count != 0 ? (int)p.ProductRatings.Select(x => x.Rating).Average() : 0,
-                                countComment = p.ProductRatings.Count != 0 ? p.ProductRatings.Select(x => x.Comment).Count() : 0
-                            };
+                var query = _dbContext.Products.Where(x => x.Status == Status.Available)
+                    .Include(x => x.ProductImages.Where(x => x.IsDefault == true))
+                    .Include(x => x.ProductInCategory).ThenInclude(p => p.Categories)
+                    .Include(x => x.ProductRatings)
+                    .AsQueryable();
 
                 if (!string.IsNullOrEmpty(request.Keyword))
                 {
-                    query = query.Where(x => x.p.ProductName.Contains(request.Keyword));
+                    query = query.Where(x => x.ProductName.Contains(request.Keyword));
                 }
                 if (request.CategoriesId != null && request.CategoriesId != 0)
                 {
-                    query = query.Where(p => p.pic.CategoriesId == request.CategoriesId);
+                    query = query.Where(p => p.ProductInCategory.Where(x=>x.Categories.Status == Status.Available).Select(x=>x.CategoriesId).FirstOrDefault() == request.CategoriesId);
                 }
                 
-                int totalRow = await query.Select(x=>x.p.Id).Distinct().CountAsync();
+                int totalRow = await query.Select(x=>x.Id).CountAsync();
                 var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
                     .Take(request.PageSize)
                     .Select(x => new ProductReadDto()
                     {
-                        Id = x.p.Id,
-                        ProductName = x.p.ProductName,
-                        CreatedDate = x.p.CreatedDate,
-                        Description = x.p.Description,
-                        Price = x.p.Price,
-                        UpdatedDate = x.p.UpdatedDate,
-                        ThumbnailImage = x.pi.ImagePath,
-                        CategoryId = x.CategoryId,
-                        CategoryName = x.CategoryName,
-                        avrRating = (int)Math.Ceiling((decimal)x.avrRating),
-                        countComment = x.countComment
-                    }).Distinct().ToListAsync();
+                        Id = x.Id,
+                        ProductName = x.ProductName,
+                        CreatedDate = x.CreatedDate,
+                        Description = x.Description,
+                        Price = x.Price,
+                        UpdatedDate = x.UpdatedDate,
+                        ThumbnailImage = x.ProductImages.Select(x => x.ImagePath).FirstOrDefault(),
+                        CategoryId = x.ProductInCategory.Where(x=>x.Categories.Status == Status.Available).Select(x => x.CategoriesId).FirstOrDefault(),
+                        CategoryName = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.Categories.CategoryName).FirstOrDefault(),
+                        avrRating = (int)Math.Ceiling((decimal)x.ProductRatings.Select(x => x.Rating).Average()),
+                        countComment = x.ProductRatings.Select(x => x.Comment).Count(),
+                    }).ToListAsync();
                 var pagedResult = new PagedResult<ProductReadDto>()
                 {
                     TotalRecords = totalRow,
                     PageIndex = request.PageIndex,
                     PageSize = request.PageSize,
-                    Items = data
+                    Items = data,
                 };
                 return pagedResult;
             }

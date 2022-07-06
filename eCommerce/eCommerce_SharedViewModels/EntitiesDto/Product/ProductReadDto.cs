@@ -1,4 +1,5 @@
-﻿using eCommerce_SharedViewModels.EntitiesDto.Product.ProductImage;
+﻿using eCommerce_SharedViewModels.EntitiesDto.Categories;
+using eCommerce_SharedViewModels.EntitiesDto.Product.ProductImage;
 using eCommerce_SharedViewModels.EntitiesDto.Product.ProductRating;
 using eCommerce_SharedViewModels.Enums;
 
