@@ -26,7 +26,7 @@ namespace eCommerce_CustomerSite.Controllers
                 PageIndex = pageIndex,
                 PageSize = pageSize
             };
-            var data = await _categoryApi.GetPagingCategory(request);
+            var data = await _categoryApi.GetPagingCategoryAsync(request);
             return View(data);
         }
 
@@ -39,8 +39,8 @@ namespace eCommerce_CustomerSite.Controllers
                 PageSize = pageSize,
 
             };
-            var products = await _productApi.GetPagingProduct(request);
-            var category = await _categoryApi.GetById(CategoryId);
+            var products = await _productApi.GetPagingProductAsync(request);
+            var category = await _categoryApi.GetByIdAsync(CategoryId);
             return View(new ProductsOfCategoryVM()
             {
                 Category = category.ResultObj,

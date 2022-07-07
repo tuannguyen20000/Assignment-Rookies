@@ -25,7 +25,7 @@ namespace eCommerce_Backend.Application.Services
             _fileStorage = fileStorage;
         }
 
-        public async Task<ApiResult<bool>> AddComment(int Id, ProductRatingCreateDto request)
+        public async Task<ApiResult<bool>> AddCommentAsync(int Id, ProductRatingCreateDto request)
         {
             var data = await _dbContext.Products.FindAsync(Id);
             if (data == null)
@@ -50,7 +50,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public async Task<ApiResult<bool>> AddImage(int Id, ProductImageCreateDto request)
+        public async Task<ApiResult<bool>> AddImageAsync(int Id, ProductImageCreateDto request)
         {
             var Image = new ProductImages()
             {
@@ -62,7 +62,7 @@ namespace eCommerce_Backend.Application.Services
 
             if (request.ImageFile != null)
             {
-                Image.ImagePath = await SaveFile(request.ImageFile);
+                Image.ImagePath = await SaveFileAsync(request.ImageFile);
                 Image.FileSize = request.ImageFile.Length;
             }
             using (_dbContext)
@@ -74,7 +74,7 @@ namespace eCommerce_Backend.Application.Services
 
         }
 
-        public async Task<ApiResult<bool>> CategoryAssign(int Id, CategoryAssignDto request)
+        public async Task<ApiResult<bool>> CategoryAssignAsync(int Id, CategoryAssignDto request)
         {
             using (_dbContext)
             {
@@ -106,7 +106,7 @@ namespace eCommerce_Backend.Application.Services
             }       
         }
 
-        public async Task<ApiResult<bool>> Create(ProductCreateDto request)
+        public async Task<ApiResult<bool>> CreateAsync(ProductCreateDto request)
         {
             var Product = new Products()
             {
@@ -127,7 +127,7 @@ namespace eCommerce_Backend.Application.Services
                         Caption = "Thumbnail image",
                         DateCreated = DateTime.Now,
                         FileSize = request.ThumbnailImage.Length,
-                        ImagePath = await SaveFile(request.ThumbnailImage),
+                        ImagePath = await SaveFileAsync(request.ThumbnailImage),
                         IsDefault = true,
                     }
                 };
@@ -141,7 +141,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public async Task<ApiResult<ProductReadDto>> GetById(int Id)
+        public async Task<ApiResult<ProductReadDto>> GetByIdAsync(int Id)
         {
             var data = await _dbContext.Products.FindAsync(Id);
             if (data == null)
@@ -200,7 +200,7 @@ namespace eCommerce_Backend.Application.Services
             return new ApiSuccessResult<ProductReadDto>(result);
         }
 
-        public async Task<ApiResult<AvgRatingDto>> GetAvgRatingById(int Id)
+        public async Task<ApiResult<AvgRatingDto>> GetAvgRatingByIdAsync(int Id)
         {
             var product = await _dbContext.Products.FindAsync(Id);
             if (product == null)
@@ -225,7 +225,7 @@ namespace eCommerce_Backend.Application.Services
 
         }
 
-        public async Task<ApiResult<ProductImageDto>> GetImageById(int imageId)
+        public async Task<ApiResult<ProductImageDto>> GetImageByIdAsync(int imageId)
         {
             var image = await _dbContext.ProductImages.FindAsync(imageId);
             if (image == null)
@@ -246,7 +246,7 @@ namespace eCommerce_Backend.Application.Services
             return new ApiSuccessResult<ProductImageDto>(dto);
         }
 
-        public async Task<List<ProductReadDto>> GetList()
+        public async Task<List<ProductReadDto>> GetListAsync()
         {
             using (_dbContext)
             {
@@ -262,14 +262,14 @@ namespace eCommerce_Backend.Application.Services
                     Price = x.Price,
                     ProductName = x.ProductName,
                     UpdatedDate = x.UpdatedDate,
-                    Categories = x.ProductInCategory.Select(x=>x.Categories.CategoryName).ToList(),
+                    Categories = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x=>x.Categories.CategoryName).ToList(),
                     ThumbnailImage = x.ProductImages.Where(x=>x.IsDefault == true).Select(x=>x.ImagePath).FirstOrDefault()
                 }).ToListAsync();
                 return data;
             }              
         }
 
-        public async Task<List<ProductImageDto>> GetListImageByProductId(int Id)
+        public async Task<List<ProductImageDto>> GetListImageByProductIdAsync(int Id)
         {
             using (_dbContext)
             {
@@ -287,7 +287,7 @@ namespace eCommerce_Backend.Application.Services
             }        
         }
 
-        public async Task<PagedResult<ProductReadDto>> GetPaging(ProductPagingDto request)
+        public async Task<PagedResult<ProductReadDto>> GetPagingAsync(ProductPagingDto request)
         {
             using (_dbContext)
             {
@@ -303,7 +303,9 @@ namespace eCommerce_Backend.Application.Services
                 }
                 if (request.CategoriesId != null && request.CategoriesId != 0)
                 {
-                    query = query.Where(p => p.ProductInCategory.Where(x=>x.Categories.Status == Status.Available).Select(x=>x.CategoriesId).FirstOrDefault() == request.CategoriesId);
+                    query = query.Where(p => p.ProductInCategory.Where(x=>x.Categories.Status == Status.Available)
+                    .Select(x=>x.Categories.Id)
+                    .Contains(request.CategoriesId.Value));
                 }
                 
                 int totalRow = await query.Select(x=>x.Id).CountAsync();
@@ -320,7 +322,7 @@ namespace eCommerce_Backend.Application.Services
                         ThumbnailImage = x.ProductImages.Select(x => x.ImagePath).FirstOrDefault(),
                         CategoryId = x.ProductInCategory.Where(x=>x.Categories.Status == Status.Available).Select(x => x.CategoriesId).FirstOrDefault(),
                         CategoryName = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.Categories.CategoryName).FirstOrDefault(),
-                        avrRating = (int)Math.Ceiling((decimal)x.ProductRatings.Select(x => x.Rating).Average()),
+                        avrRating = x.ProductRatings.Count != 0  ? (int)Math.Ceiling((decimal)x.ProductRatings.Select(x => x.Rating).Average()): 0 ,
                         countComment = x.ProductRatings.Select(x => x.Comment).Count(),
                     }).ToListAsync();
                 var pagedResult = new PagedResult<ProductReadDto>()
@@ -334,7 +336,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public async Task<ApiResult<bool>> RemoveImage(int imageId)
+        public async Task<ApiResult<bool>> RemoveImageAsync(int imageId)
         {
             var image = await _dbContext.ProductImages.FindAsync(imageId);
             if (image == null)
@@ -346,7 +348,7 @@ namespace eCommerce_Backend.Application.Services
             return new ApiSuccessResult<bool>();
         }
 
-        public async Task<ApiResult<bool>> SoftDelete(int Id)
+        public async Task<ApiResult<bool>> SoftDeleteAsync(int Id)
         {
             using (_dbContext)
             {
@@ -363,7 +365,7 @@ namespace eCommerce_Backend.Application.Services
         
         }
 
-        public async Task<ApiResult<bool>> Update(int Id, ProductUpdateDto request)
+        public async Task<ApiResult<bool>> UpdateAsync(int Id, ProductUpdateDto request)
         {
             using (_dbContext)
             {
@@ -385,7 +387,7 @@ namespace eCommerce_Backend.Application.Services
                     if (thumbnailImage != null)
                     {
                         thumbnailImage.FileSize = request.ThumbnailImage.Length;
-                        thumbnailImage.ImagePath = await SaveFile(request.ThumbnailImage);
+                        thumbnailImage.ImagePath = await SaveFileAsync(request.ThumbnailImage);
                         _dbContext.ProductImages.Update(thumbnailImage);
                     }
                 }
@@ -395,7 +397,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public async Task<ApiResult<bool>> UpdateImage(int imageId, ProductImageUpdateDto request)
+        public async Task<ApiResult<bool>> UpdateImageAsync(int imageId, ProductImageUpdateDto request)
         {
             var image = await _dbContext.ProductImages.FindAsync(imageId);
             if (image == null)
@@ -405,7 +407,7 @@ namespace eCommerce_Backend.Application.Services
 
             if (request.ImageFile != null)
             {
-                image.ImagePath = await SaveFile(request.ImageFile);
+                image.ImagePath = await SaveFileAsync(request.ImageFile);
                 image.FileSize = request.ImageFile.Length;
             }
             using (_dbContext)
@@ -416,7 +418,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        private async Task<string> SaveFile(IFormFile file)
+        private async Task<string> SaveFileAsync(IFormFile file)
         {
             var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";

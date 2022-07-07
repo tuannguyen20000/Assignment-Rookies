@@ -100,14 +100,7 @@
                                     <span>Category:</span>
                                     @foreach(var item in Model.Product.Categories)
                                     {
-                                        if(@Model.Product.Categories.Count == 1)
-                                        {
-                                            <a>@item</a>
-                                        }
-                                        else
-                                        {
-                                            <a>@item, </a>
-                                        }
+                                       <a>@item</a>
                                     }
                                                                    
                                 </div><!-- End .product-cat -->

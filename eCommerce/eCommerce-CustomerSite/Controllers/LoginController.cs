@@ -37,7 +37,7 @@ namespace eCommerce_CustomerSite.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(LoginDto request)
         {
-            var result = await _userApi.Authenticate(request); // Token response
+            var result = await _userApi.AuthenticateAsync(request); // Token response
             if (!result.IsSuccessed)
             {
                 TempData["error"] = result.Message;
@@ -60,7 +60,7 @@ namespace eCommerce_CustomerSite.Controllers
         [HttpPost]
         public async Task<IActionResult> ModalLogin(LoginDto request)
         {
-            var result = await _userApi.Authenticate(request); // Token response
+            var result = await _userApi.AuthenticateAsync(request); // Token response
             if (!result.IsSuccessed)
             {
                 return Json(new {success = false, responseText = result.Message});
@@ -114,7 +114,7 @@ namespace eCommerce_CustomerSite.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterDto request)
         {
-            var result = await _userApi.Register(request);
+            var result = await _userApi.RegisterAsync(request);
             if (!result.IsSuccessed)
             {
                 TempData["error"] = result.Message;
@@ -128,7 +128,7 @@ namespace eCommerce_CustomerSite.Controllers
         [HttpPost]
         public async Task<IActionResult> ModalRegister(RegisterDto request)
         {
-            var result = await _userApi.Register(request); // Token response
+            var result = await _userApi.RegisterAsync(request); // Token response
             if (!result.IsSuccessed)
             {
                 return Json(new { success = false, responseText = result.Message });

@@ -14,14 +14,14 @@ namespace eCommerce_CustomerSite.Api.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<List<CategoryReadDto>> GetList()
+        public async Task<List<CategoryReadDto>> GetListAsync()
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
             var data = await GetAsync<List<CategoryReadDto>>($"https://localhost:7211/api/Categories/get-list-category/", session);
             return data;
         }
 
-        public async Task<ApiResult<CategoryReadDto>> GetById(int Id)
+        public async Task<ApiResult<CategoryReadDto>> GetByIdAsync(int Id)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
             var data = await GetAsync<ApiResult<CategoryReadDto>>($"https://localhost:7211/api/Categories/get-by-id/{Id}", session);
@@ -32,7 +32,7 @@ namespace eCommerce_CustomerSite.Api.Services
             return new ApiSuccessResult<CategoryReadDto>(data.ResultObj);
         }
 
-        public async Task<PagedResult<CategoryReadDto>> GetPagingCategory(CategoryPagingDto request)
+        public async Task<PagedResult<CategoryReadDto>> GetPagingCategoryAsync(CategoryPagingDto request)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
             var data = await GetAsync<PagedResult<CategoryReadDto>>($"https://localhost:7211/api/Categories/get-paging-category?&" +

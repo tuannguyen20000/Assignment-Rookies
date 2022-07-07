@@ -14,9 +14,9 @@ namespace eCommerce_CustomerSite.Api.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<ApiResult<string>> Authenticate(LoginDto request)
+        public async Task<ApiResult<string>> AuthenticateAsync(LoginDto request)
         {
-            var data = await GetToken<ApiResult<ResponseAuth>>($"https://localhost:7211/api/Authenticate/login/", request);
+            var data = await GetTokenAsync<ApiResult<ResponseAuth>>($"https://localhost:7211/api/Authenticate/login/", request);
             if (!data.IsSuccessed)
             {
                 return new ApiErrorResult<string>(data.Message);
@@ -24,7 +24,7 @@ namespace eCommerce_CustomerSite.Api.Services
             return new ApiSuccessResult<string>(data.ResultObj.accessToken);
         }
 
-        public async Task<ApiResult<string>> Register(RegisterDto request)
+        public async Task<ApiResult<string>> RegisterAsync(RegisterDto request)
         {
 /*            var sessions = _httpContextAccessor.HttpContext.Session.GetString("JWT");*/
             var data = await PostAsync<ApiResult<string>>($"https://localhost:7211/api/Authenticate/register/", request);

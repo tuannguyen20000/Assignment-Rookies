@@ -24,14 +24,14 @@ namespace eCommerce_CustomerSite.Controllers
                 PageSize = pageSize,
                 CategoriesId = categoryId
             };
-            var data = await _productApi.GetPagingProduct(request);
+            var data = await _productApi.GetPagingProductAsync(request);
             return View(data);
         }
 
         [HttpGet]
         public async Task<IActionResult> Detail(int Id)
         {
-            var result = await _productApi.GetById(Id);
+            var result = await _productApi.GetByIdAsync(Id);
             if (!result.IsSuccessed)
             {
                 TempData["error"] = result.Message;
@@ -50,7 +50,7 @@ namespace eCommerce_CustomerSite.Controllers
             {
                 return View();
             }
-            var rating = await _productApi.AddComment(Id, request.Rating);
+            var rating = await _productApi.AddCommentAsync(Id, request.Rating);
             if (rating.IsSuccessed)
             {
                 ModelState.Clear();
@@ -61,7 +61,7 @@ namespace eCommerce_CustomerSite.Controllers
 
         public async Task<IActionResult> GetAvgRating(int Id)
         {
-            var result = await _productApi.GetAvgRatingById(Id);
+            var result = await _productApi.GetAvgRatingByIdAsync(Id);
             if (!result.IsSuccessed)
             {
                 return Json(new { success = false, responseText = result.Message });

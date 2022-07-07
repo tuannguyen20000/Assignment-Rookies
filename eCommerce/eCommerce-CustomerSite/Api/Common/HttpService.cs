@@ -14,7 +14,7 @@ namespace eCommerce_CustomerSite.Api.Common
             _httpClient = httpClient;
         }
 
-        public async Task<T> GetToken<T>(string tokenEndpoint, LoginDto request)
+        public async Task<T> GetTokenAsync<T>(string tokenEndpoint, LoginDto request)
         {
             var tokenResponse = await PostAsync<T>(tokenEndpoint, request);
             return tokenResponse;
@@ -23,7 +23,7 @@ namespace eCommerce_CustomerSite.Api.Common
 
         public async Task<T> GetAsync<T>(string url, string accessToken = null)
         {
-            await SetBearerToken(accessToken);
+            await SetBearerTokenAsync(accessToken);
 
             using var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
@@ -34,7 +34,7 @@ namespace eCommerce_CustomerSite.Api.Common
 
         public async Task<T> PostAsync<T>(string url, object data = null, string accessToken = null)
         {
-            await SetBearerToken(accessToken);
+            await SetBearerTokenAsync(accessToken);
 
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -56,7 +56,7 @@ namespace eCommerce_CustomerSite.Api.Common
 
         public async Task<T> PutAsync<T>(string url, object data, string accessToken = null)
         {
-            await SetBearerToken(accessToken);
+            await SetBearerTokenAsync(accessToken);
 
             using var request = new HttpRequestMessage(HttpMethod.Put, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -71,7 +71,7 @@ namespace eCommerce_CustomerSite.Api.Common
 
         public async Task SoftDeleteAsync(string url, string accessToken = null)
         {
-            await SetBearerToken(accessToken);
+            await SetBearerTokenAsync(accessToken);
 
             using var request = new HttpRequestMessage(HttpMethod.Put, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -81,7 +81,7 @@ namespace eCommerce_CustomerSite.Api.Common
         }
 
 
-        protected Task SetBearerToken(string accessToken)
+        protected Task SetBearerTokenAsync(string accessToken)
         {
             if (accessToken != null)
             {

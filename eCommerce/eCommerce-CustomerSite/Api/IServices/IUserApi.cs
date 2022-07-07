@@ -6,7 +6,7 @@ namespace eCommerce_CustomerSite.Api.IServices
 {
     public interface IUserApi
     {
-        Task<ApiResult<string>> Authenticate(LoginDto request);
-        Task<ApiResult<string>> Register(RegisterDto request);
+        Task<ApiResult<string>> AuthenticateAsync(LoginDto request);
+        Task<ApiResult<string>> RegisterAsync(RegisterDto request);
     }
 }

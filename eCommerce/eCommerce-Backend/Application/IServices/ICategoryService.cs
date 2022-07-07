@@ -6,12 +6,12 @@ namespace eCommerce_Backend.Application.IServices
 {
     public interface ICategoryService
     {
-        Task<PagedResult<CategoryReadDto>> GetPaging(CategoryPagingDto request);
-        Task<List<CategoryReadDto>> GetList();
-        Task<ApiResult<bool>> Create(CategoryCreateDto request);
-        Task<ApiResult<bool>> Update(int Id, CategoryUpdateDto request);
-        Task<ApiResult<CategoryReadDto>> GetById(int Id);
-        Task<ApiResult<bool>> SoftDelete(int Id);
-        Task<List<ProductReadDto>> GetListProductById(int categoryId);
+        Task<PagedResult<CategoryReadDto>> GetPagingAsync(CategoryPagingDto request);
+        Task<List<CategoryReadDto>> GetListAsync();
+        Task<ApiResult<bool>> CreateAsync(CategoryCreateDto request);
+        Task<ApiResult<bool>> UpdateAsync(int Id, CategoryUpdateDto request);
+        Task<ApiResult<CategoryReadDto>> GetByIdAsync(int Id);
+        Task<ApiResult<bool>> SoftDeleteAsync(int Id);
+        Task<List<ProductReadDto>> GetListProductByIdAsync(int categoryId);
     }
 }

@@ -28,7 +28,7 @@ namespace eCommerce_Backend.Application.Services
             _roleManager = roleManager;
             _configuration = configuration;
         }
-        public async Task<ApiResult<ResponseAuth>> Authenticate(LoginDto request)
+        public async Task<ApiResult<ResponseAuth>> AuthenticateAsync(LoginDto request)
         {
             var user = await _userManager.FindByNameAsync(request.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
@@ -62,7 +62,7 @@ namespace eCommerce_Backend.Application.Services
             return new ApiErrorResult<ResponseAuth>(ErrorMessage.LoginFail);
         }
 
-        public async Task<ApiResult<UserReadDto>> GetById(string UserId)
+        public async Task<ApiResult<UserReadDto>> GetByIdAsync(string UserId)
         {
             var user = await _userManager.FindByIdAsync(UserId);
             if (user == null)
@@ -82,7 +82,7 @@ namespace eCommerce_Backend.Application.Services
             return new ApiSuccessResult<UserReadDto>(userVm);
         }
 
-        public async Task<ApiResult<UserReadDto>> GetByUserName(string UserName)
+        public async Task<ApiResult<UserReadDto>> GetByUserNameAsync(string UserName)
         {
             var user = await _userManager.FindByNameAsync(UserName);
             if (user == null)
@@ -103,7 +103,7 @@ namespace eCommerce_Backend.Application.Services
             return new ApiSuccessResult<UserReadDto>(userVm);
         }
 
-        public async Task<List<UserReadDto>> GetList()
+        public async Task<List<UserReadDto>> GetListAsync()
         {
             using (_userManager)
             {
@@ -118,7 +118,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public async Task<ApiResult<PagedResult<UserReadDto>>> GetPaging(UserPagingDto request)
+        public async Task<ApiResult<PagedResult<UserReadDto>>> GetPagingAsync(UserPagingDto request)
         {
             var query = _userManager.Users;         
             if (!string.IsNullOrEmpty(request.Keyword))
@@ -148,7 +148,7 @@ namespace eCommerce_Backend.Application.Services
             return new ApiSuccessResult<PagedResult<UserReadDto>>(pagedResult);
         }
 
-        public async Task<ApiResult<string>> Register(RegisterDto request)
+        public async Task<ApiResult<string>> RegisterAsync(RegisterDto request)
         {
             if (request.Password != request.ConfirmPassword)
                 return new ApiErrorResult<string>(ErrorMessage.WrongPasswordConfirm);
@@ -176,7 +176,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public async Task<ApiResult<string>> RegisterAdmin(RegisterDto request)
+        public async Task<ApiResult<string>> RegisterAdminAsync(RegisterDto request)
         {
             if (request.Password != request.ConfirmPassword)
                 return new ApiErrorResult<string>(ErrorMessage.WrongPasswordConfirm);

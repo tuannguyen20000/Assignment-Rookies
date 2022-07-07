@@ -16,7 +16,7 @@ namespace eCommerce_CustomerSite.ApiComsumes.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<ApiResult<bool>> AddComment(int Id, ProductRatingCreateDto request)
+        public async Task<ApiResult<bool>> AddCommentAsync(int Id, ProductRatingCreateDto request)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
             var data = await PostAsync<ApiResult<bool>>($"https://localhost:7211/api/Products/{Id}/add-comment", request, session);
@@ -27,7 +27,7 @@ namespace eCommerce_CustomerSite.ApiComsumes.Services
             return new ApiSuccessResult<bool>();
         }
 
-        public async Task<ApiResult<bool>> Create(ProductCreateDto request)
+        public async Task<ApiResult<bool>> CreateAsync(ProductCreateDto request)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
             var data = await PostAsync<ApiResult<bool>>($"https://localhost:7211/api/Products/create-product", request, session);
@@ -38,7 +38,7 @@ namespace eCommerce_CustomerSite.ApiComsumes.Services
             return new ApiSuccessResult<bool>();
         }
 
-        public async Task<ApiResult<AvgRatingDto>> GetAvgRatingById(int Id)
+        public async Task<ApiResult<AvgRatingDto>> GetAvgRatingByIdAsync(int Id)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
             var data = await GetAsync<ApiResult<AvgRatingDto>>($"https://localhost:7211/api/Products/{Id}/get-avg-by-id", session);
@@ -49,7 +49,7 @@ namespace eCommerce_CustomerSite.ApiComsumes.Services
             return new ApiSuccessResult<AvgRatingDto>(data.ResultObj);
         }
 
-        public async Task<ApiResult<ProductReadDto>> GetById(int Id)
+        public async Task<ApiResult<ProductReadDto>> GetByIdAsync(int Id)
         {
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
             var data = await GetAsync<ApiResult<ProductReadDto>>($"https://localhost:7211/api/Products/get-by-id/{Id}", session);
@@ -60,7 +60,7 @@ namespace eCommerce_CustomerSite.ApiComsumes.Services
             return new ApiSuccessResult<ProductReadDto>(data.ResultObj);
         }
 
-        public async Task<PagedResult<ProductReadDto>> GetPagingProduct(ProductPagingDto request)
+        public async Task<PagedResult<ProductReadDto>> GetPagingProductAsync(ProductPagingDto request)
         {      
             var session = _httpContextAccessor.HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
             var data = await GetAsync<PagedResult<ProductReadDto>>($"https://localhost:7211/api/Products/get-paging-product?&" +

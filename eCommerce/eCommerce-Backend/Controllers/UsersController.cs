@@ -21,8 +21,8 @@ namespace eCommerce_Backend.Controllers
         [Route("get-paging-user")]
         public async Task<IActionResult> GetPaging([FromQuery] UserPagingDto request)
         {
-            var user = await _userService.GetPaging(request);
-            return Ok(user);
+            var result = await _userService.GetPagingAsync(request);
+            return Ok(result);
         }
 
 
@@ -30,23 +30,23 @@ namespace eCommerce_Backend.Controllers
         [Route("get-by-id/{UserId}")]
         public async Task<IActionResult> GetById(string UserId)
         {
-            var user = await _userService.GetById(UserId);
-            return Ok(user);
+            var result = await _userService.GetByIdAsync(UserId);
+            return Ok(result);
         }
 
         [HttpGet]
         [Route("get-by-user-name/{UserName}")]
         public async Task<IActionResult> GetByUserName(string UserName)
         {
-            var user = await _userService.GetByUserName(UserName);
-            return Ok(user);
+            var result = await _userService.GetByUserNameAsync(UserName);
+            return Ok(result);
         }
 
         [HttpGet]
         [Route("get-list-user")]
         public async Task<IActionResult> GetListUser()
         {
-            var result = await _userService.GetList();
+            var result = await _userService.GetListAsync();
             return Ok(result);
         }
     }

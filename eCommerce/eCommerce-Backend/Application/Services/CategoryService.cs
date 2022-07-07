@@ -22,7 +22,7 @@ namespace eCommerce_Backend.Application.Services
             _fileStorage = fileStorage;
             _dbContext = dbContext;
         }
-        public async Task<ApiResult<bool>> Create(CategoryCreateDto request)
+        public async Task<ApiResult<bool>> CreateAsync(CategoryCreateDto request)
         {
             var category = new Categories()
             {
@@ -41,7 +41,7 @@ namespace eCommerce_Backend.Application.Services
                         Caption = "Thumbnail image",
                         DateCreated = DateTime.Now,
                         FileSize = request.ThumbnailImage.Length,
-                        ImagePath = await SaveFile(request.ThumbnailImage),
+                        ImagePath = await SaveFileAsync(request.ThumbnailImage),
                         IsDefault = true,
                     }
                 };
@@ -55,7 +55,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public async Task<ApiResult<CategoryReadDto>> GetById(int Id)
+        public async Task<ApiResult<CategoryReadDto>> GetByIdAsync(int Id)
         {
             var data = await _dbContext.Categories.FindAsync(Id);
             if (data == null)
@@ -71,7 +71,7 @@ namespace eCommerce_Backend.Application.Services
             return new ApiSuccessResult<CategoryReadDto>(result);
         }
 
-        public async Task<List<CategoryReadDto>> GetList()
+        public async Task<List<CategoryReadDto>> GetListAsync()
         {
             using (_dbContext)
             {
@@ -89,7 +89,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public async Task<List<ProductReadDto>> GetListProductById(int categoryId)
+        public async Task<List<ProductReadDto>> GetListProductByIdAsync(int categoryId)
         {
             using (_dbContext)
             {
@@ -107,7 +107,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public async Task<PagedResult<CategoryReadDto>> GetPaging(CategoryPagingDto request)
+        public async Task<PagedResult<CategoryReadDto>> GetPagingAsync(CategoryPagingDto request)
         {
             using (_dbContext)
             {
@@ -141,7 +141,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public async Task<ApiResult<bool>> SoftDelete(int Id)
+        public async Task<ApiResult<bool>> SoftDeleteAsync(int Id)
         {
             using (_dbContext)
             {
@@ -157,7 +157,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public async Task<ApiResult<bool>> Update(int Id, CategoryUpdateDto request)
+        public async Task<ApiResult<bool>> UpdateAsync(int Id, CategoryUpdateDto request)
         {
             using (_dbContext)
             {
@@ -177,7 +177,7 @@ namespace eCommerce_Backend.Application.Services
                     if (thumbnailImage != null)
                     {
                         thumbnailImage.FileSize = request.ThumbnailImage.Length;
-                        thumbnailImage.ImagePath = await SaveFile(request.ThumbnailImage);
+                        thumbnailImage.ImagePath = await SaveFileAsync(request.ThumbnailImage);
                         _dbContext.CategoryImages.Update(thumbnailImage);
                     }
                 }
@@ -186,7 +186,7 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        private async Task<string> SaveFile(IFormFile file)
+        private async Task<string> SaveFileAsync(IFormFile file)
         {
             var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";

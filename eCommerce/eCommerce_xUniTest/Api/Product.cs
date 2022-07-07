@@ -13,7 +13,7 @@ namespace eCommerce_xUniTest.Controller
         {
             /// Arrange
             var productService = new Mock<IProductService>();
-            productService.Setup(x => x.GetList()).ReturnsAsync(ProductFakeData.GetProduct);
+            productService.Setup(x => x.GetListAsync()).ReturnsAsync(ProductFakeData.GetProduct);
             var controller = new ProductsController(productService.Object);
             /// Act
             var result = await controller.GetListProduct() as OkObjectResult;
@@ -29,7 +29,7 @@ namespace eCommerce_xUniTest.Controller
         {
             /// Arrange
             var productService = new Mock<IProductService>();
-            productService.Setup(x => x.Create(It.IsAny<ProductCreateDto>())).ReturnsAsync(new ApiSuccessResult<bool>());
+            productService.Setup(x => x.CreateAsync(It.IsAny<ProductCreateDto>())).ReturnsAsync(new ApiSuccessResult<bool>());
             var controller = new ProductsController(productService.Object);
             /// Act
             var result = await controller.Create(ProductFakeData.createItemProduct());
@@ -46,7 +46,7 @@ namespace eCommerce_xUniTest.Controller
             /// Arrange
             var productId = ProductFakeData.GetProduct().Select(x => x.Id).FirstOrDefault();
             var productService = new Mock<IProductService>();
-            productService.Setup(x => x.Update(productId, It.IsAny<ProductUpdateDto>())).ReturnsAsync(new ApiSuccessResult<bool>());
+            productService.Setup(x => x.UpdateAsync(productId, It.IsAny<ProductUpdateDto>())).ReturnsAsync(new ApiSuccessResult<bool>());
             var controller = new ProductsController(productService.Object);
             /// Act
             var result = await controller.Update(productId, ProductFakeData.UpdatetemProduct());
@@ -63,7 +63,7 @@ namespace eCommerce_xUniTest.Controller
         {
             /// Arrange
             var productService = new Mock<IProductService>();
-            productService.Setup(x => x.GetPaging(It.IsAny<ProductPagingDto>())).ReturnsAsync(ProductFakeData.PageResultProductRead);
+            productService.Setup(x => x.GetPagingAsync(It.IsAny<ProductPagingDto>())).ReturnsAsync(ProductFakeData.PageResultProductRead);
             var controller = new ProductsController(productService.Object);
             /// Act
             var result = await controller.GetPagingProduct(ProductFakeData.PagingItemProduct());

@@ -12,7 +12,7 @@ namespace eCommerce_CustomerSite.Components
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var data = await _categoryApi.GetList();
+            var data = await _categoryApi.GetListAsync();
             return View(data);
         }
     }

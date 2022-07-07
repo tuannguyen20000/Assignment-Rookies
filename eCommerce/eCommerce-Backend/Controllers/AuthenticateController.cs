@@ -23,7 +23,7 @@ namespace eCommerce_Backend.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto request)
         {
-            var result = await _userService.Authenticate(request);
+            var result = await _userService.AuthenticateAsync(request);
 
             if (!result.IsSuccessed)
             {
@@ -36,7 +36,7 @@ namespace eCommerce_Backend.Controllers
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto request)
         {
-            var result = await _userService.Register(request);
+            var result = await _userService.RegisterAsync(request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);
@@ -48,7 +48,7 @@ namespace eCommerce_Backend.Controllers
         [Route("register-admin")]
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterDto request)
         {
-            var result = await _userService.RegisterAdmin(request);
+            var result = await _userService.RegisterAdminAsync(request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);

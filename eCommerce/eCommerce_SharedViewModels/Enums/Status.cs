@@ -8,7 +8,7 @@ namespace eCommerce_SharedViewModels.Enums
 {
     public enum Status
     {
-        Disable,
-        Available
+        Disable = 0,
+        Available = 1
     }
 }

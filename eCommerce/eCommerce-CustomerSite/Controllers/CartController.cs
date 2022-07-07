@@ -48,7 +48,7 @@ namespace eCommerce_CustomerSite.Controllers
 
         public async Task<IActionResult> AddProductToCart(int Id, int Quantity)
         {
-            var product = await _productApi.GetById(Id);
+            var product = await _productApi.GetByIdAsync(Id);
             var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
             List<CartItemVM> currentCart = new List<CartItemVM>();
             if (session != null)

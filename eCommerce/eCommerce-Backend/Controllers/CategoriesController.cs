@@ -21,7 +21,7 @@ namespace eCommerce_Backend.Controllers
         [Route("get-paging-category")]
         public async Task<IActionResult> GetPagingCategory([FromQuery] CategoryPagingDto request)
         {
-            var result = await _categoryService.GetPaging(request);
+            var result = await _categoryService.GetPagingAsync(request);
             return Ok(result);
         }
 
@@ -29,7 +29,7 @@ namespace eCommerce_Backend.Controllers
         [Route("get-list-category")]
         public async Task<IActionResult> GetListCategory()
         {
-            var result = await _categoryService.GetList();
+            var result = await _categoryService.GetListAsync();
             return Ok(result);
         }
 
@@ -37,15 +37,15 @@ namespace eCommerce_Backend.Controllers
         [Route("get-by-id/{Id}")]
         public async Task<IActionResult> GetById(int Id)
         {
-            var user = await _categoryService.GetById(Id);
-            return Ok(user);
+            var result = await _categoryService.GetByIdAsync(Id);
+            return Ok(result);
         }
 
         [HttpGet]
         [Route("get-list-product-by-Id/{categoryId}")]
         public async Task<IActionResult> GetListProductById(int categoryId)
         {
-            var result = await _categoryService.GetListProductById(categoryId);
+            var result = await _categoryService.GetListProductByIdAsync(categoryId);
             return Ok(result);
         }
 
@@ -54,7 +54,7 @@ namespace eCommerce_Backend.Controllers
         [Authorize]
         public async Task<IActionResult> Create([FromForm] CategoryCreateDto request)
         {
-            var result = await _categoryService.Create(request);
+            var result = await _categoryService.CreateAsync(request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);
@@ -68,7 +68,7 @@ namespace eCommerce_Backend.Controllers
         [Route("soft-delete/{Id}")]
         public async Task<IActionResult> SoftDelete(int Id)
         {
-            var result = await _categoryService.SoftDelete(Id);
+            var result = await _categoryService.SoftDeleteAsync(Id);
             return Ok(result);
         }
 
@@ -82,7 +82,7 @@ namespace eCommerce_Backend.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _categoryService.Update(Id, request);
+            var result = await _categoryService.UpdateAsync(Id, request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);

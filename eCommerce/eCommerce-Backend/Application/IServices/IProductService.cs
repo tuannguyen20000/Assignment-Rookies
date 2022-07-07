@@ -7,25 +7,25 @@ namespace eCommerce_Backend.Application.IServices
 {
     public interface IProductService
     {
-        Task<PagedResult<ProductReadDto>> GetPaging (ProductPagingDto request);
-        Task<List<ProductReadDto>> GetList();
-        Task<ApiResult<bool>> Create(ProductCreateDto request);
-        Task<ApiResult<bool>> Update(int Id,ProductUpdateDto request);
-        Task<ApiResult<ProductReadDto>> GetById(int Id);
-        Task<ApiResult<bool>> SoftDelete(int Id);
+        Task<PagedResult<ProductReadDto>> GetPagingAsync(ProductPagingDto request);
+        Task<List<ProductReadDto>> GetListAsync();
+        Task<ApiResult<bool>> CreateAsync(ProductCreateDto request);
+        Task<ApiResult<bool>> UpdateAsync(int Id,ProductUpdateDto request);
+        Task<ApiResult<ProductReadDto>> GetByIdAsync(int Id);
+        Task<ApiResult<bool>> SoftDeleteAsync(int Id);
 
         // Images
-        Task<ApiResult<bool>> AddImage(int Id, ProductImageCreateDto request);
-        Task<ApiResult<bool>> RemoveImage(int imageId);
-        Task<ApiResult<bool>> UpdateImage(int imageId, ProductImageUpdateDto request);
-        Task<List<ProductImageDto>> GetListImageByProductId(int Id);
-        Task<ApiResult<ProductImageDto>> GetImageById(int imageId);
+        Task<ApiResult<bool>> AddImageAsync(int Id, ProductImageCreateDto request);
+        Task<ApiResult<bool>> RemoveImageAsync(int imageId);
+        Task<ApiResult<bool>> UpdateImageAsync(int imageId, ProductImageUpdateDto request);
+        Task<List<ProductImageDto>> GetListImageByProductIdAsync(int Id);
+        Task<ApiResult<ProductImageDto>> GetImageByIdAsync(int imageId);
 
         // Categories
-        Task<ApiResult<bool>> CategoryAssign(int Id, CategoryAssignDto request);
+        Task<ApiResult<bool>> CategoryAssignAsync(int Id, CategoryAssignDto request);
 
         // Comments
-        Task<ApiResult<bool>> AddComment(int Id, ProductRatingCreateDto request);
-        Task<ApiResult<AvgRatingDto>> GetAvgRatingById(int Id);
+        Task<ApiResult<bool>> AddCommentAsync(int Id, ProductRatingCreateDto request);
+        Task<ApiResult<AvgRatingDto>> GetAvgRatingByIdAsync(int Id);
     }
 }

@@ -22,7 +22,7 @@ namespace eCommerce_Backend.Controllers
         [Route("get-paging-product")]
         public async Task<IActionResult> GetPagingProduct([FromQuery] ProductPagingDto request)
         {
-            var result = await _productService.GetPaging(request);
+            var result = await _productService.GetPagingAsync(request);
             return Ok(result);
         }
 
@@ -30,14 +30,14 @@ namespace eCommerce_Backend.Controllers
         [Route("get-list-product")]
         public async Task<IActionResult> GetListProduct()
         {
-            var result = await _productService.GetList();
+            var result = await _productService.GetListAsync();
             return Ok(result);
         }
 
         [HttpGet("get-by-id/{Id}")]
         public async Task<IActionResult> GetById(int Id)
         {
-            var result = await _productService.GetById(Id);
+            var result = await _productService.GetByIdAsync(Id);
             return Ok(result);
         }
 
@@ -45,27 +45,27 @@ namespace eCommerce_Backend.Controllers
         [Route("get-image-by-id/{imageId}")]
         public async Task<IActionResult> GetImageById(int imageId)
         {
-            var image = await _productService.GetImageById(imageId);
-            if (image == null)
+            var result = await _productService.GetImageByIdAsync(imageId);
+            if (result == null)
             {
                 return BadRequest("Cannot find image");
             }
-            return Ok(image);
+            return Ok(result);
         }
 
         [HttpGet]
         [Route("{Id}/get-image-list-by-product-id")]
         public async Task<IActionResult> GetListImageByProductId(int Id)
         {
-            var image = await _productService.GetListImageByProductId(Id);
-            return Ok(image);
+            var result = await _productService.GetListImageByProductIdAsync(Id);
+            return Ok(result);
         }
 
         [HttpGet]
         [Route("{Id}/get-avg-by-id")]
         public async Task<IActionResult> GetAvgRatingById(int Id)
         {
-            var result = await _productService.GetAvgRatingById(Id);
+            var result = await _productService.GetAvgRatingByIdAsync(Id);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);
@@ -80,7 +80,7 @@ namespace eCommerce_Backend.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm] ProductCreateDto request)
         {
-            var result = await _productService.Create(request);
+            var result = await _productService.CreateAsync(request);
             if (result == null)
             {
                 return BadRequest(result.errorMessage);
@@ -97,7 +97,7 @@ namespace eCommerce_Backend.Controllers
         [Route("soft-delete/{Id}")]
         public async Task<IActionResult> SoftDelete(int Id)
         {
-            var result = await _productService.SoftDelete(Id);
+            var result = await _productService.SoftDeleteAsync(Id);
             return Ok(result);
         }
 
@@ -106,19 +106,19 @@ namespace eCommerce_Backend.Controllers
         [Route("{Id}/create-image")]
         public async Task<IActionResult> CreateImage(int Id, [FromForm] ProductImageCreateDto request)
         {
-            var imageId = await _productService.AddImage(Id, request);
-            if (!imageId.IsSuccessed)
+            var result = await _productService.AddImageAsync(Id, request);
+            if (!result.IsSuccessed)
             {
                 return BadRequest();
             }
-            return Ok(imageId);
+            return Ok(result);
         }
 
         [HttpPost]
         [Route("{Id}/add-comment")]
         public async Task<IActionResult> AddComment(int Id, [FromBody] ProductRatingCreateDto request)
         {
-            var result = await _productService.AddComment(Id, request);
+            var result = await _productService.AddCommentAsync(Id, request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);
@@ -132,7 +132,7 @@ namespace eCommerce_Backend.Controllers
         [Route("update-product/{Id}")]
         public async Task<IActionResult> Update(int Id, [FromForm] ProductUpdateDto request)
         {
-            var result = await _productService.Update(Id, request);
+            var result = await _productService.UpdateAsync(Id, request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);
@@ -147,7 +147,7 @@ namespace eCommerce_Backend.Controllers
         [Route("update-image/{imageId}")]
         public async Task<IActionResult> UpdateImage(int imageId, [FromForm] ProductImageUpdateDto request)
         {
-            var result = await _productService.UpdateImage(imageId, request);
+            var result = await _productService.UpdateImageAsync(imageId, request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);
@@ -160,7 +160,7 @@ namespace eCommerce_Backend.Controllers
         [Route("{Id}/categories-assign")]
         public async Task<IActionResult> CategoryAssign(int Id, [FromBody] CategoryAssignDto request)
         {
-            var result = await _productService.CategoryAssign(Id, request);
+            var result = await _productService.CategoryAssignAsync(Id, request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);
@@ -175,7 +175,7 @@ namespace eCommerce_Backend.Controllers
         [Route("remove-image/{imageId}")]
         public async Task<IActionResult> RemoveImage(int imageId)
         {
-            var result = await _productService.RemoveImage(imageId);
+            var result = await _productService.RemoveImageAsync(imageId);
             if (!result.IsSuccessed)
             {
                 return BadRequest();
