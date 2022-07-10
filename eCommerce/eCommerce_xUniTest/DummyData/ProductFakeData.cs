@@ -12,7 +12,7 @@ namespace eCommerce_xUniTest.DummyData
                 {
                     CreatedDate = DateTime.Now,
                     Description = "test1 Description",
-                    Price = "200000",
+                    Price = 200000,
                     ProductName = "Dep ca sau",
                     UpdatedDate = DateTime.Now,       
                     CategoryId = 1,
@@ -22,7 +22,7 @@ namespace eCommerce_xUniTest.DummyData
                 {
                     CreatedDate = DateTime.Now,
                     Description = "test2 Description",
-                    Price = "1200000",
+                    Price = 1200000,
                     ProductName = "Giay da",
                     UpdatedDate = DateTime.Now,
                     CategoryId = 1,
@@ -35,7 +35,7 @@ namespace eCommerce_xUniTest.DummyData
             return new ProductCreateDto()
             {            
                 Description = "test Description",
-                Price = "100000",
+                Price = 100000,
                 ProductName = "Giay test2",         
             };
         }
@@ -45,7 +45,7 @@ namespace eCommerce_xUniTest.DummyData
             return new ProductUpdateDto()
             {
                 Description = "update Description",
-                Price = "100000",
+                Price = 100000,
                 ProductName = "Giay update",
             };
         }
@@ -68,7 +68,7 @@ namespace eCommerce_xUniTest.DummyData
             {
                 PageIndex = 1,
                 PageSize = 12,
-                CategoriesId = 1,
+                CategoriesId = null,
                 Keyword = null
             };
         }

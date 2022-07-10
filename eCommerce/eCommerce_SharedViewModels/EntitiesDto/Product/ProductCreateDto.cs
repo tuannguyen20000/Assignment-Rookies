@@ -7,7 +7,7 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Product
     {
         public string ProductName { get; set; }
         public string Description { get; set; }
-        public string Price { get; set; }
+        public decimal Price { get; set; }
         public IFormFile ThumbnailImage { get; set; }
     }
 }

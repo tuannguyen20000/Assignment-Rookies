@@ -6,7 +6,7 @@ using Moq;
 
 namespace eCommerce_xUniTest.Controller
 {
-    public class Product
+    public class ProductController
     {
         [Fact]
         public async Task GetListProduct_WhenCalled_ReturnsOkResult()

@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using eCommerce_Backend.Application.Common;
 using Microsoft.Extensions.FileProviders;
+using eCommerce_Backend.Data.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -48,7 +49,7 @@ builder.Services.AddSwaggerGen(options => {
   });
 });
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()//(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<Users, Roles>()//(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<eCommerceDbContext>().AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(options => {
@@ -73,6 +74,7 @@ builder.Services.AddAuthentication(options => {
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<ICartService, CartService>();
 builder.Services.AddTransient<IFileStorage, FileStorage>();
 
 var app = builder.Build();

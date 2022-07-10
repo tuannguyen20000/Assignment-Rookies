@@ -1,3 +1,4 @@
+using eCommerce_CustomerSite.Api.Client;
 using eCommerce_CustomerSite.Api.IServices;
 using eCommerce_CustomerSite.Api.Services;
 using eCommerce_CustomerSite.ApiComsumes.IServices;

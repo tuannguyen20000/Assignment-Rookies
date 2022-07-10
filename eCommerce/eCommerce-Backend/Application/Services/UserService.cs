@@ -1,4 +1,5 @@
 ﻿using eCommerce_Backend.Application.IServices;
+using eCommerce_Backend.Data.Entities;
 using eCommerce_SharedViewModels.Common;
 using eCommerce_SharedViewModels.EntitiesDto.Login;
 using eCommerce_SharedViewModels.EntitiesDto.Register;
@@ -15,13 +16,13 @@ namespace eCommerce_Backend.Application.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<Users> _userManager;
+        private readonly RoleManager<Roles> _roleManager;
         private readonly IConfiguration _configuration;
 
         public UserService(
-            UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager,
+            UserManager<Users> userManager,
+            RoleManager<Roles> roleManager,
             IConfiguration configuration)
         {
             _userManager = userManager;
@@ -156,7 +157,7 @@ namespace eCommerce_Backend.Application.Services
             if (userExists != null)
                 return new ApiErrorResult<string>(ErrorMessage.UserNameExists);
 
-            IdentityUser user = new()
+            Users user = new()
             {
                 Email = request.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
@@ -184,7 +185,7 @@ namespace eCommerce_Backend.Application.Services
             if (userExists != null)
                 return new ApiErrorResult<string>(ErrorMessage.UserNameExists);
 
-            IdentityUser user = new()
+            Users user = new()
             {
                 Email = request.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),

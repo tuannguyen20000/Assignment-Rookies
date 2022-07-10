@@ -1,42 +1,47 @@
-﻿using eCommerce_CustomerSite.ApiComsumes.IServices;
+﻿using eCommerce_CustomerSite.Api.Client;
+using eCommerce_CustomerSite.ApiComsumes.IServices;
 using eCommerce_CustomerSite.Models;
+using eCommerce_SharedViewModels.EntitiesDto.Cart;
 using eCommerce_SharedViewModels.Utilities.Constants;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Refit;
+using System.Security.Claims;
 
 namespace eCommerce_CustomerSite.Controllers
 {
     public class CartController : Controller
     {
         private readonly IProductApi _productApi;
+        private readonly ICartClient _cartClient = RestService.For<ICartClient>("https://localhost:7211");
         public CartController(IProductApi productApi)
         {
             _productApi = productApi;
         }
 
         [HttpGet]
-        public IActionResult GetListCart()
+        public async Task<IActionResult> GetListCart()
         {
-            var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
-            List<CartItemVM> currentCart = new List<CartItemVM>();
-            if (session != null)
-                currentCart = JsonConvert.DeserializeObject<List<CartItemVM>>(session);
+            var currentCart = await GetCartAsync();
             return Ok(currentCart);
         }
 
-        public IActionResult UpdateCart(int id, int quantity)
+        public async Task<IActionResult> UpdateCart(int Id, int quantity)
         {
-            var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
-            List<CartItemVM> currentCart = new List<CartItemVM>();
-            if (session != null)
-                currentCart = JsonConvert.DeserializeObject<List<CartItemVM>>(session);
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentCart = await GetCartAsync();
+            // update current cart
             foreach (var item in currentCart)
             {
-                if (item.ProductId == id)
+                if (item.ProductId == Id)
                 {
                     if (quantity == 0)
                     {
                         currentCart.Remove(item);
+                        if (!string.IsNullOrEmpty(userId))
+                        {
+                            await _cartClient.DeleteAsync(Id, item.Quantity);   
+                        }
                         break;
                     }
                     item.Quantity = quantity;
@@ -46,13 +51,12 @@ namespace eCommerce_CustomerSite.Controllers
             return Ok(currentCart);
         }
 
+
         public async Task<IActionResult> AddProductToCart(int Id, int Quantity)
         {
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var product = await _productApi.GetByIdAsync(Id);
-            var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
-            List<CartItemVM> currentCart = new List<CartItemVM>();
-            if (session != null)
-                currentCart = JsonConvert.DeserializeObject<List<CartItemVM>>(session);
+            var currentCart = await GetCartAsync();
             var cartItem = new CartItemVM()
             {
                 ProductId = Id,
@@ -62,6 +66,17 @@ namespace eCommerce_CustomerSite.Controllers
                 Price = product.ResultObj.Price,
                 Quantity = Quantity
             };
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var cartUser = new CartCreateDto()
+                {
+                    ProductsId = Id,
+                    UsersId = userId,
+                    Price = product.ResultObj.Price,
+                    Quantity = Quantity,
+                };
+               await _cartClient.CreateAsync(cartUser);
+            }
             currentCart.Add(cartItem);
             HttpContext.Session.SetString(SystemConstants.SESSION_CART, JsonConvert.SerializeObject(currentCart));
             return Json(new { success = true, responseText = "The product has been added to the cart" });
@@ -70,6 +85,33 @@ namespace eCommerce_CustomerSite.Controllers
         public IActionResult Detail()
         {
             return View();
+        }
+
+        private async Task<List<CartItemVM>> GetCartAsync()
+        {
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
+            var sessionUser = HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            List<CartItemVM> currentCart = new List<CartItemVM>();
+            if (!string.IsNullOrEmpty(session))
+            {
+                currentCart = JsonConvert.DeserializeObject<List<CartItemVM>>(session);
+            }
+            if(!string.IsNullOrEmpty(sessionUser))
+            {
+                var data = await _cartClient.GetListCartAsync(userId);
+                var cartUser = data.Select(x => new CartItemVM()
+                {
+                    Image = x.Image,
+                    Description = x.Description,
+                    Name = x.Name,
+                    Price = x.Price,
+                    ProductId = x.ProductsId,
+                    Quantity = x.Quantity
+                }).ToList();
+                currentCart = cartUser;
+            }
+            return currentCart;
         }
     }
 }

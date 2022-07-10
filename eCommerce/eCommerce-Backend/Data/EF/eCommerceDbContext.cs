@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eCommerce_Backend.Data.EF
 {
-    public class eCommerceDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+    public class eCommerceDbContext : IdentityDbContext<Users, Roles, string>
     {
         public eCommerceDbContext(DbContextOptions<eCommerceDbContext> options)
             : base(options)
@@ -19,11 +19,18 @@ namespace eCommerce_Backend.Data.EF
         public DbSet<CategoryImages> CategoryImages { get; set; }
         public DbSet<ProductInCategory> ProductInCategory { get; set; }
         public DbSet<ProductRatings> ProductRatings { get; set; }
+        public DbSet<Carts> Carts { get; set; }
+        public DbSet<Orders> Orders { get; set; }
+        public DbSet<OrderDetails> OrderDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.ApplyConfiguration(new ProductInCategoryCf());
+            modelBuilder.ApplyConfiguration(new CartsCf());
+            modelBuilder.ApplyConfiguration(new OrdersCf());
+            modelBuilder.ApplyConfiguration(new OrderDetailsCf());
         }
     }
 }

@@ -58,15 +58,5 @@ namespace eCommerce_CustomerSite.Controllers
             }
             return View(request);
         }
-
-        public async Task<IActionResult> GetAvgRating(int Id)
-        {
-            var result = await _productApi.GetAvgRatingByIdAsync(Id);
-            if (!result.IsSuccessed)
-            {
-                return Json(new { success = false, responseText = result.Message });
-            }
-            return Json(new { success = true, responseData = result.ResultObj});
-        }
     }
 }
