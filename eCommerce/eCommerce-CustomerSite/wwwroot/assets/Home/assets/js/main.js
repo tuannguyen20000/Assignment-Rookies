@@ -7,6 +7,7 @@ $(document).ready(function () {
     const urlDetailCart = 'https://localhost:7146/Cart/Detail/';
     const urlListCart = 'https://localhost:7146/Cart/GetListCart';
     const urlUpdateCart = 'https://localhost:7146/Cart/UpdateCart';
+    const urlAddOrder = 'https://localhost:7146/Order/AddOrder';
     const urlAddToCart = 'https://localhost:7146/Cart/AddProductToCart';
     const urlDetailProduct = 'https://localhost:7146/Product/Detail/';
 
@@ -884,7 +885,6 @@ $(document).ready(function () {
 
 
     LoadProductInCart();
-    LoadDetailProductInCart();
 
     const productId = $('#productId').val();
 
@@ -899,6 +899,7 @@ $(document).ready(function () {
         updateCart(id, 0);
     });
 
+
     function addToCart() {
         $.ajax({
             type: "POST",
@@ -908,7 +909,6 @@ $(document).ready(function () {
                 Quantity: $('#quantityValue').val()
             },
             success: function (response) {
-                LoadProductInCart();
                 LoadProductInCart();
             },
             error: (err) => {
@@ -932,7 +932,6 @@ $(document).ready(function () {
                     window.location.replace(urlDetailCart);
                 }
                 LoadProductInCart();
-                LoadDetailProductInCart();
             },
             error: function (err) {
                 console.log(err);
@@ -948,12 +947,14 @@ $(document).ready(function () {
                 if (response.length != 0) {
                     $('.cart-dropdown').show();
                 }
-                var html = '';
+                var detailCart = '';
+                var popupCart = '';
+                var checkoutCart = '';               
                 var total = 0;
 
                 $.each(response, (i, item) => {
                     var amount = item.quantity * item.price;
-                    html += `   <div class="product">
+                    popupCart += `   <div class="product">
                                     <div class="product-cart-details">
                                         <h4 class="product-title">
                                             <a href="${urlDetailProduct + item.productId}">${item.name}</a>
@@ -971,36 +972,7 @@ $(document).ready(function () {
                                     </figure>
                                     <a href="#" data-id="${item.productId}" class="btn-remove" title="Remove Product"><i class="icon-close"></i></a>
                                 </div>`;
-                    total += amount;
-                    $('.dropdown-cart-products').html(html);
-                    $('.cart-count').text(response.length);
-                    $('.cart-total-price').text(total);
-                })
-            },
-            error: (response) => {
-                console.log("Ajax fail");
-            }
-        })
-    }
-
-
-
-    // Cart Detail
-    function LoadDetailProductInCart() {
-        $.ajax({
-            type: "GET",
-            url: urlListCart,
-            success: (response) => {
-                if (response.length != 0) {
-                    $('.cart-dropdown').show();
-                }
-                var html = '';
-                var total = 0;
-
-                $.each(response, (i, item) => {
-                    var amount = item.quantity * item.price;
-                    total += amount;
-                    html += `   <tr id="itemTr-${item.productId}">
+                    detailCart += `   <tr id="itemTr-${item.productId}">
 									<td class="product-col">
 										<div class="product">
 											<figure class="product-media">
@@ -1019,10 +991,27 @@ $(document).ready(function () {
 									<td class="total-col">$${amount}</td>
 									<td class="remove-col"><button  data-id="${item.productId}" class="btn-remove"><i class="icon-close"></i></button></td>
 								</tr>`;
-                    
-                    $('#bodyCart').html(html);
+                    checkoutCart += `	 <tr>
+		                					<td><a href="${urlDetailProduct + item.productId}">${item.name}</a></td>
+		                					<td>$${amount}</td>
+		                				</tr>`;
+                    total += amount;
+                    var totalCheckout = `<tr class="summary-total">
+		                					<td>Total:</td>
+		                					<td>$${total}</td>
+		                				</tr>`
+                    // cart popup
+                    $('.dropdown-cart-products').html(popupCart);          
+                    $('.cart-count').text(response.length);
+                    $('.cart-total-price').text(total);
+
+                    // cart detail
+                    $('#bodyCart').html(detailCart);
                     $('#subtotal').text("$" + total);
                     $('#total').text("$" + total);
+
+                    // cart checkout
+                    $('#bodyCartCheckout').html(checkoutCart + totalCheckout);
                 })
             },
             error: (response) => {

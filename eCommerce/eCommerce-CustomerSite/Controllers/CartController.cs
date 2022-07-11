@@ -87,17 +87,18 @@ namespace eCommerce_CustomerSite.Controllers
             return View();
         }
 
-        private async Task<List<CartItemVM>> GetCartAsync()
+        public async Task<List<CartItemVM>> GetCartAsync()
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
             var sessionUser = HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+
             List<CartItemVM> currentCart = new List<CartItemVM>();
             if (!string.IsNullOrEmpty(session))
             {
                 currentCart = JsonConvert.DeserializeObject<List<CartItemVM>>(session);
             }
-            if(!string.IsNullOrEmpty(sessionUser))
+            if(!string.IsNullOrEmpty(sessionUser) || !string.IsNullOrEmpty(userId))
             {
                 var data = await _cartClient.GetListCartAsync(userId);
                 var cartUser = data.Select(x => new CartItemVM()

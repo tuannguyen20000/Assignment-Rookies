@@ -11,6 +11,7 @@ using System.Text;
 using eCommerce_Backend.Application.Common;
 using Microsoft.Extensions.FileProviders;
 using eCommerce_Backend.Data.Entities;
+using eCommerce_Backend.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -71,11 +72,7 @@ builder.Services.AddAuthentication(options => {
     };
 });
 
-builder.Services.AddTransient<IProductService, ProductService>();
-builder.Services.AddTransient<ICategoryService, CategoryService>();
-builder.Services.AddTransient<IUserService, UserService>();
-builder.Services.AddTransient<ICartService, CartService>();
-builder.Services.AddTransient<IFileStorage, FileStorage>();
+builder.Services.RegisterServices(builder.Configuration);
 
 var app = builder.Build();
 

@@ -135,7 +135,7 @@ namespace eCommerce_Backend.Application.Services
 
             using (_dbContext)
             {
-                _dbContext.Add(Product);
+                _dbContext.Products.Add(Product);
                 await _dbContext.SaveChangesAsync();
                 return new ApiSuccessResult<bool>();
             }
