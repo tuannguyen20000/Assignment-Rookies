@@ -107,6 +107,7 @@ namespace eCommerce_CustomerSite.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Remove(SystemConstants.AppSettings.Token);
+            HttpContext.Session.Remove(SystemConstants.SESSION_CART);
             return RedirectToAction("Index", "Home");
         }
 
