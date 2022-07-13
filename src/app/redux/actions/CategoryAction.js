@@ -3,6 +3,7 @@ import axiosInstance, { axiosFormData } from '../../../axios.js';
 export const GET_LIST_CATEGORY = 'GET_LIST_CATEGORY';
 export const CREATE_CATEGORY = 'CREATE_CATEGORY';
 export const UPDATE_CATEGORY = 'UPDATE_CATEGORY';
+export const GET_BY_ID_CATEGORY = 'GET_BY_ID_CATEGORY';
 export const SOFT_DELETE_CATEGORY = 'SOFT_DELETE_CATEGORY';
 
 export const getListCategory = () => (dispatch) => {
@@ -28,6 +29,15 @@ export const updateCategory = (id, formData) => (dispatch) => {
   axiosFormData.put('Categories/update-category/' + id, formData).then((res) => {
     dispatch({
       type: UPDATE_CATEGORY,
+      payload: res,
+    });
+  });
+};
+
+export const getByIdCategory = (Id) => (dispatch) => {
+  axiosInstance.get('Categories/get-by-id/' + Id).then((res) => {
+    dispatch({
+      type: GET_BY_ID_CATEGORY,
       payload: res,
     });
   });

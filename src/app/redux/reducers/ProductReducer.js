@@ -3,12 +3,14 @@ import {
   CREATE_PRODUCT,
   UPDATE_PRODUCT,
   SOFT_DELETE_PRODUCT,
+  ASSIGN_TO_CATEGORY,
 } from '../actions/ProductActions';
 
 const initialState = {
   isCreated: false,
   isUpdated: false,
   isDeleted: false,
+  isAssignToCategory: false,
   productList: [],
 };
 
@@ -35,6 +37,12 @@ const ProductReducer = function (state = initialState, action) {
       return {
         ...state,
         isDeleted: true,
+      };
+    }
+    case ASSIGN_TO_CATEGORY: {
+      return {
+        ...state,
+        isAssignToCategory: true,
       };
     }
     default: {

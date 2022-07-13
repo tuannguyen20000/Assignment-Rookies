@@ -60,6 +60,7 @@
     "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
     "gh-pages": "^3.2.3",
-    "react-app-rewired": "^2.1.8"
+    "react-app-rewired": "^2.1.8",
+    "react-app-rewired-esbuild": "^0.0.11"
   }
 }

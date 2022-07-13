@@ -3,6 +3,7 @@ import {
   CREATE_CATEGORY,
   UPDATE_CATEGORY,
   SOFT_DELETE_CATEGORY,
+  GET_BY_ID_CATEGORY,
 } from '../actions/CategoryAction';
 
 const initialState = {
@@ -10,6 +11,7 @@ const initialState = {
   isUpdated: false,
   isDeleted: false,
   categoryList: [],
+  category: [],
 };
 
 const CategoryReducer = function (state = initialState, action) {
@@ -35,6 +37,12 @@ const CategoryReducer = function (state = initialState, action) {
       return {
         ...state,
         isDeleted: true,
+      };
+    }
+    case GET_BY_ID_CATEGORY: {
+      return {
+        ...state,
+        category: [...action.payload],
       };
     }
     default: {
