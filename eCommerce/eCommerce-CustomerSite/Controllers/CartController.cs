@@ -76,11 +76,10 @@ namespace eCommerce_CustomerSite.Controllers
             {              
                 Quantity += currentCart.First(x => x.ProductId == Id).Quantity;
                 if(Quantity > product.ResultObj.ProductQuantity)
-                {
                     return Json(new { success = false, responseText = "Quantity is not enough" });
-                }
+                if (!string.IsNullOrEmpty(userId))
+                    await _cartClient.DeleteAsync(Id, currentCart.First(x => x.ProductId == Id).Quantity);
 
-                await _cartClient.DeleteAsync(Id, currentCart.First(x => x.ProductId == Id).Quantity);
                 currentCart.Remove(currentCart.First(x => x.ProductId == Id));
                 
             }
