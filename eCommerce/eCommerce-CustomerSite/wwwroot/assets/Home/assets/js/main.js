@@ -957,7 +957,12 @@ $(document).ready(function () {
             },
             success: function (response) {
                 LoadProductInCart();
-                toastr.success(response.responseText);
+                if (response.success) {
+                    toastr.success(response.responseText);
+                } else if (!response.success) {
+                    toastr.error(response.responseText);
+                }
+                
             },
             error: (err) => {
                 console.log(err);

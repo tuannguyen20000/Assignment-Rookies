@@ -45,12 +45,9 @@ namespace eCommerce_Backend.Application.Services
                     await _dbContext.SaveChangesAsync();
                 }
                 // update product quantity
-                foreach(var item in request.orderDetails)
-                {
-                    var product = await _dbContext.Products.FindAsync(item.ProductsId);
-                    product.ProductQuantity -= item.Quantity;
-                    _dbContext.Products.Update(product);
-                }
+                var product = await _dbContext.Products.FindAsync(request.orderDetails.Select(x => x.ProductsId).FirstOrDefault());
+                product.ProductQuantity -= request.orderDetails.Select(x => x.Quantity).FirstOrDefault();
+                _dbContext.Products.Update(product);
                 _dbContext.Orders.Update(order);       
                 return await _dbContext.SaveChangesAsync();
             }
