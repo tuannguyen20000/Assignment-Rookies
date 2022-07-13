@@ -1,3 +1,2 @@
-<<<<<<< HEAD
 Admin Site
-=======
+
