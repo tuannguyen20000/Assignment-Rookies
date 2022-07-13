@@ -2,6 +2,7 @@
 using eCommerce_Backend.Data.EF;
 using eCommerce_Backend.Data.Entities;
 using eCommerce_SharedViewModels.EntitiesDto.Order;
+using eCommerce_SharedViewModels.Enums;
 
 namespace eCommerce_Backend.Application.Services
 {
@@ -24,7 +25,7 @@ namespace eCommerce_Backend.Application.Services
                     ShipEmail = request.ShipEmail,
                     ShipName = request.ShipName,
                     ShipPhoneNumber = request.ShipPhoneNumber,
-                    Status = eCommerce_SharedViewModels.Enums.StatusOrder.InProgress,
+                    Status = StatusOrder.InProgress,
                 };
                 // add order
                 _dbContext.Orders.Add(order);
@@ -43,6 +44,10 @@ namespace eCommerce_Backend.Application.Services
                     _dbContext.Carts.RemoveRange(_dbContext.Carts.Where(x => x.UsersId == request.UsersId));
                     await _dbContext.SaveChangesAsync();
                 }
+                // update product quantity
+                var product = await _dbContext.Products.FindAsync(request.orderDetails.Select(x => x.ProductsId).FirstOrDefault());
+                product.ProductQuantity -= request.orderDetails.Select(x => x.Quantity).FirstOrDefault();
+                _dbContext.Products.Update(product);
                 _dbContext.Orders.Update(order);       
                 return await _dbContext.SaveChangesAsync();
             }

@@ -38,6 +38,8 @@
 
 <body>
     <input type="hidden" id="BaseAddress" value="@Configuration["BaseAddress"]" />
+    <input type="hidden" id="error" value="@TempData["error"]" />
+    <input type="hidden" id="warning" value="@TempData["warning"]" />
     <div id="overlay">
         <div class="cv-spinner">
         <span class="spinner"></span>
@@ -108,7 +110,7 @@
                             <i class="icon-bars"></i>
                         </button>
 
-                        <a href="index.html" class="logo">
+                        <a asp-controller="Home" asp-action="Index" class="logo">
                             <img src="~/assets/Home/assets/images/logo.png" alt="Molla Logo" width="105" height="25">
                         </a>
 

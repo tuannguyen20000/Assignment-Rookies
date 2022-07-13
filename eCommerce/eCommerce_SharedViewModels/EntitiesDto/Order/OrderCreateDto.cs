@@ -17,8 +17,5 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Order
 
         // Order Detail
         public List<OrderDetailReadDto> orderDetails {get;set;}
-        public int ProductsId { get; set; }
-        public int Quantity { set; get; }
-        public decimal Price { set; get; }
     }
 }

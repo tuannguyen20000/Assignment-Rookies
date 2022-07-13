@@ -65,7 +65,8 @@ namespace eCommerce_Backend.Application.Services
                         Quantity = x.Quantity,
                         Image = x.Products.ProductImages.Where(x => x.IsDefault == true).Select(x => x.ImagePath).FirstOrDefault(),
                         Description = x.Products.Description,
-                        Name = x.Products.ProductName,                       
+                        Name = x.Products.ProductName,      
+                        ProductQuantity = x.Products.ProductQuantity,
                     }).ToListAsync();
                 return result;
             }

@@ -56,11 +56,22 @@ namespace eCommerce_CustomerSite.Controllers
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var product = await _productApi.GetByIdAsync(Id);
+            if (product.ResultObj.ProductQuantity.Equals(0))
+            {
+                return Json(new { success = false, responseText = "The product is out of stock" });
+            }
             var currentCart = await GetCartAsync();
             if (currentCart.Any(x => x.ProductId == Id))
-            {
-                Quantity = currentCart.First(x => x.ProductId == Id).Quantity + Quantity;
+            {              
+                Quantity += currentCart.First(x => x.ProductId == Id).Quantity;
+                if(Quantity > product.ResultObj.ProductQuantity)
+                {
+                    return Json(new { success = false, responseText = "Quantity is not enough" });
+                }
+
+                await _cartClient.DeleteAsync(Id, currentCart.First(x => x.ProductId == Id).Quantity);
                 currentCart.Remove(currentCart.First(x => x.ProductId == Id));
+                
             }
             var cartItem = new CartItemVM()
             {
@@ -114,7 +125,8 @@ namespace eCommerce_CustomerSite.Controllers
                     Name = x.Name,
                     Price = x.Price,
                     ProductId = x.ProductsId,
-                    Quantity = x.Quantity
+                    Quantity = x.Quantity,
+                    ProductQuantity = x.ProductQuantity,
                 }).ToList();
                 currentCart = cartUser;
             }

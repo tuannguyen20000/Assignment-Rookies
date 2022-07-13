@@ -113,6 +113,7 @@ namespace eCommerce_Backend.Application.Services
                 ProductName = request.ProductName,
                 Description = request.Description,
                 Price = request.Price,
+                ProductQuantity = request.ProductQuantity,
                 CreatedDate = DateTime.Now.Date,
                 UpdatedDate = DateTime.Now.Date,
                 Status = Status.Available,
@@ -191,6 +192,7 @@ namespace eCommerce_Backend.Application.Services
                 Description = data.Description,
                 Price=data.Price,
                 Status =data.Status,
+                ProductQuantity = data.ProductQuantity,
                 ThumbnailImage = image != null ? image.ImagePath : "no-image.jpg",
                 Categories = categories,
                 avrRating = (int?)Math.Ceiling(avrRating),
@@ -262,6 +264,7 @@ namespace eCommerce_Backend.Application.Services
                     Price = x.Price,
                     ProductName = x.ProductName,
                     UpdatedDate = x.UpdatedDate,
+                    ProductQuantity = x.ProductQuantity,
                     Categories = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x=>x.Categories.CategoryName).ToList(),
                     ThumbnailImage = x.ProductImages.Where(x=>x.IsDefault == true).Select(x=>x.ImagePath).FirstOrDefault()
                 }).ToListAsync();
@@ -319,6 +322,7 @@ namespace eCommerce_Backend.Application.Services
                         Description = x.Description,
                         Price = x.Price,
                         UpdatedDate = x.UpdatedDate,
+                        ProductQuantity = x.ProductQuantity,
                         ThumbnailImage = x.ProductImages.Select(x => x.ImagePath).FirstOrDefault(),
                         CategoryId = x.ProductInCategory.Where(x=>x.Categories.Status == Status.Available).Select(x => x.CategoriesId).FirstOrDefault(),
                         CategoryName = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.Categories.CategoryName).FirstOrDefault(),
@@ -380,6 +384,7 @@ namespace eCommerce_Backend.Application.Services
                 data.ProductName = request.ProductName;
                 data.Price = request.Price;
                 data.Description = request.Description;
+                data.ProductQuantity = request.ProductQuantity;
                 //Save image
                 if (request.ThumbnailImage != null)
                 {

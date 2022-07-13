@@ -15,6 +15,7 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Cart
         public string UsersId { get; set; }
         public string Description { get; set; }
         public int Quantity { set; get; }
+        public int ProductQuantity { set; get; }
         public decimal Price { set; get; }
         public DateTime DateCreated { get; set; }
     }

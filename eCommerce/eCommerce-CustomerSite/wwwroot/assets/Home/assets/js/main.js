@@ -922,7 +922,15 @@ $(document).ready(function () {
 
     //Cart
     $('.add-to-cart').click(() => {
-        addToCart();
+        var quantityMax = $('#qty').attr('max');
+        var quantity = $('#quantityValue').val();
+        if (parseInt(quantityMax) >= parseInt(quantity)) {
+            addToCart();
+        }
+        else {
+            toastr.error("Product exceeds quantity");
+        }
+
     });
 
     $('body').on('click', '.btn-remove', function (e) {
@@ -949,7 +957,12 @@ $(document).ready(function () {
             },
             success: function (response) {
                 LoadProductInCart();
-                toastr.success(response.responseText);
+                if (response.success) {
+                    toastr.success(response.responseText);
+                } else if (!response.success) {
+                    toastr.error(response.responseText);
+                }
+                
             },
             error: (err) => {
                 console.log(err);
@@ -1031,7 +1044,7 @@ $(document).ready(function () {
 									<td class="price-col">$${item.price}</td>
 									<td class="quantity-col">
                                         <div class="cart-product-quantity">
-                                            <input data-id="${item.productId}" type="number" class="form-control btn-update" value="${item.quantity}" min="1" max="10" step="1" data-decimals="0" required>
+                                            <input data-id="${item.productId}" type="number" class="form-control btn-update" value="${item.quantity}" min="1" max="${item.productQuantity}" step="1" data-decimals="0" required>
                                         </div><!-- End .cart-product-quantity -->
                                     </td>
 									<td class="total-col">$${amount}</td>

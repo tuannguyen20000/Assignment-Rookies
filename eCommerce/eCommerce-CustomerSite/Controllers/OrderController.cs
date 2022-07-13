@@ -1,4 +1,5 @@
 ﻿using eCommerce_CustomerSite.Api.Client;
+using eCommerce_CustomerSite.ApiComsumes.IServices;
 using eCommerce_CustomerSite.Models;
 using eCommerce_SharedViewModels.EntitiesDto.Order;
 using eCommerce_SharedViewModels.EntitiesDto.Order.OrderDetail;
@@ -12,8 +13,14 @@ namespace eCommerce_CustomerSite.Controllers
 {
     public class OrderController : Controller
     {
+        private readonly IProductApi _productApi;
         private readonly ICartClient _cartClient = RestService.For<ICartClient>("https://localhost:7211");
         private readonly IOrderClient _orderClient = RestService.For<IOrderClient>("https://localhost:7211");
+
+        public OrderController(IProductApi productApi)
+        {
+            _productApi = productApi;
+        }
 
         public IActionResult Index()
         {
@@ -30,6 +37,15 @@ namespace eCommerce_CustomerSite.Controllers
                 Price = x.Price,
                 Quantity = x.Quantity
             }).ToList();
+            foreach(var item in request.orderDetails)
+            {
+                var product = await _productApi.GetByIdAsync(item.ProductsId);
+                if(product.ResultObj.ProductQuantity == 0)
+                {
+                    TempData["warning"] = $"{product.ResultObj.ProductName} is out of stock";
+                    return View();
+                }
+            }
             request.UsersId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var data = await _orderClient.CreateAsync(request);
             if(data != 0)

@@ -1,5 +1,6 @@
 ﻿using eCommerce_Backend.Data.Configuration;
 using eCommerce_Backend.Data.Entities;
+using eCommerce_Backend.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,9 @@ namespace eCommerce_Backend.Data.EF
             modelBuilder.ApplyConfiguration(new CartsCf());
             modelBuilder.ApplyConfiguration(new OrdersCf());
             modelBuilder.ApplyConfiguration(new OrderDetailsCf());
+
+            // Seed Data
+            modelBuilder.SeedData();
         }
     }
 }
