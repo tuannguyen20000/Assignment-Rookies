@@ -38,6 +38,10 @@ namespace eCommerce_Backend.Controllers
         public async Task<IActionResult> GetById(int Id)
         {
             var result = await _productService.GetByIdAsync(Id);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
             return Ok(result);
         }
 
@@ -46,7 +50,7 @@ namespace eCommerce_Backend.Controllers
         public async Task<IActionResult> GetImageById(int imageId)
         {
             var result = await _productService.GetImageByIdAsync(imageId);
-            if (result == null)
+            if (!result.IsSuccessed)
             {
                 return BadRequest("Cannot find image");
             }
@@ -98,6 +102,10 @@ namespace eCommerce_Backend.Controllers
         public async Task<IActionResult> SoftDelete(int Id)
         {
             var result = await _productService.SoftDeleteAsync(Id);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
             return Ok(result);
         }
 

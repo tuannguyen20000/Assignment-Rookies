@@ -34,7 +34,8 @@ namespace eCommerce_CustomerSite.Controllers
             var data = await _orderClient.CreateAsync(request);
             if(data != 0)
             {
-                TempData["success"] = data;
+                HttpContext.Session.Remove(SystemConstants.SESSION_CART);
+                TempData["success"] = "Your order has been placed!";
                 return RedirectToAction("Index", "Product");
             }
             return View();

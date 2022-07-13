@@ -4,12 +4,46 @@ $(document).ready(function () {
 
     owlCarousels();
     quantityInputs();
+    const urlLogin = 'https://localhost:7146/Login/ModalLogin';
+    const urlRegister = 'https://localhost:7146/Login/ModalRegister';
     const urlDetailCart = 'https://localhost:7146/Cart/Detail/';
     const urlListCart = 'https://localhost:7146/Cart/GetListCart';
     const urlUpdateCart = 'https://localhost:7146/Cart/UpdateCart';
-    const urlAddOrder = 'https://localhost:7146/Order/AddOrder';
     const urlAddToCart = 'https://localhost:7146/Cart/AddProductToCart';
     const urlDetailProduct = 'https://localhost:7146/Product/Detail/';
+
+    // Toastr
+    $(function () {
+        if ($('#success').val()) {
+            displayMessage($('#success').val(), 'success');
+        }
+        if ($('#info').val()) {
+            displayMessage($('#info').val(), 'info');
+        }
+        if ($('#warning').val()) {
+            displayMessage($('#warning').val(), 'warning');
+        }
+        if ($('#error').val()) {
+            displayMessage($('#error').val(), 'error');
+        }
+    });
+    var displayMessage = function (message, msgType) {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "positionClass": "toast-top-right",
+            "onClick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "8000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+        toastr[msgType](message);
+    };
 
     // Header Search Toggle
 
@@ -792,10 +826,9 @@ $(document).ready(function () {
         let userName = document.getElementById('login-username').value;
         let password = document.getElementById('login-password').value;
 
-        let urlAction = "../Login/ModalLogin";
         let request = { Username: userName, Password: password };
         $.ajax({
-            url: urlAction,
+            url: urlLogin,
             method: "POST",
             data: request,
             success: function (response) {
@@ -819,11 +852,10 @@ $(document).ready(function () {
         let confirmPassword = document.getElementById('register-confirmpassword').value;
         let email = document.getElementById('register-email').value;
 
-        let urlAction = "../Login/ModalRegister";
         let request = { Username: userName, Password: password, Email: email, ConfirmPassword: confirmPassword };
 
         $.ajax({
-            url: urlAction,
+            url: urlRegister,
             method: "POST",
             data: request,
             success: function (response) {
@@ -917,9 +949,11 @@ $(document).ready(function () {
             },
             success: function (response) {
                 LoadProductInCart();
+                toastr.success(response.responseText);
             },
             error: (err) => {
                 console.log(err);
+                toastr.error("Server error");
             }
         })
     }
@@ -939,6 +973,7 @@ $(document).ready(function () {
                     window.location.replace(urlDetailCart);
                 }
                 LoadProductInCart();
+                toastr.info("Cart updated");
             },
             error: function (err) {
                 console.log(err);
@@ -1032,38 +1067,7 @@ $(document).ready(function () {
     }
 
 
-    // Toastr
-    $(function () {
-        if ($('#success').val()) {
-            displayMessage($('#success').val(), 'success');
-        }
-        if ($('#info').val()) {
-            displayMessage($('#info').val(), 'info');
-        }
-        if ($('#warning').val()) {
-            displayMessage($('#warning').val(), 'warning');
-        }
-        if ($('#error').val()) {
-            displayMessage($('#error').val(), 'error');
-        }
-    });
-    var displayMessage = function (message, msgType) {
-        toastr.options = {
-            "closeButton": true,
-            "debug": false,
-            "positionClass": "toast-top-right",
-            "onClick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "8000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        };
-        toastr[msgType](message);
-    };
+
 });
 
 

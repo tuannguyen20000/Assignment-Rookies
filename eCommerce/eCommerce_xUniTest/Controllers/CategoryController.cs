@@ -36,7 +36,7 @@ namespace eCommerce_xUniTest.Api
             // Assert
             var model = Assert.IsAssignableFrom<OkObjectResult>(result);
             var value = Assert.IsAssignableFrom<ApiSuccessResult<bool>>(model.Value);
-            Assert.Null(value.errorMessage);
+            Assert.Null(value.Message);
             Assert.Equal("True", value.IsSuccessed.ToString());
         }
 
@@ -53,7 +53,7 @@ namespace eCommerce_xUniTest.Api
             // Assert
             var model = Assert.IsAssignableFrom<OkObjectResult>(result);
             var value = Assert.IsAssignableFrom<ApiSuccessResult<bool>>(model.Value);
-            Assert.Null(value.errorMessage);
+            Assert.Null(value.Message);
             Assert.Equal("True", value.IsSuccessed.ToString());
         }
 
