@@ -899,6 +899,13 @@ $(document).ready(function () {
         updateCart(id, 0);
     });
 
+    $('body').on('change', '.btn-update', function (e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+        const quantity = $(this).val();
+        updateCart(id, quantity);
+    });
+
 
     function addToCart() {
         $.ajax({
@@ -987,7 +994,11 @@ $(document).ready(function () {
 										</div><!-- End .product -->
 									</td>
 									<td class="price-col">$${item.price}</td>
-									<td class="quantity-col">${item.quantity}</td>
+									<td class="quantity-col">
+                                        <div class="cart-product-quantity">
+                                            <input data-id="${item.productId}" type="number" class="form-control btn-update" value="${item.quantity}" min="1" max="10" step="1" data-decimals="0" required>
+                                        </div><!-- End .cart-product-quantity -->
+                                    </td>
 									<td class="total-col">$${amount}</td>
 									<td class="remove-col"><button  data-id="${item.productId}" class="btn-remove"><i class="icon-close"></i></button></td>
 								</tr>`;

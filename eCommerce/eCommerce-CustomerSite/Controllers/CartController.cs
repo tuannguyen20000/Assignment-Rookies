@@ -57,6 +57,11 @@ namespace eCommerce_CustomerSite.Controllers
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var product = await _productApi.GetByIdAsync(Id);
             var currentCart = await GetCartAsync();
+            if (currentCart.Any(x => x.ProductId == Id))
+            {
+                Quantity = currentCart.First(x => x.ProductId == Id).Quantity + Quantity;
+                currentCart.Remove(currentCart.First(x => x.ProductId == Id));
+            }
             var cartItem = new CartItemVM()
             {
                 ProductId = Id,
@@ -77,6 +82,7 @@ namespace eCommerce_CustomerSite.Controllers
                 };
                await _cartClient.CreateAsync(cartUser);
             }
+
             currentCart.Add(cartItem);
             HttpContext.Session.SetString(SystemConstants.SESSION_CART, JsonConvert.SerializeObject(currentCart));
             return Json(new { success = true, responseText = "The product has been added to the cart" });
