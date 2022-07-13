@@ -1,8 +1,7 @@
 import {
   Box,
-  Icon,
-  IconButton,
   styled,
+  Button,
   Table,
   TableBody,
   TableCell,
@@ -10,13 +9,25 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material';
+import Modal from '@mui/material/Modal';
+import IconButton from '@mui/material/IconButton';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import Collapse from '@mui/material/Collapse';
+import Typography from '@mui/material/Typography';
+
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
 import moment from 'moment';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
 import { Breadcrumb, SimpleCard } from 'app/components';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getListProduct } from 'app/redux/actions/ProductActions';
+import { baseUrlApi } from 'app/utils/constant';
+import MaxHeightMenu from '../material-kit/menu/MaxHeightMenu';
+import AssignCategoriesModal from './form/AssignCategoriesModal';
 
 const Container = styled('div')(({ theme }) => ({
   margin: '30px',
@@ -27,15 +38,115 @@ const Container = styled('div')(({ theme }) => ({
   },
 }));
 
-const StyledTable = styled(Table)(() => ({
-  whiteSpace: 'pre',
-  '& thead': {
-    '& tr': { '& th': { paddingLeft: 0, paddingRight: 0 } },
-  },
-  '& tbody': {
-    '& tr': { '& td': { paddingLeft: 0, textTransform: 'capitalize' } },
-  },
+const styleModal = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(1),
 }));
+
+function Row(props) {
+  //Modal
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpen = () => setOpenModal(true);
+  const handleClose = () => setOpenModal(false);
+
+  const currentParams = 'product';
+
+  const { row } = props;
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Fragment>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell>
+          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {row.productName}
+        </TableCell>
+        <TableCell align="center">{row.price}</TableCell>
+        <TableCell align="center">{moment(row.createdDate).utc().format('DD-MM-YYYY')}</TableCell>
+        <TableCell align="center">{moment(row.updatedDate).utc().format('DD-MM-YYYY')}</TableCell>
+        <TableCell align="center">
+          <Box
+            component="img"
+            align="center"
+            sx={{
+              height: '100%',
+              width: '100%',
+              maxHeight: { xs: 233, md: 167 },
+              maxWidth: { xs: 350, md: 250 },
+            }}
+            alt={row.productName}
+            src={baseUrlApi + row.thumbnailImage}
+          />
+        </TableCell>
+        <TableCell align="right">
+          <MaxHeightMenu data={row.id} current={currentParams}></MaxHeightMenu>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                Category
+              </Typography>
+
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <Typography align="right" component="div">
+                    <StyledButton color="primary" onClick={handleOpen}>
+                      Add more category
+                    </StyledButton>
+                  </Typography>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell component="th" scope="row">
+                      {row.categories.map((item) => item + '   ')}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+
+      {/* Modal */}
+      <Modal
+        keepMounted
+        open={openModal}
+        onClose={handleClose}
+        aria-labelledby="keep-mounted-modal-title"
+        aria-describedby="keep-mounted-modal-description"
+      >
+        <Box sx={styleModal}>
+          <Typography id="keep-mounted-modal-title" variant="h6" component="h2">
+            Select the appropriate Category for the "{row.productName}"
+          </Typography>
+          <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
+            <AssignCategoriesModal data={row.id}></AssignCategoriesModal>
+          </Typography>
+        </Box>
+      </Modal>
+      {/* End Modal */}
+    </Fragment>
+  );
+}
 
 const PaginationTable = () => {
   const dispatch = useDispatch();
@@ -58,52 +169,40 @@ const PaginationTable = () => {
   const { productList } = useSelector((state) => state.products);
   return (
     <Box width="100%" overflow="auto">
-      <StyledTable>
-        <TableHead>
-          <TableRow>
-            <TableCell align="left">Name</TableCell>
-            <TableCell align="center">Price</TableCell>
-            <TableCell align="center">Created Date</TableCell>
-            <TableCell align="center">Updated Date</TableCell>
-            <TableCell align="right">Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {productList.length > 0 &&
-            productList
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell align="left">{item.productName}</TableCell>
-                  <TableCell align="center">${item.price}</TableCell>
-                  <TableCell align="center">
-                    {moment(item.createdDate).utc().format('DD-MM-YYYY')}
-                  </TableCell>
-                  <TableCell align="center">
-                    {moment(item.updatedDate).utc().format('DD-MM-YYYY')}
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton>
-                      <Icon color="error">close</Icon>
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-        </TableBody>
-      </StyledTable>
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell align="left">Name</TableCell>
+              <TableCell align="center">Price</TableCell>
+              <TableCell align="center">Created Date</TableCell>
+              <TableCell align="center">Updated Date</TableCell>
+              <TableCell align="center"></TableCell>
+              <TableCell align="right">Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {productList.length > 0 &&
+              productList
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((item, index) => <Row key={index} row={item}></Row>)}
+          </TableBody>
+        </Table>
 
-      <TablePagination
-        sx={{ px: 2 }}
-        page={page}
-        component="div"
-        rowsPerPage={rowsPerPage}
-        count={productList.length}
-        onPageChange={handleChangePage}
-        rowsPerPageOptions={[1, 5, 10, 25]}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        nextIconButtonProps={{ 'aria-label': 'Next Page' }}
-        backIconButtonProps={{ 'aria-label': 'Previous Page' }}
-      />
+        <TablePagination
+          sx={{ px: 2 }}
+          page={page}
+          component="div"
+          rowsPerPage={rowsPerPage}
+          count={productList.length}
+          onPageChange={handleChangePage}
+          rowsPerPageOptions={[1, 5, 10, 25]}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          nextIconButtonProps={{ 'aria-label': 'Next Page' }}
+          backIconButtonProps={{ 'aria-label': 'Previous Page' }}
+        />
+      </TableContainer>
     </Box>
   );
 };

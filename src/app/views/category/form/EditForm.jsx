@@ -1,28 +1,35 @@
-import { useDispatch } from 'react-redux';
-
-import { createProduct } from 'app/redux/actions/ProductActions';
-import { Button, Grid, Icon, styled } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateCategory } from 'app/redux/actions/CategoryAction';
+import { Button, Grid, Icon, styled, Box } from '@mui/material';
 import { Span } from 'app/components/Typography';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { baseUrlApi } from 'app/utils/constant';
 
 const TextField = styled(TextValidator)(() => ({
   width: '100%',
   marginBottom: '16px',
 }));
 
-const SimpleForm = () => {
-  const [state, setState] = useState('');
-  const [isFilePicked, setIsFilePicked] = useState(false);
+const EditForm = () => {
+  const param = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { categoryList } = useSelector((state) => state.categories);
+  const currentCategory = categoryList.filter((category) => category.id == param.id);
+  console.log(param.id);
+  const { id, categoryName, description, thumbnailImage } = currentCategory[0];
+  const [state, setState] = useState({
+    CategoryName: categoryName,
+    Description: description,
+  });
+  const [isFilePicked, setIsFilePicked] = useState(false);
+
   const formData = new FormData();
-  formData.append('ProductName', state.ProductName);
+  formData.append('CategoryName', state.CategoryName);
   formData.append('Description', state.Description);
-  formData.append('Price', state.Price);
-  formData.append('Status', state.Status);
   formData.append('ThumbnailImage', state.ThumbnailImage);
 
   const handleChange = (event) => {
@@ -35,11 +42,11 @@ const SimpleForm = () => {
     setIsFilePicked(true);
   };
   const handleSubmit = () => {
-    dispatch(createProduct(formData));
-    navigate('/product/paging');
+    dispatch(updateCategory(id, formData));
+    navigate('/category/paging');
   };
 
-  const { ProductName, Description, Price, Status } = state;
+  const { CategoryName, Description } = state;
 
   return (
     <div>
@@ -48,12 +55,12 @@ const SimpleForm = () => {
           <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
             <TextField
               type="text"
-              name="ProductName"
+              name="CategoryName"
               id="standard-basic"
-              value={ProductName || ''}
+              value={CategoryName || ''}
               onChange={handleChange}
               errorMessages={['this field is required']}
-              label="Product Name (Min length 4, Max length 9)"
+              label="Category Name (Min length 4, Max length 9)"
               validators={['required', 'minStringLength: 4', 'maxStringLength: 9']}
             />
 
@@ -65,27 +72,6 @@ const SimpleForm = () => {
               value={Description || ''}
               validators={['required']}
               errorMessages={['this field is required']}
-            />
-
-            <TextField
-              type="number"
-              name="Price"
-              label="Price"
-              value={Price || ''}
-              onChange={handleChange}
-              validators={['required']}
-              errorMessages={['this field is required']}
-            />
-
-            <TextField
-              sx={{ mb: 4 }}
-              type="number"
-              name="Status"
-              label="Status"
-              onChange={handleChange}
-              value={Status || ''}
-              errorMessages={['this field is required']}
-              validators={['required']}
             />
           </Grid>
 
@@ -103,6 +89,18 @@ const SimpleForm = () => {
             ) : (
               <p>Select a file to show details</p>
             )}
+            <Box
+              component="img"
+              align="center"
+              sx={{
+                height: 225,
+                width: 225,
+                maxHeight: { xs: 233, md: 167 },
+                maxWidth: { xs: 350, md: 250 },
+              }}
+              alt={categoryName}
+              src={baseUrlApi + thumbnailImage}
+            />
           </Grid>
         </Grid>
         <Button color="primary" variant="contained" type="submit">
@@ -114,4 +112,4 @@ const SimpleForm = () => {
   );
 };
 
-export default SimpleForm;
+export default EditForm;

@@ -1,12 +1,15 @@
-import { Autocomplete, Chip, TextField } from '@mui/material';
+import { Autocomplete, TextField, Button } from '@mui/material';
 import { Box, useTheme } from '@mui/system';
+import AccordionActions from '@mui/material/AccordionActions';
 
-const BadgeAutocomplete = () => {
+const AssignCategoriesModal = (props) => {
+  console.log(props.data);
   const theme = useTheme();
 
   return (
     <Box
       sx={{
+        width: '100%',
         '& > * + *': {
           marginTop: theme.spacing(3),
         },
@@ -14,29 +17,32 @@ const BadgeAutocomplete = () => {
     >
       <Autocomplete
         multiple
-        id="tags-filled"
-        options={top100Films.map((option) => option.title)}
-        defaultValue={[top100Films[13].title]}
-        renderTags={(value, getTagProps) =>
-          value.map((option, index) => (
-            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-          ))
-        }
+        id="tags-outlined"
+        options={top100Films}
+        getOptionLabel={(option) => option.title}
+        // defaultValue={[top100Films[1]]}
+        filterSelectedOptions
         renderInput={(params) => (
           <TextField
             {...params}
-            variant="filled"
-            label="Category"
+            variant="outlined"
+            label="Select categories..."
             placeholder="Selected"
             fullWidth
           />
         )}
       />
+      <AccordionActions>
+        <Button size="small">Cancel</Button>
+        <Button size="small" color="primary">
+          Save
+        </Button>
+      </AccordionActions>
     </Box>
   );
 };
 
-export default BadgeAutocomplete;
+export default AssignCategoriesModal;
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 const top100Films = [

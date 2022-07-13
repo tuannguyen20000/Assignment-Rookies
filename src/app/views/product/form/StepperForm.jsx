@@ -5,8 +5,8 @@ import StepLabel from '@mui/material/StepLabel';
 import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
 import React from 'react';
-import SimpleForm from './SimpleForm';
-import BadgeAutocomplete from '../auto-complete/BadgeAutocomplete';
+import CreateForm from './CreateForm';
+import BadgeAutocomplete from '../../../views/material-kit/auto-complete/BadgeAutocomplete';
 
 function getSteps() {
   return ['Infomation product', 'Add category', 'Review'];
@@ -15,7 +15,7 @@ function getSteps() {
 function getStepContent(stepIndex) {
   switch (stepIndex) {
     case 0:
-      return <SimpleForm />;
+      return <CreateForm />;
 
     case 1:
       return <BadgeAutocomplete></BadgeAutocomplete>;

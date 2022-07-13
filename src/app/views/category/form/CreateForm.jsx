@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 
-import { createProduct } from 'app/redux/actions/ProductActions';
+import { createCategory } from 'app/redux/actions/CategoryAction';
 import { Button, Grid, Icon, styled } from '@mui/material';
 import { Span } from 'app/components/Typography';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
@@ -12,17 +12,15 @@ const TextField = styled(TextValidator)(() => ({
   marginBottom: '16px',
 }));
 
-const SimpleForm = () => {
+const CreateForm = () => {
   const [state, setState] = useState('');
   const [isFilePicked, setIsFilePicked] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const formData = new FormData();
-  formData.append('ProductName', state.ProductName);
+  formData.append('CategoryName', state.CategoryName);
   formData.append('Description', state.Description);
-  formData.append('Price', state.Price);
-  formData.append('Status', state.Status);
   formData.append('ThumbnailImage', state.ThumbnailImage);
 
   const handleChange = (event) => {
@@ -35,11 +33,11 @@ const SimpleForm = () => {
     setIsFilePicked(true);
   };
   const handleSubmit = () => {
-    dispatch(createProduct(formData));
-    navigate('/product/paging');
+    dispatch(createCategory(formData));
+    navigate('/category/paging');
   };
 
-  const { ProductName, Description, Price, Status } = state;
+  const { CategoryName, Description } = state;
 
   return (
     <div>
@@ -48,12 +46,12 @@ const SimpleForm = () => {
           <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
             <TextField
               type="text"
-              name="ProductName"
+              name="CategoryName"
               id="standard-basic"
-              value={ProductName || ''}
+              value={CategoryName || ''}
               onChange={handleChange}
               errorMessages={['this field is required']}
-              label="Product Name (Min length 4, Max length 9)"
+              label="Category Name (Min length 4, Max length 9)"
               validators={['required', 'minStringLength: 4', 'maxStringLength: 9']}
             />
 
@@ -65,27 +63,6 @@ const SimpleForm = () => {
               value={Description || ''}
               validators={['required']}
               errorMessages={['this field is required']}
-            />
-
-            <TextField
-              type="number"
-              name="Price"
-              label="Price"
-              value={Price || ''}
-              onChange={handleChange}
-              validators={['required']}
-              errorMessages={['this field is required']}
-            />
-
-            <TextField
-              sx={{ mb: 4 }}
-              type="number"
-              name="Status"
-              label="Status"
-              onChange={handleChange}
-              value={Status || ''}
-              errorMessages={['this field is required']}
-              validators={['required']}
             />
           </Grid>
 
@@ -114,4 +91,4 @@ const SimpleForm = () => {
   );
 };
 
-export default SimpleForm;
+export default CreateForm;

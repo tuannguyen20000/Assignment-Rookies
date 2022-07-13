@@ -1,28 +1,36 @@
-import { useDispatch } from 'react-redux';
-
-import { createProduct } from 'app/redux/actions/ProductActions';
-import { Button, Grid, Icon, styled } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateProduct } from 'app/redux/actions/ProductActions';
+import { Button, Grid, Icon, styled, Box } from '@mui/material';
 import { Span } from 'app/components/Typography';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { baseUrlApi } from 'app/utils/constant';
 
 const TextField = styled(TextValidator)(() => ({
   width: '100%',
   marginBottom: '16px',
 }));
 
-const SimpleForm = () => {
-  const [state, setState] = useState('');
-  const [isFilePicked, setIsFilePicked] = useState(false);
+const EditForm = () => {
+  const param = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { productList } = useSelector((state) => state.products);
+  const currentProduct = productList.filter((product) => product.id == param.id);
+  const { id, productName, description, price, thumbnailImage } = currentProduct[0];
+  const [state, setState] = useState({
+    ProductName: productName,
+    Description: description,
+    Price: price,
+  });
+  const [isFilePicked, setIsFilePicked] = useState(false);
 
   const formData = new FormData();
   formData.append('ProductName', state.ProductName);
   formData.append('Description', state.Description);
   formData.append('Price', state.Price);
-  formData.append('Status', state.Status);
   formData.append('ThumbnailImage', state.ThumbnailImage);
 
   const handleChange = (event) => {
@@ -35,11 +43,11 @@ const SimpleForm = () => {
     setIsFilePicked(true);
   };
   const handleSubmit = () => {
-    dispatch(createProduct(formData));
+    dispatch(updateProduct(id, formData));
     navigate('/product/paging');
   };
 
-  const { ProductName, Description, Price, Status } = state;
+  const { ProductName, Description, Price } = state;
 
   return (
     <div>
@@ -76,17 +84,6 @@ const SimpleForm = () => {
               validators={['required']}
               errorMessages={['this field is required']}
             />
-
-            <TextField
-              sx={{ mb: 4 }}
-              type="number"
-              name="Status"
-              label="Status"
-              onChange={handleChange}
-              value={Status || ''}
-              errorMessages={['this field is required']}
-              validators={['required']}
-            />
           </Grid>
 
           <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
@@ -103,6 +100,18 @@ const SimpleForm = () => {
             ) : (
               <p>Select a file to show details</p>
             )}
+            <Box
+              component="img"
+              align="center"
+              sx={{
+                height: 225,
+                width: 225,
+                maxHeight: { xs: 233, md: 167 },
+                maxWidth: { xs: 350, md: 250 },
+              }}
+              alt={productName}
+              src={baseUrlApi + thumbnailImage}
+            />
           </Grid>
         </Grid>
         <Button color="primary" variant="contained" type="submit">
@@ -114,4 +123,4 @@ const SimpleForm = () => {
   );
 };
 
-export default SimpleForm;
+export default EditForm;
