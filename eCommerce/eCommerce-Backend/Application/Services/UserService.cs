@@ -159,6 +159,7 @@ namespace eCommerce_Backend.Application.Services
 
             Users user = new()
             {
+                Id = Guid.NewGuid().ToString(),
                 Email = request.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = request.Username
@@ -187,6 +188,7 @@ namespace eCommerce_Backend.Application.Services
 
             Users user = new()
             {
+                Id = Guid.NewGuid().ToString(),
                 Email = request.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = request.Username

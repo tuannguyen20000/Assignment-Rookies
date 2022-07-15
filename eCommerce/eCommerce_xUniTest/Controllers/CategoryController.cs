@@ -74,5 +74,23 @@ namespace eCommerce_xUniTest.Api
             Assert.Equal(3, value.Items.Count());
 
         }
+
+        [Fact]
+        public async Task GetById_WhenCalled_ReturnsOkResult()
+        {
+            /// Arrange
+            var categoryId = CatgoryFakeData.GetCategory().Select(x => x.Id).FirstOrDefault();
+            var category = CatgoryFakeData.GetCategory().First(x => x.Id == categoryId);
+            var categoryService = new Mock<ICategoryService>();
+            categoryService.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new ApiSuccessResult<CategoryReadDto>(category));
+            var controller = new CategoriesController(categoryService.Object);
+            /// Act
+            var result = await controller.GetById(categoryId) as OkObjectResult;
+            // /// Assert
+            var model = Assert.IsAssignableFrom<OkObjectResult>(result);
+            var value = Assert.IsAssignableFrom<ApiSuccessResult<CategoryReadDto>>(model.Value);
+            Assert.NotNull(value.ResultObj);
+        }
+
     }
 }

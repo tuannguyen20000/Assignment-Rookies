@@ -866,7 +866,7 @@ $(document).ready(function () {
                 }
             },
             error: (response) => {
-                console.log("Ajax fail");
+                console.log(response);
             }
         })
     });

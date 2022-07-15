@@ -12,6 +12,7 @@ using eCommerce_Backend.Application.Common;
 using Microsoft.Extensions.FileProviders;
 using eCommerce_Backend.Data.Entities;
 using eCommerce_Backend.Extensions;
+using eCommerce_Backend.Data.Triggers;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -25,6 +26,10 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddDbContext<eCommerceDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString(SystemConstants.MainConnectionString)));
+/*                .UseTriggers(options =>
+                {
+                    options.AddTrigger<UserIdTrigger>();
+                }));*/
 
 builder.Services.AddSwaggerGen(options => {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
