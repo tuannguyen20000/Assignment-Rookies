@@ -33,11 +33,21 @@ namespace eCommerce_Backend.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
-        [Route("delete-cart/{Id}/{quantity}")]
-        public async Task<IActionResult> Delete(int Id, int quantity)
+        [HttpPut]
+        [Route("update-cart/{Id}")]
+        public async Task<IActionResult> Update(int Id, [FromBody] CartUpdateDto request)
         {
-            var result = await _cartService.DeleteAsync(Id, quantity);
+            var result = await _cartService.UpdateAsync(Id,request);
+            if (result == 0)
+                return BadRequest();
+            return Ok(result);
+        }
+
+        [HttpDelete]
+        [Route("delete-cart/{Id}/{userId}")]
+        public async Task<IActionResult> Delete(int Id, string userId)
+        {
+            var result = await _cartService.DeleteAsync(Id, userId);
             if (result == 0)
                 return BadRequest();
             return Ok(result);

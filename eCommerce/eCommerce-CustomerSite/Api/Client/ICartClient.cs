@@ -15,7 +15,11 @@ namespace eCommerce_CustomerSite.Api.Client
         Task<int> CreateAsync([Body] CartCreateDto request);
 
         [Headers("Content-Type: application/json")]
-        [Delete("/api/Carts/delete-cart/{Id}/{quantity}")]
-        Task<int> DeleteAsync(int Id, int quantity);
+        [Put("/api/Carts/update-cart/{Id}")]
+        Task<int> UpdateAsync(int Id, [Body] CartUpdateDto request);
+
+        [Headers("Content-Type: application/json")]
+        [Delete("/api/Carts/delete-cart/{Id}/{userId}")]
+        Task<int> DeleteAsync(int Id, string userId);
     }
 }

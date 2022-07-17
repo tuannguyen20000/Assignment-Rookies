@@ -30,6 +30,11 @@ namespace eCommerce_CustomerSite.Controllers
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var currentCart = await GetCartAsync();
+            var request = new CartUpdateDto()
+            {
+                quantity = quantity,
+                userId = userId,
+            };
             // update current cart
             foreach (var item in currentCart)
             {
@@ -38,13 +43,19 @@ namespace eCommerce_CustomerSite.Controllers
                     if (quantity == 0)
                     {
                         currentCart.Remove(item);
+                        // Delete if empty cart user
                         if (!string.IsNullOrEmpty(userId))
                         {
-                            await _cartClient.DeleteAsync(Id, item.Quantity);   
+                            await _cartClient.DeleteAsync(Id, userId);   
                         }
                         break;
                     }
                     item.Quantity = quantity;
+                    // Update cart user
+                    if (!string.IsNullOrEmpty(userId))
+                    {
+                        await _cartClient.UpdateAsync(Id, request);
+                    }     
                 }
             }
             HttpContext.Session.SetString(SystemConstants.SESSION_CART, JsonConvert.SerializeObject(currentCart));
@@ -67,7 +78,7 @@ namespace eCommerce_CustomerSite.Controllers
                 if(Quantity > product.ResultObj.ProductQuantity)
                     return Json(new { success = false, responseText = "Quantity is not enough" });
                 if (!string.IsNullOrEmpty(userId))
-                    await _cartClient.DeleteAsync(Id, currentCart.First(x => x.ProductId == Id).Quantity);
+                    await _cartClient.DeleteAsync(Id, userId);
 
                 currentCart.Remove(currentCart.First(x => x.ProductId == Id));
                 

@@ -32,11 +32,11 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
-        public async Task<int> DeleteAsync(int Id, int quantity)
+        public async Task<int> DeleteAsync(int Id, string userId)
         {
             using (_dbContext)
             {
-                var products = await _dbContext.Carts.Where(x => x.ProductsId == Id && x.Quantity == quantity).FirstOrDefaultAsync();
+                var products = await _dbContext.Carts.Where(x => x.ProductsId == Id && x.UsersId == userId).FirstOrDefaultAsync();
                 if (products == null) throw new eComExceptions($"Cannot find an product with id {Id}");
                 _dbContext.Carts.Remove(products);
                 return await _dbContext.SaveChangesAsync();
@@ -69,6 +69,18 @@ namespace eCommerce_Backend.Application.Services
                         ProductQuantity = x.Products.ProductQuantity,
                     }).ToListAsync();
                 return result;
+            }
+        }
+
+        public async Task<int> UpdateAsync(int Id, CartUpdateDto request)
+        {
+            using (_dbContext)
+            {
+                var products = await _dbContext.Carts.Where(x => x.ProductsId == Id && x.UsersId == request.userId).FirstOrDefaultAsync();
+                if (products == null) throw new eComExceptions($"Cannot find an product with id {Id}");
+                products.Quantity = request.quantity;
+                _dbContext.Carts.Update(products);
+                return await _dbContext.SaveChangesAsync();
             }
         }
     }

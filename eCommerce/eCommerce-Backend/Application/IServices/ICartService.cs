@@ -7,6 +7,7 @@ namespace eCommerce_Backend.Application.IServices
     {
         Task<List<CartReadDto>> GetListAsync(string UserId);
         Task<int> CreateAsync(CartCreateDto request);
-        Task<int> DeleteAsync(int Id, int quantity);
+        Task<int> UpdateAsync(int Id, CartUpdateDto request);
+        Task<int> DeleteAsync(int Id, string userId);
     }
 }
