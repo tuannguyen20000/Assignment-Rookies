@@ -1,4 +1,5 @@
-﻿using eCommerce_SharedViewModels.Common;
+﻿using eCommerce_Backend.Data.Entities;
+using eCommerce_SharedViewModels.Common;
 
 namespace eCommerce_xUniTest.DummyData
 {
@@ -26,6 +27,36 @@ namespace eCommerce_xUniTest.DummyData
                     ProductName = "Giay da",
                     UpdatedDate = DateTime.Now,
                     CategoryId = 1,
+                },
+             };
+        }
+
+        public static List<Products> ListProductst()
+        {
+            return new List<Products>()
+            {
+                new Products()
+                {
+                    Id = 1,
+                    CreatedDate = DateTime.Now,
+                    Description = "test1 Description",
+                    Price = 200000,
+                    ProductName = "Dep ca sau",
+                    UpdatedDate = DateTime.Now,        
+                    ProductQuantity = 100,
+                    Status = Status.Available,                   
+                },
+
+                new Products()
+                {
+                    Id= 2,
+                    CreatedDate = DateTime.Now,
+                    Description = "test2 Description",
+                    Price = 1200000,
+                    ProductName = "Giay da",
+                    UpdatedDate = DateTime.Now,
+                    ProductQuantity = 200,
+                    Status = Status.Available,
                 },
              };
         }
