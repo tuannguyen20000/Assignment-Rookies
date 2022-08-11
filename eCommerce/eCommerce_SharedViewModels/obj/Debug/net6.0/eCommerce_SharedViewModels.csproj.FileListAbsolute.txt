@@ -1,0 +1,12 @@
+C:\Users\tuann\Downloads\rookies\Assignment\eCommerce\eCommerce\eCommerce_SharedViewModels\bin\Debug\net6.0\eCommerce_SharedViewModels.deps.json
+C:\Users\tuann\Downloads\rookies\Assignment\eCommerce\eCommerce\eCommerce_SharedViewModels\bin\Debug\net6.0\eCommerce_SharedViewModels.dll
+C:\Users\tuann\Downloads\rookies\Assignment\eCommerce\eCommerce\eCommerce_SharedViewModels\bin\Debug\net6.0\eCommerce_SharedViewModels.pdb
+C:\Users\tuann\Downloads\rookies\Assignment\eCommerce\eCommerce\eCommerce_SharedViewModels\obj\Debug\net6.0\eCommerce_SharedViewModels.csproj.AssemblyReference.cache
+C:\Users\tuann\Downloads\rookies\Assignment\eCommerce\eCommerce\eCommerce_SharedViewModels\obj\Debug\net6.0\eCommerce_SharedViewModels.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\tuann\Downloads\rookies\Assignment\eCommerce\eCommerce\eCommerce_SharedViewModels\obj\Debug\net6.0\eCommerce_SharedViewModels.AssemblyInfoInputs.cache
+C:\Users\tuann\Downloads\rookies\Assignment\eCommerce\eCommerce\eCommerce_SharedViewModels\obj\Debug\net6.0\eCommerce_SharedViewModels.AssemblyInfo.cs
+C:\Users\tuann\Downloads\rookies\Assignment\eCommerce\eCommerce\eCommerce_SharedViewModels\obj\Debug\net6.0\eCommerce_SharedViewModels.csproj.CoreCompileInputs.cache
+C:\Users\tuann\Downloads\rookies\Assignment\eCommerce\eCommerce\eCommerce_SharedViewModels\obj\Debug\net6.0\eCommerce_SharedViewModels.dll
+C:\Users\tuann\Downloads\rookies\Assignment\eCommerce\eCommerce\eCommerce_SharedViewModels\obj\Debug\net6.0\refint\eCommerce_SharedViewModels.dll
+C:\Users\tuann\Downloads\rookies\Assignment\eCommerce\eCommerce\eCommerce_SharedViewModels\obj\Debug\net6.0\eCommerce_SharedViewModels.pdb
+C:\Users\tuann\Downloads\rookies\Assignment\eCommerce\eCommerce\eCommerce_SharedViewModels\obj\Debug\net6.0\ref\eCommerce_SharedViewModels.dll
