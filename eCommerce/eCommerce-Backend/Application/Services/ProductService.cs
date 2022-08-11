@@ -202,8 +202,8 @@ namespace eCommerce_Backend.Application.Services
                 CreatedDate = DateTime.Now.Date,
                 UpdatedDate = DateTime.Now.Date,
                 Description = data.Description,
-                Price=data.Price,
-                Status =data.Status,
+                Price = data.Price,
+                Status = data.Status,
                 ProductQuantity = data.ProductQuantity,
                 ThumbnailImage = image != null ? image.ImagePath : "no-image.jpg",
                 Categories = categories,
@@ -266,20 +266,20 @@ namespace eCommerce_Backend.Application.Services
             {
 
                 var data = await _dbContext.Products
-                    .Include(x=>x.ProductImages)
-                    .Include(x => x.ProductInCategory).ThenInclude(p=>p.Categories)
-                    .Where(x=>x.Status == Status.Available).Select(x => new ProductReadDto()
-                {
-                    Id = x.Id,
-                    CreatedDate = x.CreatedDate,
-                    Description = x.Description,
-                    Price = x.Price,
-                    ProductName = x.ProductName,
-                    UpdatedDate = x.UpdatedDate,
-                    ProductQuantity = x.ProductQuantity,
-                    Categories = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x=>x.Categories.CategoryName).ToList(),
-                    ThumbnailImage = x.ProductImages.Where(x=>x.IsDefault == true).Select(x=>x.ImagePath).FirstOrDefault()
-                }).ToListAsync();
+                    .Include(x => x.ProductImages)
+                    .Include(x => x.ProductInCategory).ThenInclude(p => p.Categories)
+                    .Where(x => x.Status == Status.Available).Select(x => new ProductReadDto()
+                    {
+                        Id = x.Id,
+                        CreatedDate = x.CreatedDate,
+                        Description = x.Description,
+                        Price = x.Price,
+                        ProductName = x.ProductName,
+                        UpdatedDate = x.UpdatedDate,
+                        ProductQuantity = x.ProductQuantity,
+                        Categories = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.Categories.CategoryName).ToList(),
+                        ThumbnailImage = x.ProductImages.Where(x => x.IsDefault == true).Select(x => x.ImagePath).FirstOrDefault()
+                    }).ToListAsync();
                 return data;
             }
         }
