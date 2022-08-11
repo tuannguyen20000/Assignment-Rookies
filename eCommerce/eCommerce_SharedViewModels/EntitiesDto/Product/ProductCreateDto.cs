@@ -10,5 +10,6 @@ namespace eCommerce_SharedViewModels.EntitiesDto.Product
         public int ProductQuantity { get; set; }
         public decimal Price { get; set; }
         public IFormFile ThumbnailImage { get; set; }
+        public int[] CategoriesId { get; set; }
     }
 }

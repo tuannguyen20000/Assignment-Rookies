@@ -103,7 +103,7 @@ namespace eCommerce_Backend.Application.Services
                 }
                 await _dbContext.SaveChangesAsync();
                 return new ApiSuccessResult<bool>();
-            }       
+            }
         }
 
         public async Task<ApiResult<bool>> CreateAsync(ProductCreateDto request)
@@ -118,6 +118,7 @@ namespace eCommerce_Backend.Application.Services
                 UpdatedDate = DateTime.Now.Date,
                 Status = Status.Available,
             };
+
             // Save image
             if (request.ThumbnailImage != null)
             {
@@ -138,6 +139,17 @@ namespace eCommerce_Backend.Application.Services
             {
                 _dbContext.Products.Add(Product);
                 await _dbContext.SaveChangesAsync();
+                // Save Category
+                foreach (var item in request.CategoriesId)
+                {
+                    var productInCategories = new ProductInCategory()
+                    {
+                        ProductsId = Product.Id,
+                        CategoriesId = item,
+                    };
+                    _dbContext.ProductInCategory.Add(productInCategories);
+                    await _dbContext.SaveChangesAsync();
+                }
                 return new ApiSuccessResult<bool>();
             }
         }
@@ -148,7 +160,7 @@ namespace eCommerce_Backend.Application.Services
             if (data == null)
                 return new ApiErrorResult<ProductReadDto>(ErrorMessage.ProductNotFound);
             var image = await _dbContext.ProductImages.Where(x => x.ProductsId == Id && x.IsDefault == true).FirstOrDefaultAsync();
-            var listSubImage = await _dbContext.ProductImages.Where(x => x.ProductsId == Id && x.IsDefault == false).Select(x=> new ProductImageDto()
+            var listSubImage = await _dbContext.ProductImages.Where(x => x.ProductsId == Id && x.IsDefault == false).Select(x => new ProductImageDto()
             {
                 ImagePath = x.ImagePath,
                 Caption = x.Caption,
@@ -186,12 +198,12 @@ namespace eCommerce_Backend.Application.Services
             var result = new ProductReadDto()
             {
                 Id = data.Id,
-                ProductName=data.ProductName,
-                CreatedDate=DateTime.Now.Date,
-                UpdatedDate=DateTime.Now.Date,
+                ProductName = data.ProductName,
+                CreatedDate = DateTime.Now.Date,
+                UpdatedDate = DateTime.Now.Date,
                 Description = data.Description,
-                Price=data.Price,
-                Status =data.Status,
+                Price = data.Price,
+                Status = data.Status,
                 ProductQuantity = data.ProductQuantity,
                 ThumbnailImage = image != null ? image.ImagePath : "no-image.jpg",
                 Categories = categories,
@@ -254,22 +266,22 @@ namespace eCommerce_Backend.Application.Services
             {
 
                 var data = await _dbContext.Products
-                    .Include(x=>x.ProductImages)
-                    .Include(x => x.ProductInCategory).ThenInclude(p=>p.Categories)
-                    .Where(x=>x.Status == Status.Available).Select(x => new ProductReadDto()
-                {
-                    Id = x.Id,
-                    CreatedDate = x.CreatedDate,
-                    Description = x.Description,
-                    Price = x.Price,
-                    ProductName = x.ProductName,
-                    UpdatedDate = x.UpdatedDate,
-                    ProductQuantity = x.ProductQuantity,
-                    Categories = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x=>x.Categories.CategoryName).ToList(),
-                    ThumbnailImage = x.ProductImages.Where(x=>x.IsDefault == true).Select(x=>x.ImagePath).FirstOrDefault()
-                }).ToListAsync();
+                    .Include(x => x.ProductImages)
+                    .Include(x => x.ProductInCategory).ThenInclude(p => p.Categories)
+                    .Where(x => x.Status == Status.Available).Select(x => new ProductReadDto()
+                    {
+                        Id = x.Id,
+                        CreatedDate = x.CreatedDate,
+                        Description = x.Description,
+                        Price = x.Price,
+                        ProductName = x.ProductName,
+                        UpdatedDate = x.UpdatedDate,
+                        ProductQuantity = x.ProductQuantity,
+                        Categories = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.Categories.CategoryName).ToList(),
+                        ThumbnailImage = x.ProductImages.Where(x => x.IsDefault == true).Select(x => x.ImagePath).FirstOrDefault()
+                    }).ToListAsync();
                 return data;
-            }              
+            }
         }
 
         public async Task<List<ProductImageDto>> GetListImageByProductIdAsync(int Id)
@@ -287,7 +299,7 @@ namespace eCommerce_Backend.Application.Services
                     IsDefault = i.IsDefault,
                     ProductsId = i.ProductsId,
                 }).ToListAsync();
-            }        
+            }
         }
 
         public async Task<PagedResult<ProductReadDto>> GetPagingAsync(ProductPagingDto request)
@@ -306,12 +318,12 @@ namespace eCommerce_Backend.Application.Services
                 }
                 if (request.CategoriesId != null && request.CategoriesId != 0)
                 {
-                    query = query.Where(p => p.ProductInCategory.Where(x=>x.Categories.Status == Status.Available)
-                    .Select(x=>x.Categories.Id)
+                    query = query.Where(p => p.ProductInCategory.Where(x => x.Categories.Status == Status.Available)
+                    .Select(x => x.Categories.Id)
                     .Contains(request.CategoriesId.Value));
                 }
-                
-                int totalRow = await query.Select(x=>x.Id).CountAsync();
+
+                int totalRow = await query.Select(x => x.Id).CountAsync();
                 var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
                     .Take(request.PageSize)
                     .Select(x => new ProductReadDto()
@@ -324,9 +336,9 @@ namespace eCommerce_Backend.Application.Services
                         UpdatedDate = x.UpdatedDate,
                         ProductQuantity = x.ProductQuantity,
                         ThumbnailImage = x.ProductImages.Select(x => x.ImagePath).FirstOrDefault(),
-                        CategoryId = x.ProductInCategory.Where(x=>x.Categories.Status == Status.Available).Select(x => x.CategoriesId).FirstOrDefault(),
+                        CategoryId = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.CategoriesId).FirstOrDefault(),
                         CategoryName = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.Categories.CategoryName).FirstOrDefault(),
-                        avrRating = x.ProductRatings.Count != 0  ? (int)Math.Ceiling((decimal)x.ProductRatings.Select(x => x.Rating).Average()): 0 ,
+                        avrRating = x.ProductRatings.Count != 0 ? (int)Math.Ceiling((decimal)x.ProductRatings.Select(x => x.Rating).Average()) : 0,
                         countComment = x.ProductRatings.Select(x => x.Comment).Count(),
                     }).ToListAsync();
                 var pagedResult = new PagedResult<ProductReadDto>()
@@ -366,7 +378,7 @@ namespace eCommerce_Backend.Application.Services
                 await _dbContext.SaveChangesAsync();
                 return new ApiSuccessResult<bool>();
             }
-        
+
         }
 
         public async Task<ApiResult<bool>> UpdateAsync(int Id, ProductUpdateDto request)
@@ -428,7 +440,7 @@ namespace eCommerce_Backend.Application.Services
             var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
             await _fileStorage.SaveFileAsync(file.OpenReadStream(), fileName);
-            return "/" + RESOURCES +"/"+ USER_IMAGES_FOLDER_NAME + "/" + fileName;
+            return "/" + RESOURCES + "/" + USER_IMAGES_FOLDER_NAME + "/" + fileName;
         }
     }
 }
