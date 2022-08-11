@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material';
 import { Box, styled } from '@mui/system';
 import { Breadcrumb, SimpleCard } from 'app/components';
-import StepperForm from './form/StepperForm';
+import CreateForm from './form/CreateForm';
 
 const Container = styled('div')(({ theme }) => ({
   margin: '30px',
@@ -23,7 +23,7 @@ const CategoryCreateForm = () => {
 
       <Stack spacing={3}>
         <SimpleCard title="Create Category">
-          <StepperForm />
+          <CreateForm />
         </SimpleCard>
       </Stack>
     </Container>
