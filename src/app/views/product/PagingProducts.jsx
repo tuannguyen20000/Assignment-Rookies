@@ -1,75 +1,55 @@
 import {
   Box,
   styled,
-  Button,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
-} from '@mui/material';
-import Modal from '@mui/material/Modal';
-import IconButton from '@mui/material/IconButton';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Collapse from '@mui/material/Collapse';
-import Typography from '@mui/material/Typography';
+} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import Collapse from "@mui/material/Collapse";
+import Typography from "@mui/material/Typography";
 
-import TableContainer from '@mui/material/TableContainer';
-import Paper from '@mui/material/Paper';
-import moment from 'moment';
+import TableContainer from "@mui/material/TableContainer";
+import Paper from "@mui/material/Paper";
+import moment from "moment";
 
-import { useState, useEffect, Fragment } from 'react';
-import { Breadcrumb, SimpleCard } from 'app/components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState, useEffect, Fragment } from "react";
+import { Breadcrumb, SimpleCard } from "app/components";
+import { useDispatch, useSelector } from "react-redux";
 
-import { getListProduct } from 'app/redux/actions/ProductActions';
-import { baseUrlApi } from 'app/utils/constant';
-import MaxHeightMenu from '../material-kit/menu/MaxHeightMenu';
-import AssignCategoriesModal from './form/AssignCategoriesModal';
+import { getListProduct } from "app/redux/actions/ProductActions";
+import { baseUrlApi } from "app/utils/constant";
+import MaxHeightMenu from "../material-kit/menu/MaxHeightMenu";
 
-const Container = styled('div')(({ theme }) => ({
-  margin: '30px',
-  [theme.breakpoints.down('sm')]: { margin: '16px' },
-  '& .breadcrumb': {
-    marginBottom: '30px',
-    [theme.breakpoints.down('sm')]: { marginBottom: '16px' },
+const Container = styled("div")(({ theme }) => ({
+  margin: "30px",
+  [theme.breakpoints.down("sm")]: { margin: "16px" },
+  "& .breadcrumb": {
+    marginBottom: "30px",
+    [theme.breakpoints.down("sm")]: { marginBottom: "16px" },
   },
 }));
 
-const styleModal = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
-const StyledButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(1),
-}));
-
 function Row(props) {
-  //Modal
-  const [openModal, setOpenModal] = useState(false);
-  const handleOpen = () => setOpenModal(true);
-  const handleClose = () => setOpenModal(false);
-
-  const currentParams = 'product';
+  const currentParams = "product";
 
   const { row } = props;
   const [open, setOpen] = useState(false);
 
   return (
     <Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
-          <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)}>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
@@ -77,15 +57,20 @@ function Row(props) {
           {row.productName}
         </TableCell>
         <TableCell align="center">{row.price}</TableCell>
-        <TableCell align="center">{moment(row.createdDate).utc().format('DD-MM-YYYY')}</TableCell>
-        <TableCell align="center">{moment(row.updatedDate).utc().format('DD-MM-YYYY')}</TableCell>
+        <TableCell align="center">{row.productQuantity}</TableCell>
+        <TableCell align="center">
+          {moment(row.createdDate).format("DD-MM-YYYY")}
+        </TableCell>
+        <TableCell align="center">
+          {moment(row.updatedDate).format("DD-MM-YYYY")}
+        </TableCell>
         <TableCell align="center">
           <Box
             component="img"
             align="center"
             sx={{
-              height: '100%',
-              width: '100%',
+              height: "100%",
+              width: "100%",
               maxHeight: { xs: 233, md: 167 },
               maxWidth: { xs: 350, md: 250 },
             }}
@@ -106,17 +91,10 @@ function Row(props) {
               </Typography>
 
               <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <Typography align="right" component="div">
-                    <StyledButton color="primary" onClick={handleOpen}>
-                      Add more category
-                    </StyledButton>
-                  </Typography>
-                </TableHead>
                 <TableBody>
                   <TableRow>
                     <TableCell component="th" scope="row">
-                      {row.categories.map((item) => item + '   ')}
+                      {row.categories.map((item) => item + "   ")}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -125,25 +103,6 @@ function Row(props) {
           </Collapse>
         </TableCell>
       </TableRow>
-
-      {/* Modal */}
-      <Modal
-        keepMounted
-        open={openModal}
-        onClose={handleClose}
-        aria-labelledby="keep-mounted-modal-title"
-        aria-describedby="keep-mounted-modal-description"
-      >
-        <Box sx={styleModal}>
-          <Typography id="keep-mounted-modal-title" variant="h6" component="h2">
-            Select the appropriate Category for the "{row.productName}"
-          </Typography>
-          <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
-            <AssignCategoriesModal data={row.id}></AssignCategoriesModal>
-          </Typography>
-        </Box>
-      </Modal>
-      {/* End Modal */}
     </Fragment>
   );
 }
@@ -176,6 +135,7 @@ const PaginationTable = () => {
               <TableCell />
               <TableCell align="left">Name</TableCell>
               <TableCell align="center">Price</TableCell>
+              <TableCell align="center">Quantity</TableCell>
               <TableCell align="center">Created Date</TableCell>
               <TableCell align="center">Updated Date</TableCell>
               <TableCell align="center"></TableCell>
@@ -199,8 +159,8 @@ const PaginationTable = () => {
           onPageChange={handleChangePage}
           rowsPerPageOptions={[1, 5, 10, 25]}
           onRowsPerPageChange={handleChangeRowsPerPage}
-          nextIconButtonProps={{ 'aria-label': 'Next Page' }}
-          backIconButtonProps={{ 'aria-label': 'Previous Page' }}
+          nextIconButtonProps={{ "aria-label": "Next Page" }}
+          backIconButtonProps={{ "aria-label": "Previous Page" }}
         />
       </TableContainer>
     </Box>
@@ -211,7 +171,7 @@ const ProductTable = () => {
   return (
     <Container>
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: 'Product' }]} />
+        <Breadcrumb routeSegments={[{ name: "Product" }]} />
       </Box>
 
       <SimpleCard title="Product List">
