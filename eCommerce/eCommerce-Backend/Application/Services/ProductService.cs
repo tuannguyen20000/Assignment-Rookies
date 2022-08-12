@@ -335,6 +335,7 @@ namespace eCommerce_Backend.Application.Services
                         Price = x.Price,
                         UpdatedDate = x.UpdatedDate,
                         ProductQuantity = x.ProductQuantity,
+                        Categories = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.Categories.CategoryName).ToList(),
                         ThumbnailImage = x.ProductImages.Select(x => x.ImagePath).FirstOrDefault(),
                         CategoryId = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.CategoriesId).FirstOrDefault(),
                         CategoryName = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.Categories.CategoryName).FirstOrDefault(),

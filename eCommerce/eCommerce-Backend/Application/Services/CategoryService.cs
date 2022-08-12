@@ -111,7 +111,7 @@ namespace eCommerce_Backend.Application.Services
         {
             using (_dbContext)
             {
-                var query = _dbContext.Categories.Where(x => x.Status == Status.Available).AsQueryable();
+                var query = _dbContext.Categories.Include(x => x.CategoryImages).Where(x => x.Status == Status.Available).AsQueryable();
                 if (!string.IsNullOrEmpty(request.Keyword))
                 {
                     query = query.Where(x => x.CategoryName.Contains(request.Keyword));
@@ -129,6 +129,7 @@ namespace eCommerce_Backend.Application.Services
                         Id = x.Id,
                         CategoryName = x.CategoryName,
                         Description = x.Description,
+                        ThumbnailImage = x.CategoryImages.Where(x => x.IsDefault == true).Select(x => x.ImagePath).FirstOrDefault()
                     }).ToListAsync();
                 var pagedResult = new PagedResult<CategoryReadDto>()
                 {
