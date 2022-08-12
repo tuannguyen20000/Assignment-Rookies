@@ -388,7 +388,7 @@ namespace eCommerce_Backend.Application.Services
                 var data = await _dbContext.Products.FindAsync(Id);
                 if (data == null)
                     return new ApiErrorResult<bool>(ErrorMessage.ProductNotFound);
-                if (await _dbContext.Products.AnyAsync(x => x.ProductName == request.ProductName && x.Id != Id))
+                if (await _dbContext.Products.AnyAsync(x => x.ProductName == request.ProductName && x.Id == Id))
                 {
                     return new ApiErrorResult<bool>(ErrorMessage.ProductNameExists);
                 }

@@ -2,9 +2,11 @@
 
 
 
+using eCommerce_Backend.Data.Entities;
+
 namespace eCommerce_xUniTest.DummyData
 {
-    public class CatgoryFakeData
+    public class CategoryFakeData
     {
         public static List<CategoryReadDto> GetCategory()
         {
@@ -78,6 +80,36 @@ namespace eCommerce_xUniTest.DummyData
                 CategoriesId = null,
                 Keyword = null
             };
+        }
+
+        public static List<Categories> ListCategory()
+        {
+            return new List<Categories>()
+            {
+                new Categories()
+                {
+                    CategoryName = "test category name 1",
+                    Description = "test description 1",
+                    Id = 10000,
+                    Status = Status.Available,
+                },
+
+                new Categories()
+                {
+                    CategoryName = "test category name 2",
+                    Description = "test description 2",
+                    Id = 10001,
+                    Status = Status.Disable,
+                },
+
+                new Categories()
+                {
+                    CategoryName = "test category name 3",
+                    Description = "test description 3",
+                    Id = 10002,
+                    Status = Status.Available,
+                },
+             };
         }
     }
 }

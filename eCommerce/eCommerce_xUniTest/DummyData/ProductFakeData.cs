@@ -67,7 +67,8 @@ namespace eCommerce_xUniTest.DummyData
             {            
                 Description = "test Description",
                 Price = 100000,
-                ProductName = "Giay test2",         
+                ProductName = "Giay test2",
+                CategoriesId = new int[] { 10001, 10000 },
             };
         }
 
@@ -101,6 +102,17 @@ namespace eCommerce_xUniTest.DummyData
                 PageSize = 12,
                 CategoriesId = null,
                 Keyword = null
+            };
+        }
+
+        public static ProductPagingDto PagingItemProductKeyWord()
+        {
+            return new ProductPagingDto()
+            {
+                PageIndex = 1,
+                PageSize = 12,
+                CategoriesId = null,
+                Keyword = "Dep ca sau"
             };
         }
     }

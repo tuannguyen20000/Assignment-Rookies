@@ -21,8 +21,8 @@ namespace eCommerce_xUniTest.Data
             if (dbContext.Database.EnsureCreated())
             {
                 dbContext.Products.AddRange(ProductFakeData.ListProductst());
-                dbContext.ProductInCategory.AddRange();
-                dbContext.Categories.AddRange();
+                dbContext.ProductInCategory.AddRange(ProductInCategoryFakeData.ListProductInCategory());
+                dbContext.Categories.AddRange(CategoryFakeData.ListCategory());
                 dbContext.SaveChangesAsync();
             }
         }

@@ -163,10 +163,10 @@ namespace eCommerce_Backend.Application.Services
             {
                 var data = await _dbContext.Categories.FindAsync(Id);
                 if (data == null)
-                    return new ApiErrorResult<bool>(ErrorMessage.ProductNotFound);
+                    return new ApiErrorResult<bool>(ErrorMessage.CategoryNotFound);
                 if (await _dbContext.Categories.AnyAsync(x => x.CategoryName == request.CategoryName && x.Id != Id))
                 {
-                    return new ApiErrorResult<bool>(ErrorMessage.ProductNameExists);
+                    return new ApiErrorResult<bool>(ErrorMessage.CategoryNameExists);
                 }
                 data.CategoryName = request.CategoryName;
                 data.Description = request.Description;

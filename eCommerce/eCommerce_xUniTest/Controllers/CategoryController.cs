@@ -13,7 +13,7 @@ namespace eCommerce_xUniTest.Api
         {
             /// Arrange
             var categoryService = new Mock<ICategoryService>();
-            categoryService.Setup(x => x.GetListAsync()).ReturnsAsync(CatgoryFakeData.GetCategory);
+            categoryService.Setup(x => x.GetListAsync()).ReturnsAsync(CategoryFakeData.GetCategory);
             var controller = new CategoriesController(categoryService.Object);
             /// Act
             var result = await controller.GetListCategory() as OkObjectResult;
@@ -32,7 +32,7 @@ namespace eCommerce_xUniTest.Api
             categoryService.Setup(x => x.CreateAsync(It.IsAny<CategoryCreateDto>())).ReturnsAsync(new ApiSuccessResult<bool>());
             var controller = new CategoriesController(categoryService.Object);
             /// Act
-            var result = await controller.Create(CatgoryFakeData.createItemCategory());
+            var result = await controller.Create(CategoryFakeData.createItemCategory());
             // Assert
             var model = Assert.IsAssignableFrom<OkObjectResult>(result);
             var value = Assert.IsAssignableFrom<ApiSuccessResult<bool>>(model.Value);
@@ -44,12 +44,12 @@ namespace eCommerce_xUniTest.Api
         public async Task UpdateCategory_WhenCalled_ReturnsResultSuccessed()
         {
             /// Arrange
-            var categoryId = CatgoryFakeData.GetCategory().Select(x => x.Id).FirstOrDefault();
+            var categoryId = CategoryFakeData.GetCategory().Select(x => x.Id).FirstOrDefault();
             var categoryService = new Mock<ICategoryService>();
             categoryService.Setup(x => x.UpdateAsync(categoryId, It.IsAny<CategoryUpdateDto>())).ReturnsAsync(new ApiSuccessResult<bool>());
             var controller = new CategoriesController(categoryService.Object);
             /// Act
-            var result = await controller.Update(categoryId, CatgoryFakeData.UpdatetemCategory());
+            var result = await controller.Update(categoryId, CategoryFakeData.UpdatetemCategory());
             // Assert
             var model = Assert.IsAssignableFrom<OkObjectResult>(result);
             var value = Assert.IsAssignableFrom<ApiSuccessResult<bool>>(model.Value);
@@ -63,10 +63,10 @@ namespace eCommerce_xUniTest.Api
         {
             /// Arrange
             var categoryService = new Mock<ICategoryService>();
-            categoryService.Setup(x => x.GetPagingAsync(It.IsAny<CategoryPagingDto>())).ReturnsAsync(CatgoryFakeData.PageResultCategoryRead);
+            categoryService.Setup(x => x.GetPagingAsync(It.IsAny<CategoryPagingDto>())).ReturnsAsync(CategoryFakeData.PageResultCategoryRead);
             var controller = new CategoriesController(categoryService.Object);
             /// Act
-            var result = await controller.GetPagingCategory(CatgoryFakeData.PagingItemCategory());
+            var result = await controller.GetPagingCategory(CategoryFakeData.PagingItemCategory());
             // /// Assert
             Assert.NotNull(result);
             var model = Assert.IsAssignableFrom<OkObjectResult>(result);
@@ -79,8 +79,8 @@ namespace eCommerce_xUniTest.Api
         public async Task GetById_WhenCalled_ReturnsOkResult()
         {
             /// Arrange
-            var categoryId = CatgoryFakeData.GetCategory().Select(x => x.Id).FirstOrDefault();
-            var category = CatgoryFakeData.GetCategory().First(x => x.Id == categoryId);
+            var categoryId = CategoryFakeData.GetCategory().Select(x => x.Id).FirstOrDefault();
+            var category = CategoryFakeData.GetCategory().First(x => x.Id == categoryId);
             var categoryService = new Mock<ICategoryService>();
             categoryService.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(new ApiSuccessResult<CategoryReadDto>(category));
             var controller = new CategoriesController(categoryService.Object);
