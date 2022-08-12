@@ -42,10 +42,11 @@ const PaginationTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    dispatch(getListUser());
-  }, []);
+    dispatch(getListUser(page, rowsPerPage));
+  }, [page, rowsPerPage]);
 
   const { userList } = useSelector((state) => state.users);
+  const { pagingInfo } = useSelector((state) => state.users);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -68,19 +69,17 @@ const PaginationTable = () => {
         </TableHead>
         <TableBody>
           {userList.length > 0 &&
-            userList
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell align="left">{item.userName}</TableCell>
-                  <TableCell align="center">{item.email}</TableCell>
-                  <TableCell align="right">
-                    <IconButton>
-                      <Icon color="error">close</Icon>
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+            userList.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell align="left">{item.userName}</TableCell>
+                <TableCell align="center">{item.email}</TableCell>
+                <TableCell align="right">
+                  <IconButton>
+                    <Icon color="error">close</Icon>
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </StyledTable>
 
@@ -89,7 +88,7 @@ const PaginationTable = () => {
         page={page}
         component="div"
         rowsPerPage={rowsPerPage}
-        count={userList.length}
+        count={pagingInfo.totalRecords}
         onPageChange={handleChangePage}
         rowsPerPageOptions={[1, 5, 10, 25]}
         onRowsPerPageChange={handleChangeRowsPerPage}

@@ -1,8 +1,8 @@
-import { Autocomplete, Chip, TextField } from "@mui/material";
-import { Box, useTheme } from "@mui/system";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { getListCategory } from "app/redux/actions/CategoryAction";
+import { Autocomplete, Chip, TextField } from '@mui/material';
+import { Box, useTheme } from '@mui/system';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getCategory } from 'app/redux/actions/CategoryAction';
 
 const BadgeAutocomplete = (props) => {
   const handleChange = (option, value) => {
@@ -11,7 +11,7 @@ const BadgeAutocomplete = (props) => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getListCategory());
+    dispatch(getCategory());
   }, []);
 
   const { categoryList } = useSelector((state) => state.categories);
@@ -20,7 +20,7 @@ const BadgeAutocomplete = (props) => {
   return (
     <Box
       sx={{
-        "& > * + *": {
+        '& > * + *': {
           marginTop: theme.spacing(3),
         },
       }}
@@ -37,11 +37,7 @@ const BadgeAutocomplete = (props) => {
         isOptionEqualToValue={(option, value) => option.id === value.id}
         renderTags={(value, getTagProps) =>
           value.map((option, index) => (
-            <Chip
-              variant="outlined"
-              label={option.label}
-              {...getTagProps({ index })}
-            />
+            <Chip variant="outlined" label={option.label} {...getTagProps({ index })} />
           ))
         }
         renderInput={(params) => (

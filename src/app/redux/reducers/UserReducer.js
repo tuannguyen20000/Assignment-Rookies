@@ -2,6 +2,7 @@ import { GET_LIST_USER, REGISTER_USER } from '../actions/UserAction';
 
 const initialState = {
   isRegistered: false,
+  pagingInfo: {},
   userList: [],
 };
 
@@ -10,7 +11,8 @@ const UserReducer = function (state = initialState, action) {
     case GET_LIST_USER: {
       return {
         ...state,
-        userList: [...action.payload],
+        pagingInfo: action.payload,
+        userList: [...action.payload.items],
       };
     }
     case REGISTER_USER: {

@@ -1,6 +1,5 @@
 import {
   Box,
-  IconButton,
   styled,
   Table,
   TableBody,
@@ -44,10 +43,12 @@ const PaginationTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    dispatch(getListCategory());
-  }, []);
+    dispatch(getListCategory(page, rowsPerPage));
+  }, [page, rowsPerPage]);
 
   const { categoryList } = useSelector((state) => state.categories);
+
+  const { pagingInfo } = useSelector((state) => state.categories);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -71,33 +72,29 @@ const PaginationTable = () => {
         </TableHead>
         <TableBody>
           {categoryList.length > 0 &&
-            categoryList
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell align="left">{item.categoryName}</TableCell>
-                  <TableCell align="center">{item.description}</TableCell>
-                  <TableCell align="center">
-                    <Box
-                      component="img"
-                      sx={{
-                        height: 225,
-                        width: 225,
-                        maxHeight: { xs: 233, md: 167 },
-                        maxWidth: { xs: 350, md: 250 },
-                      }}
-                      alt={item.productName}
-                      src={baseUrlApi + item.thumbnailImage}
-                    />
-                  </TableCell>
+            categoryList.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell align="left">{item.categoryName}</TableCell>
+                <TableCell align="center">{item.description}</TableCell>
+                <TableCell align="center">
+                  <Box
+                    component="img"
+                    sx={{
+                      height: 225,
+                      width: 225,
+                      maxHeight: { xs: 233, md: 167 },
+                      maxWidth: { xs: 350, md: 250 },
+                    }}
+                    alt={item.categoryName}
+                    src={baseUrlApi + item.thumbnailImage}
+                  />
+                </TableCell>
 
-                  <TableCell align="right">
-                    <IconButton>
-                      <MaxHeightMenu data={item.id} current={currentParams}></MaxHeightMenu>
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+                <TableCell align="right">
+                  <MaxHeightMenu data={item.id} current={currentParams}></MaxHeightMenu>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </StyledTable>
 
@@ -106,7 +103,7 @@ const PaginationTable = () => {
         page={page}
         component="div"
         rowsPerPage={rowsPerPage}
-        count={categoryList.length}
+        count={pagingInfo.totalRecords}
         onPageChange={handleChangePage}
         rowsPerPageOptions={[1, 5, 10, 25]}
         onRowsPerPageChange={handleChangeRowsPerPage}

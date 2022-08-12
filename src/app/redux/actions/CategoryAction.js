@@ -5,11 +5,23 @@ export const CREATE_CATEGORY = 'CREATE_CATEGORY';
 export const UPDATE_CATEGORY = 'UPDATE_CATEGORY';
 export const GET_BY_ID_CATEGORY = 'GET_BY_ID_CATEGORY';
 export const SOFT_DELETE_CATEGORY = 'SOFT_DELETE_CATEGORY';
+export const GET_CATEGORY = 'GET_CATEGORY';
 
-export const getListCategory = () => (dispatch) => {
-  axiosInstance.get('Categories/get-list-category').then((res) => {
+export const getListCategory = (page, rowsPerPage) => (dispatch) => {
+  axiosInstance
+    .get(`Categories/get-paging-category?&pageIndex=${page + 1}&pageSize=${rowsPerPage}`)
+    .then((res) => {
+      dispatch({
+        type: GET_LIST_CATEGORY,
+        payload: res,
+      });
+    });
+};
+
+export const getCategory = () => (dispatch) => {
+  axiosInstance.get(`Categories/get-list-category`).then((res) => {
     dispatch({
-      type: GET_LIST_CATEGORY,
+      type: GET_CATEGORY,
       payload: res,
     });
   });

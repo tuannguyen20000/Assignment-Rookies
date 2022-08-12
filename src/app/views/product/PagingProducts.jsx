@@ -114,10 +114,13 @@ const PaginationTable = () => {
   };
 
   useEffect(() => {
-    dispatch(getListProduct());
-  }, []);
+    dispatch(getListProduct(page, rowsPerPage));
+  }, [page, rowsPerPage]);
 
   const { productList } = useSelector((state) => state.products);
+
+  const { pagingInfo } = useSelector((state) => state.products);
+
   return (
     <Box width="100%" overflow="auto">
       <TableContainer component={Paper}>
@@ -136,9 +139,7 @@ const PaginationTable = () => {
           </TableHead>
           <TableBody>
             {productList.length > 0 &&
-              productList
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((item, index) => <Row key={index} row={item}></Row>)}
+              productList.map((item, index) => <Row key={index} row={item}></Row>)}
           </TableBody>
         </Table>
 
@@ -147,7 +148,7 @@ const PaginationTable = () => {
           page={page}
           component="div"
           rowsPerPage={rowsPerPage}
-          count={productList.length}
+          count={pagingInfo.totalRecords}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[1, 5, 10, 25]}
           onRowsPerPageChange={handleChangeRowsPerPage}

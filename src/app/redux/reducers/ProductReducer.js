@@ -12,13 +12,16 @@ const initialState = {
   isDeleted: false,
   isAssignToCategory: false,
   productList: [],
+  pagingInfo: {},
 };
 
 const ProductReducer = function (state = initialState, action) {
   switch (action.type) {
     case GET_LIST_PRODUCT: {
       return {
-        productList: [...action.payload],
+        ...state,
+        pagingInfo: action.payload,
+        productList: [...action.payload.items],
       };
     }
     case CREATE_PRODUCT: {
