@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace eCommerce_SharedViewModels.Common
 {
-    public class SelectItem
+    public class Item
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
-        public bool Selected { get; set; }
     }
 }

@@ -11,6 +11,7 @@ using System.Net.Http.Headers;
 using eCommerce_SharedViewModels.Exceptions;
 using eCommerce_SharedViewModels.EntitiesDto.Product.ProductImage;
 using eCommerce_SharedViewModels.EntitiesDto.Product.ProductRating;
+using Newtonsoft.Json;
 
 namespace eCommerce_Backend.Application.Services
 {
@@ -336,6 +337,11 @@ namespace eCommerce_Backend.Application.Services
                         UpdatedDate = x.UpdatedDate,
                         ProductQuantity = x.ProductQuantity,
                         Categories = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.Categories.CategoryName).ToList(),
+                        ListItemCategory = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => new Item
+                        {
+                            Id = x.CategoriesId,
+                            Name = x.Categories.CategoryName
+                        }).ToList(),
                         ThumbnailImage = x.ProductImages.Select(x => x.ImagePath).FirstOrDefault(),
                         CategoryId = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.CategoriesId).FirstOrDefault(),
                         CategoryName = x.ProductInCategory.Where(x => x.Categories.Status == Status.Available).Select(x => x.Categories.CategoryName).FirstOrDefault(),
@@ -389,7 +395,7 @@ namespace eCommerce_Backend.Application.Services
                 var data = await _dbContext.Products.FindAsync(Id);
                 if (data == null)
                     return new ApiErrorResult<bool>(ErrorMessage.ProductNotFound);
-                if (await _dbContext.Products.AnyAsync(x => x.ProductName == request.ProductName && x.Id == Id))
+                if (await _dbContext.Products.AnyAsync(x => x.ProductName == request.ProductName && x.Id != Id))
                 {
                     return new ApiErrorResult<bool>(ErrorMessage.ProductNameExists);
                 }
@@ -408,6 +414,34 @@ namespace eCommerce_Backend.Application.Services
                         thumbnailImage.ImagePath = await SaveFileAsync(request.ThumbnailImage);
                         _dbContext.ProductImages.Update(thumbnailImage);
                     }
+                }
+
+                if (request.Categories != null)
+                {
+                    var listItem = new List<SelectItem>();
+                    foreach(var item in request.Categories)
+                    {
+                        listItem.Add(JsonConvert.DeserializeObject<SelectItem>(item));
+                    }
+                    foreach (var itemCategory in listItem)
+                    {
+
+                        var productInCategory = await _dbContext.ProductInCategory
+                                            .FirstOrDefaultAsync(x => x.CategoriesId == int.Parse(itemCategory.Id)
+                                            && x.ProductsId == Id);
+                        if (productInCategory != null && itemCategory.Selected == false)
+                        {
+                             _dbContext.ProductInCategory.Remove(productInCategory);
+                        }
+                        else if (productInCategory == null && itemCategory.Selected)
+                        {
+                            await _dbContext.ProductInCategory.AddAsync(new ProductInCategory()
+                            {
+                                CategoriesId = int.Parse(itemCategory.Id),
+                                ProductsId = Id
+                            });
+                        }
+                    }                       
                 }
                 _dbContext.Products.Update(data);
                 await _dbContext.SaveChangesAsync();
