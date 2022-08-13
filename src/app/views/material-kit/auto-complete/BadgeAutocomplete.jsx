@@ -6,7 +6,11 @@ import { getCategory } from 'app/redux/actions/CategoryAction';
 
 const BadgeAutocomplete = (props) => {
   const handleChange = (option, value) => {
-    props.onSelectedCategory(value.map((category) => category.id));
+    if (props.onUpdate != null) {
+      props.onUpdatedCategory(value);
+    } else {
+      props.onSelectedCategory(value.map((category) => category.id));
+    }
   };
 
   const dispatch = useDispatch();

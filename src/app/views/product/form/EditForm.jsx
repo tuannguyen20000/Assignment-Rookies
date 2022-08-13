@@ -1,11 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProduct } from 'app/redux/actions/ProductActions';
-import { Button, Grid, Icon, styled, Box } from '@mui/material';
+import { Button, Grid, Icon, styled, Box, Typography } from '@mui/material';
 import { Span } from 'app/components/Typography';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { baseUrlApi } from 'app/utils/constant';
+import BadgeAutocomplete from '../../../views/material-kit/auto-complete/BadgeAutocomplete';
 
 const TextField = styled(TextValidator)(() => ({
   width: '100%',
@@ -16,10 +17,11 @@ const EditForm = () => {
   const param = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [CategoriesId, setCategoriesId] = useState([]);
 
   const { productList } = useSelector((state) => state.products);
   const currentProduct = productList.filter((product) => product.id == param.id);
-  const { id, productName, description, price, thumbnailImage, productQuantity } =
+  const { id, productName, description, price, thumbnailImage, productQuantity, listItemCategory } =
     currentProduct[0];
   const [state, setState] = useState({
     ProductName: productName,
@@ -35,6 +37,47 @@ const EditForm = () => {
   formData.append('Price', state.Price);
   formData.append('ThumbnailImage', state.ThumbnailImage);
   formData.append('ProductQuantity', state.ProductQuantity);
+  if (CategoriesId != null) {
+    CategoriesId.forEach((category) => formData.append('Categories[]', JSON.stringify(category)));
+  }
+
+  useEffect(() => {
+    handleOnUpdatedCategory();
+  }, []);
+
+  const handleOnUpdatedCategory = (inforCategory) => {
+    const updateCategories = [];
+    const currentCategories = [];
+    if (inforCategory != null) {
+      inforCategory.map((category) => {
+        updateCategories.push({
+          id: category.id,
+          name: category.label,
+          selected: true,
+        });
+        listItemCategory.map((item, index) => {
+          if (category.id === item.id) {
+            currentCategories.push({
+              id: item.id,
+              name: item.name,
+              selected: true,
+            });
+          }
+          if (category.id !== item.id) {
+            currentCategories.unshift({
+              id: item.id,
+              name: item.name,
+              selected: false,
+            });
+          }
+        });
+      });
+      const mapped = updateCategories.reduce((a, t) => ((a[t.id] = t), a), {});
+      const mapped2 = currentCategories.reduce((a, t) => ((a[t.id] = t), a), {});
+      const merge = Object.values({ ...mapped, ...mapped2 });
+      setCategoriesId(merge);
+    }
+  };
 
   const handleChange = (event) => {
     event.persist();
@@ -103,15 +146,15 @@ const EditForm = () => {
             <TextField type="file" name="ThumbnailImage" onChange={handleFileUpdate} />
             {isFilePicked ? (
               <div>
-                <p>Filename: {state.ThumbnailImage.name}</p>
-                <p>Filetype: {state.ThumbnailImage.type}</p>
-                <p>Size in bytes: {state.ThumbnailImage.size}</p>
-                <p>
+                <Typography>Filename: {state.ThumbnailImage.name}</Typography>
+                <Typography>Filetype: {state.ThumbnailImage.type}</Typography>
+                <Typography>Size in bytes: {state.ThumbnailImage.size}</Typography>
+                <Typography>
                   Last modified date: {state.ThumbnailImage.lastModifiedDate.toLocaleDateString()}
-                </p>
+                </Typography>
               </div>
             ) : (
-              <p>Select a file to show details</p>
+              <Typography>Select a file to show details</Typography>
             )}
             <Box
               component="img"
@@ -125,6 +168,12 @@ const EditForm = () => {
               alt={productName}
               src={baseUrlApi + thumbnailImage}
             />
+          </Grid>
+          <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
+            <BadgeAutocomplete
+              onUpdate={currentProduct}
+              onUpdatedCategory={handleOnUpdatedCategory}
+            ></BadgeAutocomplete>
           </Grid>
         </Grid>
         <Button color="primary" variant="contained" type="submit">
