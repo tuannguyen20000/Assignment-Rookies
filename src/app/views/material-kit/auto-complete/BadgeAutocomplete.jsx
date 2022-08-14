@@ -13,10 +13,22 @@ const BadgeAutocomplete = (props) => {
     }
   };
 
+  const handleGetCurrentCategory = () => {
+    if (props.onUpdate != null) {
+      const current = props.onUpdate.map((item) =>
+        item.listItemCategory.map((category) => ({
+          id: category.id,
+          label: category.name,
+        }))
+      );
+      return current[0];
+    }
+  };
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getCategory());
-  }, []);
+  }, [props.onUpdate]);
 
   const { categoryList } = useSelector((state) => state.categories);
   const theme = useTheme();
@@ -36,6 +48,7 @@ const BadgeAutocomplete = (props) => {
           id: option.id,
           label: option.categoryName,
         }))}
+        defaultValue={props.onUpdate != null ? handleGetCurrentCategory : []}
         getOptionLabel={(option) => option.label}
         onChange={handleChange}
         isOptionEqualToValue={(option, value) => option.id === value.id}

@@ -27,7 +27,6 @@ export const createProduct = (formData) => (dispatch) => {
 };
 
 export const updateProduct = (id, formData) => (dispatch) => {
-  console.log(id, formData);
   axiosFormData.put('Products/update-product/' + id, formData).then((res) => {
     dispatch({
       type: UPDATE_PRODUCT,

@@ -76,7 +76,6 @@ export default function SoftDeleteForm() {
 
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
-      console.log(param.id);
       dispatch(softDeleteCategory(param.id));
     }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

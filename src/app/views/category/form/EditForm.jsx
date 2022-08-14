@@ -19,7 +19,6 @@ const EditForm = () => {
 
   const { categoryList } = useSelector((state) => state.categories);
   const currentCategory = categoryList.filter((category) => category.id == param.id);
-  console.log(param.id);
   const { id, categoryName, description, thumbnailImage } = currentCategory[0];
   const [state, setState] = useState({
     CategoryName: categoryName,

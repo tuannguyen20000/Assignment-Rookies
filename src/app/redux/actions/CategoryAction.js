@@ -37,7 +37,6 @@ export const createCategory = (formData) => (dispatch) => {
 };
 
 export const updateCategory = (id, formData) => (dispatch) => {
-  console.log(id, formData);
   axiosFormData.put('Categories/update-category/' + id, formData).then((res) => {
     dispatch({
       type: UPDATE_CATEGORY,

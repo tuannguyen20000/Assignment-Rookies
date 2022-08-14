@@ -141,6 +141,12 @@ const EditForm = () => {
               errorMessages={['this field is required']}
             />
           </Grid>
+          <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
+            <BadgeAutocomplete
+              onUpdate={currentProduct}
+              onUpdatedCategory={handleOnUpdatedCategory}
+            ></BadgeAutocomplete>
+          </Grid>
 
           <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
             <TextField type="file" name="ThumbnailImage" onChange={handleFileUpdate} />
@@ -168,12 +174,6 @@ const EditForm = () => {
               alt={productName}
               src={baseUrlApi + thumbnailImage}
             />
-          </Grid>
-          <Grid item lg={6} md={6} sm={12} xs={12} sx={{ mt: 2 }}>
-            <BadgeAutocomplete
-              onUpdate={currentProduct}
-              onUpdatedCategory={handleOnUpdatedCategory}
-            ></BadgeAutocomplete>
           </Grid>
         </Grid>
         <Button color="primary" variant="contained" type="submit">
