@@ -53,7 +53,7 @@ namespace eCommerce_Backend.Application.Services
 
         public async Task<ApiResult<bool>> AddImageAsync(int Id, ProductImageCreateDto request)
         {
-            var Image = new ProductImages()
+            var image = new ProductImages()
             {
                 ProductsId = Id,
                 Caption = request.Caption,
@@ -63,12 +63,12 @@ namespace eCommerce_Backend.Application.Services
 
             if (request.ImageFile != null)
             {
-                Image.ImagePath = await SaveFileAsync(request.ImageFile);
-                Image.FileSize = request.ImageFile.Length;
+                image.ImagePath = await SaveFileAsync(request.ImageFile);
+                image.FileSize = request.ImageFile.Length;
             }
             using (_dbContext)
             {
-                _dbContext.ProductImages.Add(Image);
+                _dbContext.ProductImages.Add(image);
                 await _dbContext.SaveChangesAsync();
                 return new ApiSuccessResult<bool>();
             }
@@ -109,7 +109,7 @@ namespace eCommerce_Backend.Application.Services
 
         public async Task<ApiResult<bool>> CreateAsync(ProductCreateDto request)
         {
-            var Product = new Products()
+            var product = new Products()
             {
                 ProductName = request.ProductName,
                 Description = request.Description,
@@ -123,7 +123,7 @@ namespace eCommerce_Backend.Application.Services
             // Save image
             if (request.ThumbnailImage != null)
             {
-                Product.ProductImages = new List<ProductImages>()
+                product.ProductImages = new List<ProductImages>()
                 {
                     new ProductImages()
                     {
@@ -138,14 +138,14 @@ namespace eCommerce_Backend.Application.Services
 
             using (_dbContext)
             {
-                _dbContext.Products.Add(Product);
+                _dbContext.Products.Add(product);
                 await _dbContext.SaveChangesAsync();
                 // Save Category
                 foreach (var item in request.CategoriesId)
                 {
                     var productInCategories = new ProductInCategory()
                     {
-                        ProductsId = Product.Id,
+                        ProductsId = product.Id,
                         CategoriesId = item,
                     };
                     _dbContext.ProductInCategory.Add(productInCategories);
@@ -185,7 +185,7 @@ namespace eCommerce_Backend.Application.Services
             {
                 avrRating = ratings.Where(x => x.Rating.HasValue).Select(x => x.Rating.Value).Average();
             }
-            var ListComment = ratings.Select(x => new ProductRatingDto
+            var listComment = ratings.Select(x => new ProductRatingDto
             {
                 Comment = x.Comment,
                 Id = x.Id,
@@ -209,7 +209,7 @@ namespace eCommerce_Backend.Application.Services
                 ThumbnailImage = image != null ? image.ImagePath : "no-image.jpg",
                 Categories = categories,
                 avrRating = (int?)Math.Ceiling(avrRating),
-                Comments = ListComment,
+                Comments = listComment,
                 SubImages = listSubImage
             };
             return new ApiSuccessResult<ProductReadDto>(result);

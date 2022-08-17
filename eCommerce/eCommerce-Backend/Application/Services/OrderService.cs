@@ -1,8 +1,12 @@
 ﻿using eCommerce_Backend.Application.IServices;
 using eCommerce_Backend.Data.EF;
 using eCommerce_Backend.Data.Entities;
+using eCommerce_SharedViewModels.Common;
 using eCommerce_SharedViewModels.EntitiesDto.Order;
+using eCommerce_SharedViewModels.EntitiesDto.Order.OrderDetail;
 using eCommerce_SharedViewModels.Enums;
+using Microsoft.EntityFrameworkCore;
+using static eCommerce_SharedViewModels.Utilities.Constants.SystemConstants;
 
 namespace eCommerce_Backend.Application.Services
 {
@@ -56,6 +60,52 @@ namespace eCommerce_Backend.Application.Services
             }
         }
 
+        public async Task<PagedResult<OrderReadDto>> GetPagingAsync(OrderPagingDto request)
+        {
+            using (_dbContext)
+            {
+                var query = _dbContext.Orders.Include(x => x.OrderDetails).AsQueryable();
+                if (!string.IsNullOrEmpty(request.Keyword))
+                {
+                    query = query.Where(x => x.Users.UserName.Contains(request.Keyword));
+                }
+                int totalRow = await query.CountAsync();
 
+                var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                    .Take(request.PageSize)
+                    .Select(x => new OrderReadDto()
+                    {
+                        Id = x.Id,
+                        OrderDate = x.OrderDate,
+                        ShipAddress = x.ShipAddress,
+                        ShipEmail = x.ShipEmail,
+                        OrderDetails = x.OrderDetails.Select(x=> new OrderDetailReadDto() 
+                            {OrdersId = x.OrdersId, Price = x.Price, ProductsId =x.ProductsId, Quantity = x.Quantity }).ToList(),
+                        ShipName = x.ShipName,
+                        ShipPhoneNumber = x.ShipPhoneNumber,
+                        Status = x.Status,
+                        UsersId = x.UsersId
+                    }).ToListAsync();
+                var pagedResult = new PagedResult<OrderReadDto>()
+                {
+                    TotalRecords = totalRow,
+                    PageIndex = request.PageIndex,
+                    PageSize = request.PageSize,
+                    Items = data
+                };
+                return pagedResult;
+            }
+        }
+
+        public async Task<ApiResult<bool>> UpdateStatusAsync(int Id, OrderUpdateDto request)
+        {
+            var data = await _dbContext.Orders.FindAsync(Id);
+            if (data == null)
+                return new ApiErrorResult<bool>(ErrorMessage.ProductNotFound);
+            data.Status = request.Status;            
+            _dbContext.Orders.Update(data);
+            await _dbContext.SaveChangesAsync();
+            return new ApiSuccessResult<bool>();
+        }
     }
 }

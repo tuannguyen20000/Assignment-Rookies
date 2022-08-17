@@ -35,6 +35,10 @@ namespace eCommerce_SharedViewModels.Utilities.Constants
             public const string WrongPasswordConfirm = "Your password and confirmation password do not match!";
             public const string UserNameExists = "Username already exists!";
             public const string UserCreateFail = "User creation failed! Please check user details and try again.";
+
+
+            //Category
+            public const string OrderNotFound = "Order does not exists";
         }
 
         public class SuccessMessage

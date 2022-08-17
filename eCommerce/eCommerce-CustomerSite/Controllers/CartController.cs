@@ -1,5 +1,6 @@
 ﻿using eCommerce_CustomerSite.Api.Client;
 using eCommerce_CustomerSite.ApiComsumes.IServices;
+using eCommerce_CustomerSite.Common;
 using eCommerce_CustomerSite.Models;
 using eCommerce_SharedViewModels.EntitiesDto.Cart;
 using eCommerce_SharedViewModels.Utilities.Constants;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Refit;
 using System.Security.Claims;
+using static eCommerce_CustomerSite.Common.GetCart;
 
 namespace eCommerce_CustomerSite.Controllers
 {
@@ -22,14 +24,19 @@ namespace eCommerce_CustomerSite.Controllers
         [HttpGet]
         public async Task<IActionResult> GetListCart()
         {
-            var currentCart = await GetCartAsync();
+            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
+            var sessionUser = HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var currentCart = await GetCartAsync(userId, session, sessionUser);
             return Ok(currentCart);
         }
 
         public async Task<IActionResult> UpdateCart(int Id, int quantity)
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var currentCart = await GetCartAsync();
+            var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
+            var sessionUser = HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
+            var currentCart = await GetCartAsync(userId, session, sessionUser);
             var request = new CartUpdateDto()
             {
                 quantity = quantity,
@@ -66,12 +73,14 @@ namespace eCommerce_CustomerSite.Controllers
         public async Task<IActionResult> AddProductToCart(int Id, int Quantity)
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
+            var sessionUser = HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
             var product = await _productApi.GetByIdAsync(Id);
             if (product.ResultObj.ProductQuantity.Equals(0))
             {
                 return Json(new { success = false, responseText = "The product is out of stock" });
             }
-            var currentCart = await GetCartAsync();
+            var currentCart = await GetCartAsync(userId, session, sessionUser);
             if (currentCart.Any(x => x.ProductId == Id))
             {              
                 Quantity += currentCart.First(x => x.ProductId == Id).Quantity;
@@ -112,35 +121,6 @@ namespace eCommerce_CustomerSite.Controllers
         public IActionResult Detail()
         {
             return View();
-        }
-
-        public async Task<List<CartItemVM>> GetCartAsync()
-        {
-            var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var session = HttpContext.Session.GetString(SystemConstants.SESSION_CART);
-            var sessionUser = HttpContext.Session.GetString(SystemConstants.AppSettings.Token);
-
-            List<CartItemVM> currentCart = new List<CartItemVM>();
-            if (!string.IsNullOrEmpty(session))
-            {
-                currentCart = JsonConvert.DeserializeObject<List<CartItemVM>>(session);
-            }
-            if(!string.IsNullOrEmpty(sessionUser) || !string.IsNullOrEmpty(userId))
-            {
-                var data = await _cartClient.GetListCartAsync(userId);
-                var cartUser = data.Select(x => new CartItemVM()
-                {
-                    Image = x.Image,
-                    Description = x.Description,
-                    Name = x.Name,
-                    Price = x.Price,
-                    ProductId = x.ProductsId,
-                    Quantity = x.Quantity,
-                    ProductQuantity = x.ProductQuantity,
-                }).ToList();
-                currentCart = cartUser;
-            }
-            return currentCart;
         }
     }
 }

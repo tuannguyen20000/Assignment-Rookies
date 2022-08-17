@@ -32,8 +32,6 @@ namespace eCommerce_CustomerSite.Controllers
             return View();
         }
 
-
-
         [HttpPost]
         public async Task<IActionResult> Index(LoginDto request)
         {
