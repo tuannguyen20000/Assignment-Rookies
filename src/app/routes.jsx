@@ -10,6 +10,7 @@ import MatxLayout from './components/MatxLayout/MatxLayout';
 import productRoutes from './views/product/ProductRoutes';
 import categoryRoutes from './views/category/CategoryRoutes';
 import userRoutes from './views/user/UserRoutes';
+import orderRoutes from './views/order/OrderRoutes';
 
 const routes = [
   {
@@ -25,6 +26,7 @@ const routes = [
       ...productRoutes,
       ...categoryRoutes,
       ...userRoutes,
+      ...orderRoutes,
     ],
   },
   ...sessionRoutes,

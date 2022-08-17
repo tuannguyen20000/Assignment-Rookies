@@ -6,6 +6,7 @@ import NotificationReducer from './NotificationReducer';
 import UserReducer from './UserReducer';
 import CategoryReducer from './CategoryReducer';
 import ProductReducer from './ProductReducer';
+import OrderReducer from './OrderReducer';
 
 const RootReducer = combineReducers({
   notifications: NotificationReducer,
@@ -14,6 +15,7 @@ const RootReducer = combineReducers({
   products: ProductReducer,
   users: UserReducer,
   categories: CategoryReducer,
+  orders: OrderReducer,
 });
 
 export default RootReducer;
